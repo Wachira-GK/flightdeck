@@ -118,3 +118,22 @@ pnpm exec wrangler delete flightdeck-web
 ```
 
 Do not commit `.dev.vars`, `.wrangler/` or `.open-next/`. They are git-ignored in `apps/web/.gitignore`. No secrets are needed for the prototype.
+
+## Real deploy on Cloudflare FREE account — 2026-11-11 (evidence)
+
+Account: Godfrey's personal Cloudflare Free account (logged in with `wrangler login`, OAuth). URL: `https://flightdeck-web.godmarklee.workers.dev`.
+
+| Check | Result |
+|---|---|
+| Deploy (`node scripts/cf.mjs deploy`) | ✔ 17 assets, upload 4,988 KiB / gzip 1,053 KiB, **worker startup 17 ms**, version `16adc846` |
+| SSR routes live | ✔ `/`, `/cockpit`, `/missions/excel-sum-101?step=simulation` → 200; warm responses 40–120 ms; first (cold) 0.7–1.1 s |
+| Route handler | ✔ `/api/health` → 200 JSON |
+| Security headers | ◐ `x-frame-options: DENY`, `x-content-type-options: nosniff`, `referrer-policy` present; **CSP and HSTS not yet set** (ASVS V14.4, G2) |
+| Unknown mission | ◐ soft 404 (200 + `noindex`) — known review item |
+| **CPU time per request** (`wrangler tail --format json`, 11 sampled requests) | `/` 9–11 ms · `/cockpit` 6–10 ms · `/missions/…` 7–10 ms · `/api/health` 3–4 ms. All outcomes `ok` (none killed). |
+| Logs | ✔ `wrangler tail` live JSON logs with CPU/wall time |
+| Rollback drill | ✔ deployed `9c0f417d`, `wrangler rollback 16adc846 --message "G1 rollback drill"` → 100% traffic back on `16adc846` in seconds; `/api/health` 200 |
+| Not tested | cron/jobs (none yet), image optimisation (disabled: `unoptimized: true`), custom domain |
+
+**Verdict:** compatibility PASS. The prototype runs on Workers with SSR, route handlers, assets, logs and rollback.
+**CPU risk confirmed:** mock-data SSR already uses 6–11 ms, i.e. at the Free plan's 10 ms cap. Real pages (Supabase queries, auth) will cost more. → Production must run on **Workers Paid** (as approved at G0: "Cloudflare Workers Paid"); Free is suitable only for this preview. Vercel fallback not triggered.

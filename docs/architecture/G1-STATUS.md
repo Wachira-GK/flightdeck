@@ -11,7 +11,7 @@ Overall: **NOT approval-ready** — evidence is being built; every item below is
 | No untreated Critical/High risk | ◐ | `docs/security/THREAT-MODEL-v0.1.md` — CT3, CT4, CT5, CT8 Medium until G2 code exists |
 | RLS-T01..T24 pass | ✔ locally | `pnpm test:rls` → 28/28 (24 RLS + 4 integrity), PostgreSQL 17 / PGlite |
 | Clean CI passes | ✔ | GitHub Actions `quality` runs #2, #3, #4 green (#4 = `0dc0f36`, 39 s, no warnings). Run #1 (`1b16d58`) failed by design gap: lockfile not committed with `@types/node` — fixed in `1fd3095` |
-| Cloudflare spike passes OR Vercel fallback recorded | ◐ | `docs/architecture/CLOUDFLARE-SPIKE.md`, `docs/decisions/ADR-003-hosting-spike.md` |
+| Cloudflare spike passes OR Vercel fallback recorded | ✔ | Live on `flightdeck-web.godmarklee.workers.dev` (Free account): SSR, route handler, logs, rollback drill pass; CPU 6–11 ms/request → production on Workers Paid (G0-approved). `docs/architecture/CLOUDFLARE-SPIKE.md` |
 | Keyboard / contrast review passes | ◐ | Contrast gate 70 pairs (min 5.09:1 text, 3.75:1 UI); Playwright + axe 30/30, 0 violations; human screen-reader pass pending (`docs/design/ACCESSIBILITY-REVIEW.md`) |
 | No P0 waiver | ✔ | none requested |
 
@@ -26,7 +26,7 @@ Overall: **NOT approval-ready** — evidence is being built; every item below is
 | 5 | Role / capability matrix | FD-S01 | ✔ draft | `docs/security/ROLE-CAPABILITY-MATRIX.md` |
 | 6 | Cockpit + lesson-shell prototype | FD-U01 | ✔ draft | `apps/web` (`/cockpit`, `/missions/excel-sum-101`), tokens in `packages/ui`, `docs/design/` |
 | 7 | CI clean-run evidence | FD-Q01 | ✔ | Actions run #4 (`0dc0f36`) green from a fresh Ubuntu checkout: frozen install, secret scan, lint, typecheck, unit + RLS tests, build |
-| 8 | Cloudflare compatibility spike | FD-O01 | ◐ local pass | OpenNext build OK, gzip 1,053 KiB, SSR OK on local workerd; real Free-account deploy + CPU time pending (`docs/architecture/CLOUDFLARE-SPIKE.md`) |
+| 8 | Cloudflare compatibility spike | FD-O01 | ✔ | Real deploy 11 Nov: startup 17 ms, gzip 1,053 KiB, CPU 6–11 ms vs Free 10 ms cap, rollback drill OK; ADR-003 awaiting decision |
 | 9 | Secret / bundle scan | FD-Q01 | ✔ | `scripts/scan-secrets.mjs` (first step of `pnpm check`) |
 | 10 | Gate-1 evidence review | Owner | ○ | 21–23 Nov (Gantt task FD-G1R) |
 
