@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794344591318,
+  "updated": 1794345682322,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -190,8 +190,8 @@
         "nyff28t"
       ],
       "status": "active",
-      "progress": 40,
-      "notes": "Design tokens (light/dark, WCAG 2.2 AA contrast test), Cockpit and lesson-shell prototype (Next.js App Router) with keyboard path, focus, landmarks, loading/error states. Remaining: human accessibility review incl. screen reader.",
+      "progress": 75,
+      "notes": "Design tokens (light/dark) with WCAG 2.2 AA contrast gate (70 pairs; min text 5.09:1, min UI 3.75:1); Cockpit and lesson-shell prototype (Next.js 16.4 App Router) with skip link, landmarks, keyboard step rail, loading/error states. Playwright + axe E2E 30/30, 0 violations (light + dark). Remaining: human screen-reader pass, 320px/400% reflow, forced-colors check.",
       "after": [
         "0lg30u3"
       ],
@@ -211,8 +211,8 @@
         "wj2v2mw"
       ],
       "status": "active",
-      "progress": 50,
-      "notes": "pnpm 10 + Turborepo monorepo, CI workflow (GitHub Actions, read-only token), RLS harness on embedded PostgreSQL 17 (PGlite, no Docker/admin), secret + client-bundle scan in pnpm check. Remaining: first push to GitHub and a clean CI run (CI clean-run evidence); Playwright E2E smoke.",
+      "progress": 80,
+      "notes": "pnpm 10 + Turborepo monorepo on GitHub (Wachira-GK/flightdeck, main 1fd3095); pnpm check = secret/bundle scan + lint + typecheck + unit/RLS tests + build, all passing locally; RLS-T01..T24 28/28; mutation check 8/8; E2E 30/30. Remaining: confirm first clean GitHub Actions run (CI clean-run evidence).",
       "after": [
         "0lg30u3"
       ],
@@ -232,8 +232,8 @@
         "2wd0l6t"
       ],
       "status": "active",
-      "progress": 30,
-      "notes": "Cloudflare compatibility spike: OpenNext (@opennextjs/cloudflare) build, wrangler dry-run bundle size vs Workers Free 3 MiB / Paid 10 MiB, local workerd SSR check. Remaining: real preview deploy on Godfrey's Cloudflare Free account (workers.dev), logs, rollback; ADR-003 decision (Cloudflare vs Vercel fallback).",
+      "progress": 60,
+      "notes": "Local spike PASSED: OpenNext (@opennextjs/cloudflare 1.20) build, wrangler dry-run 4,988 KiB / gzip 1,053 KiB (current limit 64 MiB uncompressed on Free and Paid), SSR + route handler + assets OK under local workerd; E2E 30/30 on workerd. Remaining: real deploy on Godfrey Cloudflare Free account (workers.dev), CPU time vs 10 ms Free cap, logs, rollback drill; ADR-003 decision.",
       "after": [
         "stfohg9"
       ],
