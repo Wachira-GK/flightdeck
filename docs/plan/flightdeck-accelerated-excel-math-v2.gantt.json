@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794345682322,
+  "updated": 1794346240275,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -211,8 +211,8 @@
         "wj2v2mw"
       ],
       "status": "active",
-      "progress": 80,
-      "notes": "pnpm 10 + Turborepo monorepo on GitHub (Wachira-GK/flightdeck, main 1fd3095); pnpm check = secret/bundle scan + lint + typecheck + unit/RLS tests + build, all passing locally; RLS-T01..T24 28/28; mutation check 8/8; E2E 30/30. Remaining: confirm first clean GitHub Actions run (CI clean-run evidence).",
+      "progress": 90,
+      "notes": "pnpm 10 + Turborepo monorepo on GitHub (Wachira-GK/flightdeck, main 1fd3095); pnpm check = secret/bundle scan + lint + typecheck + unit/RLS tests + build, all passing locally; RLS-T01..T24 28/28; mutation check 8/8; E2E 30/30. CI clean-run evidence: GitHub Actions quality run #4 (0dc0f36) green, actions upgraded to checkout v7 / setup-node v7 / pnpm action-setup v6. Remaining: human review.",
       "after": [
         "0lg30u3"
       ],
