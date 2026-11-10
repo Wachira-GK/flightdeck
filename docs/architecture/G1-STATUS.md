@@ -34,6 +34,6 @@ Supporting: threat model v0.1, ASVS L2 map, privacy map, ADR-002 (browser writes
 
 ## Open decisions (Project Owner)
 1. Approve Gantt v2 re-baseline (G1 24 Nov, G2 7 Dec, G3 8 Jan, G4 8 Feb, G5 9 Mar).
-2. ADR-002 browser writes (hybrid proposed) and ADR-003 hosting.
+2. ADR-002 browser writes (hybrid proposed). ADR-003 hosting (Workers Paid recommended): HOLD until the 21–23 Nov review (Godfrey, 11 Nov).
 3. Retention periods (privacy map §4).
 4. Excel formula/grid library (after G2 spike); domain/brand availability.
