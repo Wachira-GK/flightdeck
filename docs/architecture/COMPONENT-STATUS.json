@@ -1,0 +1,10 @@
+{
+  "milestone": "G1 Architecture Foundation",
+  "components": [
+    {"id":"FD-S01","role":"Security Architect","status":"in-progress","dependencies":["G0"],"acceptance":"Threat model, ASVS controls, privacy map, RLS test plan"},
+    {"id":"FD-D01","role":"Data Architect","status":"in-progress","dependencies":["G0"],"acceptance":"ERD, migrations, seeds, data dictionary, grants and RLS matrix"},
+    {"id":"FD-U01","role":"UX / Brand Architect","status":"in-progress","dependencies":["G0"],"acceptance":"Tokens, Cockpit and lesson prototype with accessibility review"},
+    {"id":"FD-Q01","role":"Quality Engineer","status":"in-progress","dependencies":["G0"],"acceptance":"Monorepo, CI, unit/RLS/E2E harness and architecture checks"},
+    {"id":"FD-O01","role":"DevOps / Operations","status":"not-started","dependencies":["FD-Q01"],"acceptance":"Cloudflare compatibility evidence or Vercel fallback record"}
+  ]
+}
