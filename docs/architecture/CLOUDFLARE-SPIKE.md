@@ -137,3 +137,15 @@ Account: Godfrey's personal Cloudflare Free account (logged in with `wrangler lo
 
 **Verdict:** compatibility PASS. The prototype runs on Workers with SSR, route handlers, assets, logs and rollback.
 **CPU risk confirmed:** mock-data SSR already uses 6–11 ms, i.e. at the Free plan's 10 ms cap. Real pages (Supabase queries, auth) will cost more. → Production must run on **Workers Paid** (as approved at G0: "Cloudflare Workers Paid"); Free is suitable only for this preview. Vercel fallback not triggered.
+
+## Re-measure after G2 release — 2026-11-11 (version `23c5cc01`, commit `635b6b3`)
+
+Bundle grew to 5,746 KiB / gzip 1,227 KiB (startup 13 ms). Warm CPU per request (`wrangler tail`, 8 samples each, after warm-up):
+
+| Route | CPU ms |
+|---|---|
+| `/api/health` | 3–34 |
+| `/cockpit` | 7–17 |
+| `/missions/descriptive-stats-101?step=simulation` (server-side KaTeX + explorer) | 18–62 (one 246) |
+
+All outcomes `ok` (Cloudflare did not kill requests), but the Free 10 ms cap is now exceeded on most page renders. **Conclusion for ADR-003 (23 Nov):** Workers Free is not viable for real pages; Workers Paid (30 s default CPU, ~$5/month at expected volume) is required for G2 testing with real data and for production. Optional optimisations, not pursued now because per-learner pages will be dynamic anyway: static generation of mission content, caching KaTeX output at build time.

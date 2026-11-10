@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794347165461,
+  "updated": 1794354155838,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -304,9 +304,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "todo",
+      "status": "blocked",
       "progress": 0,
-      "notes": "Begins before G1 only against agreed interfaces; merge to main is gated by G1.",
+      "notes": "PAUSED 11 Nov by Godfrey: Supabase Auth work waits for the Supabase free account/project details (calendar review item 1, 12 Nov). Cockpit shell itself exists (G1 prototype).",
       "after": [
         "stfohg9",
         "0wu49hq",
@@ -327,9 +327,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "One Excel mission and one Math concept path seeded for testing.",
+      "status": "active",
+      "progress": 30,
+      "notes": "Mission content files for EX-101 and MA-101 (learner-safe JSON + server-only keys) and mock catalogue. Remaining: seed into the database and version via course_versions - PAUSED until Godfrey provides the Supabase project.",
       "after": [
         "0wu49hq",
         "ldzekm7"
@@ -349,9 +349,9 @@
       "resIds": [
         "me810s7"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "Grid adapter, workbook state, formula evaluation and deterministic exercise fixtures. Supported formula subset explicitly documented.",
+      "status": "active",
+      "progress": 85,
+      "notes": "Built 11 Nov (commit 635b6b3): own lexer/parser/evaluator (SUM, AVERAGE, MIN, MAX, COUNT, IF allow-list; no eval), dependency graph with incremental recalculation and cycle detection, limits 100x30 / 500 cells / AST depth 30 / 5000 edges, deterministic server-side validateSubmission with hidden tests; 221 tests; 500-cell recalc 10-30 ms. Accessible ExcelGrid in a Web Worker with 500 ms watchdog. 3 exercises with separate answer keys. Open decisions: XLOOKUP in v1; formula library (custom recommended). Remaining: human review; server grading endpoint needs Supabase.",
       "after": [
         "0wu49hq",
         "stfohg9"
@@ -371,9 +371,9 @@
       "resIds": [
         "me810s7"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "KaTeX-based notation plus one accessible interactive statistics/mathematics visual.",
+      "status": "active",
+      "progress": 85,
+      "notes": "Built 11 Nov (commit 635b6b3): packages/math statistics + numeric grader with worked steps (134 tests); KaTeX renderer (trust off, size limits); StatsExplorer (slider, data-table alternative, live region), NumericQuestion; MA-101 descriptive-statistics mission. Remaining: screen-reader review of MathML; teaching choices sign-off.",
       "after": [
         "0wu49hq",
         "stfohg9"
