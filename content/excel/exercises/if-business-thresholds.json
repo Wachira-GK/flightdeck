@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "if-business-thresholds",
+  "version": 1,
+  "title": "Stock reorder flags with IF",
+  "objective": "Use IF with a comparison to flag a business threshold.",
+  "instructions": "In D2:D5, show \"Reorder\" when the stock on hand is at or below the reorder point, otherwise show \"OK\".",
+  "grid": { "rows": 5, "cols": 4 },
+  "starter": {
+    "A1": "Item",
+    "B1": "On hand",
+    "C1": "Reorder point",
+    "D1": "Action",
+    "A2": "Sneakers",
+    "B2": "40",
+    "C2": "25",
+    "A3": "Sandals",
+    "B3": "12",
+    "C3": "20",
+    "A4": "Boots",
+    "B4": "30",
+    "C4": "30",
+    "A5": "School shoes",
+    "B5": "8",
+    "C5": "15"
+  },
+  "editableCells": ["D2", "D3", "D4", "D5"],
+  "allowedFunctions": ["IF"],
+  "hints": [
+    "IF has three parts: =IF(condition, value_if_true, value_if_false).",
+    "\"At or below\" is the comparison <=.",
+    "Text results need double quotes, for example \"Reorder\"."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

@@ -1,0 +1,8 @@
+{
+  "extends": "@flightdeck/config/tsconfig/library.json",
+  "compilerOptions": {
+    // @types/node is not a dependency of this package; it is pure and has no Node I/O.
+    "types": []
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

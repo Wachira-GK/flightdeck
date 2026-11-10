@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "descriptive-stats-101",
+  "items": [
+    {
+      "id": "a1-mean-store-b",
+      "type": "numeric",
+      "expected": 105.2,
+      "tolerance": { "kind": "absolute", "value": 0.05 },
+      "explain": { "statistic": "mean", "datasetId": "store-b-weekly-pairs", "decimals": 2 }
+    },
+    {
+      "id": "a2-median-store-b",
+      "type": "numeric",
+      "expected": 90,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "explain": { "statistic": "median", "datasetId": "store-b-weekly-pairs", "decimals": 1 }
+    },
+    {
+      "id": "a3-sd-store-b",
+      "type": "numeric",
+      "expected": 50.86,
+      "tolerance": { "kind": "absolute", "value": 0.01 },
+      "explain": { "statistic": "sampleStdDev", "datasetId": "store-b-weekly-pairs", "decimals": 2 }
+    },
+    {
+      "id": "a4-typical-week",
+      "type": "single-choice",
+      "correctOptionId": "median",
+      "rationale": "The median ignores how extreme the bulk-order week is, so it reflects a normal week. The mean is pulled up by week 5, and range and standard deviation describe spread, not a typical value."
+    }
+  ]
+}

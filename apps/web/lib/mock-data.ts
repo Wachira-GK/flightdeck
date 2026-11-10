@@ -77,6 +77,16 @@ export const missions: Mission[] = [
     completedSteps: ["briefing"],
     currentStep: "training",
   },
+  {
+    slug: "descriptive-stats-101",
+    trackId: "mathlab",
+    code: "MA-101",
+    title: "Mean, median and spread",
+    summary: "Describe a store's weekly sales and see why one big week moves the mean but not the median.",
+    estimatedMinutes: 15,
+    completedSteps: [],
+    currentStep: "briefing",
+  },
 ];
 
 export const recentActivity: Activity[] = [

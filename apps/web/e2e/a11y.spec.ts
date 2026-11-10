@@ -1,7 +1,15 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-const routes = ["/", "/cockpit", "/missions/excel-sum-101", "/missions/excel-sum-101?step=simulation"];
+const routes = [
+  "/",
+  "/cockpit",
+  "/missions/excel-sum-101",
+  "/missions/excel-sum-101?step=simulation",
+  "/missions/descriptive-stats-101?step=training",
+  "/missions/descriptive-stats-101?step=simulation",
+  "/missions/descriptive-stats-101?step=assessment",
+];
 
 async function axe(page: Page) {
   return new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
@@ -59,7 +67,8 @@ test("step rail is keyboard operable and marks the current step", async ({ page 
   await expect(page).toHaveURL(/step=simulation/);
   await expect(rail.getByRole("link", { name: /Simulation/ })).toHaveAttribute("aria-current", "step");
   await expect(page.getByRole("heading", { level: 2, name: "Simulation" })).toBeVisible();
-  await expect(page.getByRole("table")).toBeVisible();
+  // The Simulation step now hosts the interactive Excel grid (role=grid, not the old static table).
+  await expect(page.getByRole("grid")).toBeVisible();
 });
 
 test("tab order on the mission page follows reading order", async ({ page }) => {
@@ -85,9 +94,9 @@ test("health route handler returns JSON", async ({ request }) => {
 });
 
 test("unknown mission renders not-found", async ({ page }) => {
-  // With loading.tsx streaming, Next sends 200 + <meta name="robots" content="noindex"> (soft 404).
+  // No route-level loading.tsx on missions, so notFound() runs before streaming: a real 404.
   const res = await page.goto("/missions/does-not-exist");
-  expect([200, 404]).toContain(res?.status());
+  expect(res?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Off the flight plan");
   await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toBeAttached();
 });
@@ -99,4 +108,30 @@ test("reduced motion collapses token durations", async ({ page }) => {
     getComputedStyle(document.documentElement).getPropertyValue("--fd-duration-base").trim(),
   );
   expect(d).toMatch(/^0m?s$/); // minifier may emit 0s
+});
+
+test("Excel simulation: typing =SUM(B2:B4) in B5 shows 358", async ({ page }) => {
+  await page.goto("/missions/excel-sum-101?step=simulation");
+  const grid = page.getByRole("grid");
+  await expect(grid).toBeVisible();
+  const b5 = grid.locator('[aria-label^="B5"]').first();
+  await b5.click();
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("=SUM(B2:B4)");
+  await page.keyboard.press("Enter");
+  await expect(grid.locator('[aria-label^="B5"]').first()).toContainText("358");
+});
+
+test("Stats explorer: moving the outlier changes the mean but not the median", async ({ page }) => {
+  await page.goto("/missions/descriptive-stats-101?step=simulation");
+  const slider = page.getByRole("slider").first();
+  await expect(slider).toBeVisible();
+  const main = page.locator("main");
+  await expect(main).toContainText("Mean 162.5");
+  await expect(main).toContainText("Median 147");
+  // Push the outlier further up (End = 400): the mean follows, the median does not.
+  await slider.focus();
+  await page.keyboard.press("End");
+  await expect(main).not.toContainText("Mean 162.5");
+  await expect(main).toContainText("Median 147");
 });

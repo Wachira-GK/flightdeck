@@ -20,7 +20,10 @@
     "@flightdeck/ui": "workspace:*",
     "next": "16.4.6",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "@flightdeck/excel-engine": "workspace:*",
+    "@flightdeck/math": "workspace:*",
+    "katex": "^0.16.22"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

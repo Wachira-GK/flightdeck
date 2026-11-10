@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "commission-tier-if-chain",
+  "version": 1,
+  "title": "Commission tiers: a lookup with nested IF",
+  "objective": "Look up a value from a tier table with nested IF and absolute references (the v0 substitute for an approximate-match lookup).",
+  "instructions": "In C2:C5, return each rep's commission rate from the tier table in F1:G4. Use the highest tier whose \"Sales from\" amount the rep has reached. Refer to the table cells (for example $G$3) instead of typing the rates.",
+  "grid": { "rows": 5, "cols": 7 },
+  "starter": {
+    "A1": "Rep",
+    "B1": "Sales",
+    "C1": "Rate",
+    "A2": "Amina",
+    "B2": "42000",
+    "A3": "Brian",
+    "B3": "50000",
+    "A4": "Chao",
+    "B4": "87500",
+    "A5": "Dalia",
+    "B5": "125000",
+    "F1": "Sales from",
+    "G1": "Rate",
+    "F2": "0",
+    "G2": "2%",
+    "F3": "50000",
+    "G3": "4%",
+    "F4": "100000",
+    "G4": "6%"
+  },
+  "editableCells": ["C2", "C3", "C4", "C5"],
+  "allowedFunctions": ["IF"],
+  "hints": [
+    "Check the highest tier first: =IF(B2>=$F$4, $G$4, ...).",
+    "Put a second IF in the value_if_false part for the middle tier, and use $G$2 as the last fallback.",
+    "The $ signs keep the table references fixed when you reuse the formula on the next row; B2 changes to B3."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

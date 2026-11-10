@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "slug": "descriptive-stats-101",
+  "trackId": "mathlab",
+  "code": "MA-101",
+  "title": "Typical week: mean, median and spread",
+  "summary": "Describe a store's weekly sales with mean, median, range and standard deviation, and see why one big week can mislead.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "datasets": [
+    {
+      "id": "store-a-weekly-pairs",
+      "title": "Store A: pairs sold per week, weeks 1 to 10",
+      "unit": "pairs",
+      "labels": ["Wk 1", "Wk 2", "Wk 3", "Wk 4", "Wk 5", "Wk 6", "Wk 7", "Wk 8", "Wk 9", "Wk 10"],
+      "values": [132, 148, 141, 155, 139, 150, 146, 158, 144, 312],
+      "adjustable": { "index": 9, "min": 100, "max": 400, "step": 1, "label": "Week 10 (school reopening)" },
+      "spread": "sample",
+      "decimals": 1
+    },
+    {
+      "id": "store-b-weekly-pairs",
+      "title": "Store B: pairs sold per week, weeks 1 to 9",
+      "unit": "pairs",
+      "labels": ["Wk 1", "Wk 2", "Wk 3", "Wk 4", "Wk 5", "Wk 6", "Wk 7", "Wk 8", "Wk 9"],
+      "values": [86, 94, 78, 91, 240, 88, 83, 97, 90],
+      "adjustable": { "index": 4, "min": 50, "max": 300, "step": 1, "label": "Week 5 (bulk school order)" },
+      "spread": "sample",
+      "decimals": 1
+    }
+  ],
+  "practice": [
+    {
+      "id": "practice-mean-store-a",
+      "prompt": "Calculate the mean number of pairs Store A sold per week. Round to 1 decimal place.",
+      "datasetId": "store-a-weekly-pairs",
+      "statistic": "mean",
+      "decimals": 1,
+      "tolerance": { "kind": "absolute", "value": 0.05 }
+    },
+    {
+      "id": "practice-median-store-a",
+      "prompt": "Now find the median pairs sold per week for Store A.",
+      "datasetId": "store-a-weekly-pairs",
+      "statistic": "median",
+      "decimals": 1,
+      "tolerance": { "kind": "absolute", "value": 0.05 }
+    }
+  ],
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The regional merchandiser wants to know what a typical week looks like at Store A before setting next term's replenishment. Ten weeks of footwear sales are on the table, and one of them was school reopening week."
+        },
+        {
+          "type": "paragraph",
+          "text": "Analysts summarise data like this every day. A single 'average' can hide a spike, so you will learn which summary to trust and how to show how much the weeks vary."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: describe weekly sales with mean, median, range and standard deviation.",
+            "Why it matters: replenishment, staffing and targets are set from a 'typical' week, so a misleading average costs stock and money.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "We write the n values as x with a subscript: x1, x2, up to xn. The Greek letter sigma (a big E shape) means 'add them all up'."
+        },
+        {
+          "type": "definition",
+          "term": "Mean",
+          "tex": "\\bar{x} = \\frac{\\sum_{i=1}^{n} x_i}{n}",
+          "text": "Add every value and divide by how many values there are. Every value pulls on the mean, so one extreme week moves it.",
+          "excel": "AVERAGE"
+        },
+        {
+          "type": "definition",
+          "term": "Median",
+          "tex": "\\tilde{x} = \\begin{cases} x_{((n+1)/2)} & n \\text{ odd} \\\\ \\dfrac{x_{(n/2)} + x_{(n/2+1)}}{2} & n \\text{ even} \\end{cases}",
+          "text": "Sort the values. The median is the middle one, or the average of the two middle ones when n is even. x with a bracketed subscript means the value at that position after sorting.",
+          "excel": "MEDIAN"
+        },
+        {
+          "type": "definition",
+          "term": "Range",
+          "tex": "\\text{range} = \\max - \\min",
+          "text": "Largest value minus smallest value. Quick to compute, but it depends on only two weeks.",
+          "excel": "MAX - MIN"
+        },
+        {
+          "type": "definition",
+          "term": "Sample standard deviation",
+          "tex": "s = \\sqrt{\\frac{\\sum_{i=1}^{n} (x_i - \\bar{x})^2}{n - 1}}",
+          "text": "The typical distance of a value from the mean. Square each distance from the mean, add them, divide by n - 1 (because ten weeks are a sample of all weeks), then take the square root.",
+          "excel": "STDEV.S"
+        },
+        {
+          "type": "math",
+          "tex": "\\sigma = \\sqrt{\\frac{\\sum_{i=1}^{n} (x_i - \\mu)^2}{n}}",
+          "displayMode": true,
+          "alt": "Population standard deviation sigma equals the square root of the sum of squared distances from the population mean mu, divided by n. Use it (Excel STDEV.P) only when the data is the whole population."
+        },
+        { "type": "practice-numeric", "questionId": "practice-mean-store-a" }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Move Week 10 with the slider. Watch the mean line follow it while the median line barely moves. Then bring Week 10 down to a normal week of about 150 pairs and compare."
+        },
+        { "type": "stats-explorer", "datasetId": "store-a-weekly-pairs", "label": "Store A weekly sales explorer" },
+        { "type": "practice-numeric", "questionId": "practice-median-store-a" }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Store B had a bulk school order in week 5. Use Store B's data for these questions. Type numbers with a dot for decimals, for example 12.5."
+        },
+        { "type": "assessment-items", "itemIds": ["a1-mean-store-b", "a2-median-store-b", "a3-sd-store-b", "a4-typical-week"] }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "The mean uses every value, so one extreme week drags it towards the outlier.",
+            "The median depends only on the middle of the sorted data, so it resists outliers. Use it to describe a 'typical' week when there are spikes.",
+            "Range and standard deviation describe spread. Both grow sharply when an outlier is present.",
+            "In Excel: AVERAGE, MEDIAN, MAX - MIN, STDEV.S for a sample, STDEV.P for a whole population."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next mission: quartiles and the interquartile range, a spread measure that also resists outliers."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "a1-mean-store-b",
+        "type": "numeric",
+        "prompt": "What is the mean number of pairs Store B sold per week? Round to 1 decimal place.",
+        "datasetId": "store-b-weekly-pairs",
+        "answerHint": "1 decimal place"
+      },
+      {
+        "id": "a2-median-store-b",
+        "type": "numeric",
+        "prompt": "What is the median number of pairs Store B sold per week?",
+        "datasetId": "store-b-weekly-pairs",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "a3-sd-store-b",
+        "type": "numeric",
+        "prompt": "What is the sample standard deviation (Excel STDEV.S) of Store B's weekly pairs? Round to 2 decimal places.",
+        "datasetId": "store-b-weekly-pairs",
+        "answerHint": "2 decimal places"
+      },
+      {
+        "id": "a4-typical-week",
+        "type": "single-choice",
+        "prompt": "Store B's week 5 includes a one-off bulk order. Which single figure best describes a typical week for replenishment planning?",
+        "options": [
+          { "id": "mean", "label": "The mean" },
+          { "id": "median", "label": "The median" },
+          { "id": "range", "label": "The range" },
+          { "id": "sd", "label": "The standard deviation" }
+        ]
+      }
+    ]
+  }
+}

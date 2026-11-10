@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "sum-relative-refs",
+  "version": 1,
+  "title": "Quarter totals with SUM",
+  "objective": "Total a column with SUM and reuse the same formula pattern for the next column (relative references).",
+  "instructions": "In B5, total North's sales for January to March. Then total South's sales in C5 with the same pattern, shifted one column.",
+  "grid": { "rows": 5, "cols": 3 },
+  "starter": {
+    "A1": "Month",
+    "B1": "North (K)",
+    "C1": "South (K)",
+    "A2": "Jan",
+    "B2": "120",
+    "C2": "80",
+    "A3": "Feb",
+    "B3": "95",
+    "C3": "110",
+    "A4": "Mar",
+    "B4": "143",
+    "C4": "97",
+    "A5": "Total"
+  },
+  "editableCells": ["B5", "C5"],
+  "allowedFunctions": ["SUM"],
+  "hints": [
+    "A formula starts with =. SUM adds every number in a range.",
+    "A range uses a colon: B2:B4 means B2 through B4.",
+    "Relative references shift with the formula: if B5 refers to B2, the same pattern in C5 refers to C2."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

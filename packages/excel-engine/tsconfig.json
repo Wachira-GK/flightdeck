@@ -1,0 +1,8 @@
+{
+  "extends": "@flightdeck/config/tsconfig/library.json",
+  "compilerOptions": {
+    // The engine is pure computation: no Node or browser I/O typings are needed (or wanted).
+    "types": []
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}
