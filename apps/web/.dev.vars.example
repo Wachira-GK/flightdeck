@@ -1,0 +1,2 @@
+# Local Workers dev variables (copy to .dev.vars, which is git-ignored). Placeholders only.
+NEXTJS_ENV=development

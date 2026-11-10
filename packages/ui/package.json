@@ -1,0 +1,36 @@
+{
+  "name": "@flightdeck/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "FlightDeck design tokens and shadcn-pattern UI primitives.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens/tokens.css",
+    "./contrast": "./src/tokens/contrast.ts"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@flightdeck/config": "workspace:*",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.1",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0"
+  }
+}

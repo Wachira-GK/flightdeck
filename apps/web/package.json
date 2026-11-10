@@ -1,0 +1,42 @@
+{
+  "name": "@flightdeck/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3000",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "cf:build": "node scripts/cf.mjs build",
+    "cf:preview": "node scripts/cf.mjs preview --ip 127.0.0.1 --port 8787",
+    "cf:dryrun": "wrangler deploy --dry-run --outdir .wrangler/dryrun",
+    "cf:deploy": "node scripts/cf.mjs build && node scripts/cf.mjs deploy"
+  },
+  "dependencies": {
+    "@flightdeck/ui": "workspace:*",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@flightdeck/config": "workspace:*",
+    "@opennextjs/cloudflare": "^1.20.16",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0",
+    "wrangler": "^4.160.0"
+  }
+}

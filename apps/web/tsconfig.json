@@ -1,0 +1,11 @@
+{
+  "extends": "@flightdeck/config/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", ".open-next", ".wrangler", ".next/dev"]
+}

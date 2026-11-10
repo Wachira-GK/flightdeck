@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@import "@flightdeck/ui/tokens.css";
+
+/* Scan shared UI primitives for class names. */
+@source "../../../packages/ui/src";
+
+/* Map FlightDeck tokens onto Tailwind utilities (bg-surface, text-fg-muted, rounded-lg, ...). */
+@theme inline {
+  --color-bg: var(--fd-bg);
+  --color-surface: var(--fd-surface);
+  --color-surface-2: var(--fd-surface-2);
+  --color-fg: var(--fd-fg);
+  --color-fg-muted: var(--fd-fg-muted);
+  --color-border: var(--fd-border);
+  --color-border-strong: var(--fd-border-strong);
+  --color-accent: var(--fd-accent);
+  --color-accent-fg: var(--fd-accent-fg);
+  --color-accent-subtle: var(--fd-accent-subtle);
+  --color-focus: var(--fd-focus);
+  --color-success: var(--fd-success);
+  --color-warning: var(--fd-warning);
+  --color-danger: var(--fd-danger);
+  --color-track: var(--fd-track);
+
+  --font-sans: var(--fd-font-sans);
+  --font-mono: var(--fd-font-mono);
+
+  --text-xs: var(--fd-text-xs);
+  --text-sm: var(--fd-text-sm);
+  --text-base: var(--fd-text-base);
+  --text-lg: var(--fd-text-lg);
+  --text-xl: var(--fd-text-xl);
+  --text-2xl: var(--fd-text-2xl);
+  --text-3xl: var(--fd-text-3xl);
+  --text-4xl: var(--fd-text-4xl);
+  --text-5xl: var(--fd-text-5xl);
+
+  --radius-sm: var(--fd-radius-sm);
+  --radius-md: var(--fd-radius-md);
+  --radius-lg: var(--fd-radius-lg);
+  --radius-xl: var(--fd-radius-xl);
+
+  --ease-standard: var(--fd-ease-standard);
+}
+
+@layer base {
+  html {
+    background-color: var(--fd-bg);
+    color: var(--fd-fg);
+    font-family: var(--fd-font-sans);
+    line-height: var(--fd-leading-normal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--fd-bg);
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: var(--fd-leading-tight);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  /* One visible, high-contrast focus indicator for every focusable element (WCAG 2.4.7 / 2.4.13). */
+  :focus-visible {
+    outline: var(--fd-focus-width) solid var(--fd-focus);
+    outline-offset: var(--fd-focus-offset);
+    border-radius: var(--fd-radius-sm);
+  }
+
+  /* Programmatic focus targets (e.g. <main tabindex=-1> after skip link) should not flash a ring. */
+  [tabindex="-1"]:focus:not(:focus-visible) {
+    outline: none;
+  }
+}

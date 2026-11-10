@@ -1,0 +1,24 @@
+// Cloudflare Workers config for the OpenNext adapter (hosting spike, ADR-003).
+// No account IDs or secrets here: `wrangler login` + `wrangler deploy` resolve the account at deploy time.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "flightdeck-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "flightdeck-web"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "workers_dev": true,
+  "preview_urls": true
+}
