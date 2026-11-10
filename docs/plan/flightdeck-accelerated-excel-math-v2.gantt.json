@@ -1,0 +1,734 @@
+{
+  "id": "fdv2q3k",
+  "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
+  "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
+  "created": 1794344591318,
+  "updated": 1794344591318,
+  "mode": "month",
+  "view": {
+    "arrows": true,
+    "grid": false
+  },
+  "resources": [
+    {
+      "id": "flkz323",
+      "name": "Project Owner / Product Lead"
+    },
+    {
+      "id": "3qpmx5n",
+      "name": "Solution Architect"
+    },
+    {
+      "id": "nyff28t",
+      "name": "UX / Brand Architect"
+    },
+    {
+      "id": "y9wy91l",
+      "name": "Security Architect"
+    },
+    {
+      "id": "vlyx9nq",
+      "name": "Data Architect"
+    },
+    {
+      "id": "c7dz1l8",
+      "name": "Full-stack Engineer"
+    },
+    {
+      "id": "me810s7",
+      "name": "Excel/Math Simulation Engineer"
+    },
+    {
+      "id": "wj2v2mw",
+      "name": "Quality Engineer"
+    },
+    {
+      "id": "2wd0l6t",
+      "name": "DevOps / Operations"
+    },
+    {
+      "id": "n79jg0c",
+      "name": "Learning Experience Architect"
+    },
+    {
+      "id": "au8kb0a",
+      "name": "Commercial Reviewer"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "6tnxxg0",
+      "type": "task",
+      "name": "H01 Product direction, audience and aerospace theme approved",
+      "start": 1792368000000,
+      "end": 1792540800000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "FlightDeck, Cockpit and aerospace design direction approved in project conversation.",
+      "after": [],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "op61nzs",
+      "type": "task",
+      "name": "H02 System Architecture v1.0 prepared",
+      "start": 1792627200000,
+      "end": 1792886400000,
+      "resIds": [
+        "3qpmx5n"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "Modular monolith, web-first, PostgreSQL/RLS, provider-neutral adapters and future mobile contracts documented.",
+      "after": [
+        "6tnxxg0"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "3qpmx5n"
+    },
+    {
+      "id": "7trldjh",
+      "type": "task",
+      "name": "H03 Technology, commercial and budget recommendations approved",
+      "start": 1792972800000,
+      "end": 1792972800000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "A01-A14 approved. Amendment: Excel and Mathematics first, SQL second; Excel simulator accelerated.",
+      "after": [
+        "op61nzs"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "0lg30u3",
+      "type": "milestone",
+      "name": "G0 Architecture and commercial approvals complete",
+      "start": 1792972800000,
+      "end": 1792972800000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "Historical approval gate complete. Hosting remains conditionally approved subject to compatibility spike.",
+      "after": [
+        "7trldjh"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    },
+    {
+      "id": "v471noq",
+      "type": "task",
+      "name": "FD-S01 Threat model, privacy map and RLS control matrix",
+      "start": 1793059200000,
+      "end": 1795132800000,
+      "resIds": [
+        "y9wy91l"
+      ],
+      "status": "active",
+      "progress": 70,
+      "notes": "Threat model v0.1 (STRIDE, TB1-TB7, CT1-CT8), OWASP ASVS 4.0.3 L2 control map, privacy map (Kenya DPA 2019), role/capability matrix (RBAC) and grants + RLS matrix committed (repo docs/security). RLS-T01..T24 pass; mutation check 8/8 regressions caught. Remaining: Security Architect review; verify app_definer + auth schema grants on a Supabase staging project; ADR-002 decision; retention periods.",
+      "after": [
+        "0lg30u3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "y9wy91l"
+    },
+    {
+      "id": "ldzekm7",
+      "type": "task",
+      "name": "FD-D01 ERD, migrations, seeds and RLS policies",
+      "start": 1793059200000,
+      "end": 1795132800000,
+      "resIds": [
+        "vlyx9nq"
+      ],
+      "status": "active",
+      "progress": 85,
+      "notes": "Physical ERD (Mermaid, generated from schema), data dictionary (27 tables / 182 columns), baseline migration, grants + RLS migration (32 policies, column-level grants, SECURITY DEFINER helpers owned by NOLOGIN app_definer, search_path empty), server-only invoker functions (publish, simulator verdict). Evidence: packages/database, docs/data. Remaining: seeds for G2 catalogue; Data Architect review; apply to Supabase staging.",
+      "after": [
+        "0lg30u3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "vlyx9nq"
+    },
+    {
+      "id": "0wu49hq",
+      "type": "task",
+      "name": "FD-U01 Design tokens, Cockpit and lesson-shell prototype",
+      "start": 1793059200000,
+      "end": 1795132800000,
+      "resIds": [
+        "nyff28t"
+      ],
+      "status": "active",
+      "progress": 40,
+      "notes": "Design tokens (light/dark, WCAG 2.2 AA contrast test), Cockpit and lesson-shell prototype (Next.js App Router) with keyboard path, focus, landmarks, loading/error states. Remaining: human accessibility review incl. screen reader.",
+      "after": [
+        "0lg30u3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "nyff28t"
+    },
+    {
+      "id": "stfohg9",
+      "type": "task",
+      "name": "FD-Q01 Monorepo, CI, Playwright and architecture checks",
+      "start": 1793059200000,
+      "end": 1795132800000,
+      "resIds": [
+        "wj2v2mw"
+      ],
+      "status": "active",
+      "progress": 50,
+      "notes": "pnpm 10 + Turborepo monorepo, CI workflow (GitHub Actions, read-only token), RLS harness on embedded PostgreSQL 17 (PGlite, no Docker/admin), secret + client-bundle scan in pnpm check. Remaining: first push to GitHub and a clean CI run (CI clean-run evidence); Playwright E2E smoke.",
+      "after": [
+        "0lg30u3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "wj2v2mw"
+    },
+    {
+      "id": "2njuaj6",
+      "type": "task",
+      "name": "FD-O01 Cloudflare compatibility spike and preview deployment",
+      "start": 1793232000000,
+      "end": 1795219200000,
+      "resIds": [
+        "2wd0l6t"
+      ],
+      "status": "active",
+      "progress": 30,
+      "notes": "Cloudflare compatibility spike: OpenNext (@opennextjs/cloudflare) build, wrangler dry-run bundle size vs Workers Free 3 MiB / Paid 10 MiB, local workerd SSR check. Remaining: real preview deploy on Godfrey's Cloudflare Free account (workers.dev), logs, rollback; ADR-003 decision (Cloudflare vs Vercel fallback).",
+      "after": [
+        "stfohg9"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "2wd0l6t"
+    },
+    {
+      "id": "fdg1rev",
+      "type": "task",
+      "name": "FD-G1R Gate-1 evidence review (accountable human review)",
+      "start": 1795219200000,
+      "end": 1795392000000,
+      "resIds": [
+        "flkz323",
+        "y9wy91l"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Review every P0 against the G1 approval rule: all P0 evidence, no untreated Critical/High risk, RLS-T01..T24 pass, clean CI, Cloudflare spike pass OR Vercel fallback ADR, keyboard/contrast review, no P0 waiver. Decision: Approve | Approve-with-P1-conditions | Reject. Checklist: docs/architecture/G1-STATUS.md.",
+      "after": [
+        "v471noq",
+        "ldzekm7",
+        "0wu49hq",
+        "stfohg9",
+        "2njuaj6"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "g8v6rh6",
+      "type": "milestone",
+      "name": "G1 Architecture foundation accepted",
+      "start": 1795478400000,
+      "end": 1795478400000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Re-baselined from 10 Nov 2026 (v1). Review threat model, ERD/RLS, design system, CI and hosting spike evidence.",
+      "after": [
+        "v471noq",
+        "ldzekm7",
+        "0wu49hq",
+        "stfohg9",
+        "2njuaj6",
+        "fdg1rev"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    },
+    {
+      "id": "uru3fqw",
+      "type": "task",
+      "name": "FD-B01 Authentication, roles and Cockpit shell",
+      "start": 1795046400000,
+      "end": 1796169600000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Begins before G1 only against agreed interfaces; merge to main is gated by G1.",
+      "after": [
+        "stfohg9",
+        "0wu49hq",
+        "ldzekm7"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "cujmc9m",
+      "type": "task",
+      "name": "FD-C01 Versioned Excel/Math catalogue and lesson blocks",
+      "start": 1795046400000,
+      "end": 1796342400000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "One Excel mission and one Math concept path seeded for testing.",
+      "after": [
+        "0wu49hq",
+        "ldzekm7"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "gmkl1hb",
+      "type": "task",
+      "name": "FD-XLS01 Excel simulator technical spike and formula engine",
+      "start": 1795392000000,
+      "end": 1796342400000,
+      "resIds": [
+        "me810s7"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Grid adapter, workbook state, formula evaluation and deterministic exercise fixtures. Supported formula subset explicitly documented.",
+      "after": [
+        "0wu49hq",
+        "stfohg9"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "me810s7"
+    },
+    {
+      "id": "znxf82u",
+      "type": "task",
+      "name": "FD-MATH01 Mathematics renderer and interactive visual component",
+      "start": 1795392000000,
+      "end": 1796342400000,
+      "resIds": [
+        "me810s7"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "KaTeX-based notation plus one accessible interactive statistics/mathematics visual.",
+      "after": [
+        "0wu49hq",
+        "stfohg9"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "me810s7"
+    },
+    {
+      "id": "x6v1g97",
+      "type": "milestone",
+      "name": "G2 Platform shell and simulator spike accepted",
+      "start": 1796601600000,
+      "end": 1796601600000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Test sign-in, role isolation, catalogue, Excel grid/formulas and Math visual on preview environment.",
+      "after": [
+        "uru3fqw",
+        "cujmc9m",
+        "gmkl1hb",
+        "znxf82u"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    },
+    {
+      "id": "mrjqnn7",
+      "type": "task",
+      "name": "FD-P01 Enrolment, progress, resume and prerequisites",
+      "start": 1796688000000,
+      "end": 1798761600000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "AI generates state-machine tests and edge cases; deterministic server rules remain authoritative.",
+      "after": [
+        "x6v1g97"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "r7kej32",
+      "type": "task",
+      "name": "FD-XLS02 Excel simulator exercise authoring, grading and progress integration",
+      "start": 1796688000000,
+      "end": 1799107200000,
+      "resIds": [
+        "me810s7"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Create at least three Excel exercises with formula/output validation, reset, hints and progress events.",
+      "after": [
+        "x6v1g97"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "me810s7"
+    },
+    {
+      "id": "u5bdxnu",
+      "type": "task",
+      "name": "FD-MATH02 Mathematics lesson and interactive assessment integration",
+      "start": 1796688000000,
+      "end": 1799107200000,
+      "resIds": [
+        "me810s7"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "One mathematics mission segment with notation, visualisation and deterministic assessment.",
+      "after": [
+        "x6v1g97"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "me810s7"
+    },
+    {
+      "id": "fjnjjg3",
+      "type": "task",
+      "name": "FD-L01 Lesson shell, transcript and lightweight media adapter",
+      "start": 1796688000000,
+      "end": 1798761600000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Use sample/local media initially; Bunny integration can be finalised before launch.",
+      "after": [
+        "x6v1g97"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "i4zeerp",
+      "type": "task",
+      "name": "FD-AST01 Assessment attempts and deterministic grading",
+      "start": 1797206400000,
+      "end": 1799193600000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Assessment versions, answers, grading and attempt history.",
+      "after": [
+        "mrjqnn7"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "y8u4c4h",
+      "type": "milestone",
+      "name": "G3 Excel + Mathematics integrated learning test",
+      "start": 1799366400000,
+      "end": 1799366400000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Test discover -> enrol -> learn -> Excel simulation -> Math interaction -> assessment -> progress. Certificate and payment are not required for this gate.",
+      "after": [
+        "r7kej32",
+        "u5bdxnu",
+        "fjnjjg3",
+        "i4zeerp"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    },
+    {
+      "id": "ge62een",
+      "type": "task",
+      "name": "FD-CERT01 Certificate issue and verification",
+      "start": 1798070400000,
+      "end": 1799971200000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Exactly-once issue, immutable snapshot and privacy-safe verification.",
+      "after": [
+        "i4zeerp"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "w9p717u",
+      "type": "task",
+      "name": "FD-V01 Bunny Stream production adapter",
+      "start": 1798070400000,
+      "end": 1799971200000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Signed delivery, captions and outage behaviour.",
+      "after": [
+        "fjnjjg3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "t4ffxrn",
+      "type": "task",
+      "name": "FD-PAY01 Paystack checkout, webhooks and reconciliation",
+      "start": 1799625600000,
+      "end": 1800403200000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Signed webhooks, idempotency, entitlement and reconciliation export.",
+      "after": [
+        "y8u4c4h"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "6mvsfg3",
+      "type": "task",
+      "name": "FD-OPS02 Monitoring, spend caps, restore and rollback runbooks",
+      "start": 1799625600000,
+      "end": 1800403200000,
+      "resIds": [
+        "2wd0l6t"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Backup restore evidence, alerts, budgets and incident procedures.",
+      "after": [
+        "y8u4c4h"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "2wd0l6t"
+    },
+    {
+      "id": "33qwl0i",
+      "type": "task",
+      "name": "FD-Q02 Security, accessibility, performance and launch E2E",
+      "start": 1800230400000,
+      "end": 1801785600000,
+      "resIds": [
+        "wj2v2mw"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "AI expands regression suite; humans verify keyboard/screen-reader paths and critical security cases.",
+      "after": [
+        "ge62een",
+        "w9p717u",
+        "t4ffxrn",
+        "6mvsfg3"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "wj2v2mw"
+    },
+    {
+      "id": "w23h79c",
+      "type": "milestone",
+      "name": "G4 MVP production launch approval",
+      "start": 1802044800000,
+      "end": 1802044800000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Go/no-go for Excel + Mathematics MVP based on security, accessibility, restore, payment, certificate and content evidence.",
+      "after": [
+        "33qwl0i"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    },
+    {
+      "id": "88hqp9q",
+      "type": "task",
+      "name": "FD-MEASURE01 Four-week activation and learning-outcome measurement",
+      "start": 1802131200000,
+      "end": 1804464000000,
+      "resIds": [
+        "au8kb0a"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Measure activation, exercise success, mission completion, retention and actual unit cost.",
+      "after": [
+        "w23h79c"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "au8kb0a"
+    },
+    {
+      "id": "c0coz7y",
+      "type": "task",
+      "name": "FD-SQL01 CodeVerse architecture and browser SQL spike",
+      "start": 1802649600000,
+      "end": 1804204800000,
+      "resIds": [
+        "3qpmx5n"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Non-production spike during measurement; SQLite/WASM, fixtures, grading and security boundaries.",
+      "after": [
+        "w23h79c"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "3qpmx5n"
+    },
+    {
+      "id": "xos69py",
+      "type": "milestone",
+      "name": "G5 SQL investment and scope decision",
+      "start": 1804550400000,
+      "end": 1804550400000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Approve CodeVerse build using measured Excel/Math usage and SQL spike evidence. Remaining tracks follow later.",
+      "after": [
+        "88hqp9q",
+        "c0coz7y"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": true,
+      "color": "#ff0000",
+      "resId": "flkz323"
+    }
+  ]
+}
