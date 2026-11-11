@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794354155838,
+  "updated": 1794361761342,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -328,8 +328,8 @@
         "c7dz1l8"
       ],
       "status": "active",
-      "progress": 30,
-      "notes": "Mission content files for EX-101 and MA-101 (learner-safe JSON + server-only keys) and mock catalogue. Remaining: seed into the database and version via course_versions - PAUSED until Godfrey provides the Supabase project.",
+      "progress": 70,
+      "notes": "12 Nov: seed generator content->catalogue.sql (3 tracks, 2 courses, 4 missions, 20 steps, keys only in app_private), 15 seed tests with drift check, static /catalogue page live. Remaining: missions.code/estimated_minutes migration; apply seed to Supabase (PAUSED until Godfrey creates the project).",
       "after": [
         "0wu49hq",
         "ldzekm7"
@@ -350,8 +350,8 @@
         "me810s7"
       ],
       "status": "active",
-      "progress": 85,
-      "notes": "Built 11 Nov (commit 635b6b3): own lexer/parser/evaluator (SUM, AVERAGE, MIN, MAX, COUNT, IF allow-list; no eval), dependency graph with incremental recalculation and cycle detection, limits 100x30 / 500 cells / AST depth 30 / 5000 edges, deterministic server-side validateSubmission with hidden tests; 221 tests; 500-cell recalc 10-30 ms. Accessible ExcelGrid in a Web Worker with 500 ms watchdog. 3 exercises with separate answer keys. Open decisions: XLOOKUP in v1; formula library (custom recommended). Remaining: human review; server grading endpoint needs Supabase.",
+      "progress": 95,
+      "notes": "Built 11 Nov (commit 635b6b3): own lexer/parser/evaluator (SUM, AVERAGE, MIN, MAX, COUNT, IF allow-list; no eval), dependency graph with incremental recalculation and cycle detection, limits 100x30 / 500 cells / AST depth 30 / 5000 edges, deterministic server-side validateSubmission with hidden tests; 221 tests; 500-cell recalc 10-30 ms. Accessible ExcelGrid in a Web Worker with 500 ms watchdog. 3 exercises with separate answer keys. Open decisions: XLOOKUP in v1; formula library (custom recommended). Remaining: human review; server grading endpoint needs Supabase. 12 Nov: ADR-004 accepted; XLOOKUP exact-match added (270 tests); server check API; missions EX-101/102/103.",
       "after": [
         "0wu49hq",
         "stfohg9"
@@ -372,8 +372,8 @@
         "me810s7"
       ],
       "status": "active",
-      "progress": 85,
-      "notes": "Built 11 Nov (commit 635b6b3): packages/math statistics + numeric grader with worked steps (134 tests); KaTeX renderer (trust off, size limits); StatsExplorer (slider, data-table alternative, live region), NumericQuestion; MA-101 descriptive-statistics mission. Remaining: screen-reader review of MathML; teaching choices sign-off.",
+      "progress": 95,
+      "notes": "Built 11 Nov (commit 635b6b3): packages/math statistics + numeric grader with worked steps (134 tests); KaTeX renderer (trust off, size limits); StatsExplorer (slider, data-table alternative, live region), NumericQuestion; MA-101 descriptive-statistics mission. Remaining: screen-reader review of MathML; teaching choices sign-off. 12 Nov: ADR-005 accepted; MA-101 assessment graded server-side (solutions only on pass).",
       "after": [
         "0wu49hq",
         "stfohg9"

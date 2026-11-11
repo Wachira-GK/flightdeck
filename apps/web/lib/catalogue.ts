@@ -2,17 +2,27 @@
  * Catalogue data source (FD-C01).
  *
  * Today: `contentCatalogueSource` reads the same files the database seed is generated from
- * (packages/database/seeds/catalogue.config.json + content/<dir>/missions/<slug>.json) with `fs`,
- * at BUILD time only: /catalogue is a static page, so nothing here runs per request on the Worker.
- * Only learner-safe mission files are read; *.key.json / *.keys.json are never opened.
+ * (packages/database/seeds/catalogue.config.json + content/<dir>/missions/<slug>.json) via static JSON
+ * imports bundled at build time. No `fs`: Cloudflare Workers have no filesystem, and OpenNext may
+ * re-render "static" pages on the Worker. Only learner-safe mission files are imported here; never
+ * add a *.key.json / *.keys.json import. When a mission file is added, register it in MISSION_FILES.
  *
  * Later: add a `supabaseCatalogueSource` implementing the same `CatalogueSource` interface with
  * anon-key queries (RLS returns only published rows), map rows to the same types, and switch
  * `catalogueSource` below. Draft tracks are invisible to anon in the database, so that source
  * shows "coming later" tracks from config. See docs/data/CATALOGUE-SEEDING.md.
  */
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import config from "../../../packages/database/seeds/catalogue.config.json";
+import excelIf102 from "../../../content/excel/missions/excel-if-102.json";
+import excelLookup103 from "../../../content/excel/missions/excel-lookup-103.json";
+import excelSum101 from "../../../content/excel/missions/excel-sum-101.json";
+import descriptiveStats101 from "../../../content/math/missions/descriptive-stats-101.json";
+
+/** Learner-safe mission files per content directory (keys are never imported). */
+const MISSION_FILES: Record<string, unknown[]> = {
+  excel: [excelSum101, excelIf102, excelLookup103],
+  math: [descriptiveStats101],
+};
 
 export type CatalogueMission = {
   slug: string;
@@ -60,28 +70,14 @@ type ConfigTrack = {
 type ConfigCourse = { slug: string; track: string; title: string; summary: string; isFree: boolean; version: number };
 type CatalogueConfig = { tracks: ConfigTrack[]; courses: ConfigCourse[] };
 
-function findRepoRoot(start = process.cwd()): string {
-  let dir = start;
-  while (!existsSync(join(dir, "pnpm-workspace.yaml"))) {
-    const parent = dirname(dir);
-    if (parent === dir) throw new Error("catalogue: repository root (pnpm-workspace.yaml) not found");
-    dir = parent;
-  }
-  return dir;
-}
-
-const isKeyFile = (f: string) => f.endsWith(".key.json") || f.endsWith(".keys.json");
-
-function readMissions(root: string, track: ConfigTrack, course: ConfigCourse | undefined): CatalogueMission[] {
+function readMissions(track: ConfigTrack, course: ConfigCourse | undefined): CatalogueMission[] {
   if (!track.contentDir || !course || track.status !== "published") return [];
-  const dir = join(root, "content", track.contentDir, "missions");
-  if (!existsSync(dir)) return [];
   const missions: Omit<CatalogueMission, "position">[] = [];
-  for (const file of readdirSync(dir).filter((f) => f.endsWith(".json") && !isKeyFile(f)).sort()) {
+  for (const raw of MISSION_FILES[track.contentDir] ?? []) {
     try {
-      const m = JSON.parse(readFileSync(join(dir, file), "utf8")) as Record<string, unknown>;
+      const m = raw as Record<string, unknown>;
       const slug = typeof m.slug === "string" ? m.slug : "";
-      if (`${slug}.json` !== file || typeof m.code !== "string" || typeof m.title !== "string") continue;
+      if (!slug || typeof m.code !== "string" || typeof m.title !== "string") continue;
       if (typeof m.trackId === "string" && !track.contentTrackIds.includes(m.trackId)) continue;
       missions.push({
         slug,
@@ -102,14 +98,11 @@ function readMissions(root: string, track: ConfigTrack, course: ConfigCourse | u
 
 export const contentCatalogueSource: CatalogueSource = {
   async listTracks() {
-    const root = findRepoRoot();
-    const config = JSON.parse(
-      readFileSync(join(root, "packages", "database", "seeds", "catalogue.config.json"), "utf8"),
-    ) as CatalogueConfig;
-    return [...config.tracks]
+    const cfg = config as unknown as CatalogueConfig;
+    return [...cfg.tracks]
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map((t): CatalogueTrack => {
-        const courses = t.status === "published" ? config.courses.filter((c) => c.track === t.slug) : [];
+        const courses = t.status === "published" ? cfg.courses.filter((c) => c.track === t.slug) : [];
         return {
           slug: t.slug,
           title: t.title,
@@ -118,7 +111,7 @@ export const contentCatalogueSource: CatalogueSource = {
           status: t.status === "published" ? "available" : "locked",
           ...(t.status === "published" ? {} : { lockedReason: t.lockedReason ?? "Coming later" }),
           courses: courses.map(({ slug, title, summary, isFree, version }) => ({ slug, title, summary, isFree, version })),
-          missions: courses.flatMap((c) => readMissions(root, t, c)),
+          missions: courses.flatMap((c) => readMissions(t, c)),
         };
       });
   },
