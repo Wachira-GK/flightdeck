@@ -1,3 +1,4 @@
+import { ExcelAssessmentForm } from "./assessment-form";
 import type { ExcelMissionContent } from "./content";
 import { ExcelGrid } from "./excel-grid";
 import type { ExcelMissionBlock, ExcelMissionStepId } from "./missions";
@@ -6,7 +7,7 @@ import type { ExcelMissionBlock, ExcelMissionStepId } from "./missions";
  * Server Component that renders one step of an Excel mission from its JSON definition.
  * Mission and exercise JSON are learner-safe (no answers). Keys (*.keys.json, *.key.json) must never
  * be imported here: the grid's "Check my work" posts to /api/exercises/[id]/check instead.
- * Assessment items are listed read-only until Excel assessment grading is wired up.
+ * Assessment items are graded by the server (/api/missions/[slug]/assessment); keys stay server-side.
  */
 export function ExcelMissionStep({ mission, step }: { mission: ExcelMissionContent; step: ExcelMissionStepId }) {
   const def = mission.mission.steps.find((s) => s.id === step);
@@ -88,30 +89,7 @@ function Block({ block, content }: { block: ExcelMissionBlock; content: ExcelMis
       ) : null;
     case "assessment-items": {
       const items = mission.assessment.items.filter((it) => block.itemIds.includes(it.id));
-      return (
-        <>
-          <ol className="list-decimal space-y-3 pl-6">
-            {items.map((item) => (
-              <li key={item.id}>
-                <p>{item.prompt}</p>
-                {item.type === "single-choice" ? (
-                  <ul className="mt-1 list-[lower-alpha] pl-6 font-mono text-sm text-fg-muted">
-                    {item.options.map((o) => (
-                      <li key={o.id}>{o.label}</li>
-                    ))}
-                  </ul>
-                ) : item.answerHint ? (
-                  <p className="text-sm text-fg-muted">Answer format: {item.answerHint}</p>
-                ) : null}
-              </li>
-            ))}
-          </ol>
-          <p className="text-sm text-fg-muted">
-            You pass with {Math.round(mission.passMark * 100)}% or more. Graded answers arrive with the server-side
-            assessment; nothing is saved yet.
-          </p>
-        </>
-      );
+      return <ExcelAssessmentForm missionSlug={mission.slug} items={items} passMark={mission.passMark} />;
     }
   }
 }

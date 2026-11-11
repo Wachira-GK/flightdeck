@@ -12,6 +12,9 @@ const routes = [
   "/catalogue",
   "/missions/excel-if-102?step=simulation",
   "/missions/excel-lookup-103?step=simulation",
+  "/missions/excel-sum-101?step=assessment",
+  "/missions/excel-if-102?step=assessment",
+  "/missions/excel-lookup-103?step=assessment",
 ];
 
 async function axe(page: Page) {
@@ -156,6 +159,24 @@ test("Maths assessment is graded by the server and only reveals solutions on a p
   await expect(status).toContainText("100%");
 });
 
+test("Excel assessment is graded by the server and only reveals explanations on a pass", async ({ page }) => {
+  await page.goto("/missions/excel-sum-101?step=assessment");
+  await page.getByLabel(/Kisumu store/i).fill("1");
+  await page.getByRole("button", { name: "Submit assessment" }).click();
+  const status = page.getByRole("status");
+  await expect(status).toContainText("You need 80% to pass");
+  await expect(page.locator("main")).not.toContainText(/\b145\b|\b368\b|covers all twelve months/);
+
+  await page.getByRole("radio", { name: "=SUM(B2:B13)", exact: true }).check();
+  await page.getByLabel(/Kisumu store/i).fill("145");
+  await page.getByRole("radio", { name: "=SUM(C2:C4)", exact: true }).check();
+  await page.getByLabel(/Finance corrects February/i).fill("368");
+  await page.getByRole("button", { name: "Submit assessment" }).click();
+  await expect(status).toContainText("Passed");
+  await expect(status).toContainText("100%");
+  await expect(page.locator("main")).toContainText("45 + 62 + 38 = 145K");
+});
+
 test("Catalogue links to every published mission and the lesson pages load", async ({ page }) => {
   await page.goto("/catalogue");
   for (const code of ["EX-101", "EX-102", "EX-103", "MA-101"]) {
@@ -174,6 +195,9 @@ test.describe("phone width (375px)", () => {
     "/catalogue",
     "/missions/excel-sum-101?step=simulation",
     "/missions/excel-lookup-103?step=simulation",
+    "/missions/excel-sum-101?step=assessment",
+    "/missions/excel-if-102?step=assessment",
+    "/missions/excel-lookup-103?step=assessment",
     "/missions/descriptive-stats-101?step=simulation",
     "/missions/descriptive-stats-101?step=training",
   ]) {
@@ -192,6 +216,24 @@ test.describe("phone width (375px)", () => {
     await expect(page.getByRole("grid").locator('[aria-label^="B2"]').first()).toContainText("120");
     // (Next's route announcer also uses role=alert, so check for the engine messages specifically.)
     await expect(page.locator("main")).not.toContainText(/took longer than|engine stopped/i);
+  });
+
+  test("Excel assessment form is usable at 375px and fits the screen", async ({ page }) => {
+    await page.goto("/missions/excel-sum-101?step=assessment");
+    const submit = page.getByRole("button", { name: "Submit assessment" });
+    await submit.scrollIntoViewIfNeeded();
+    const box = await submit.boundingBox();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(375);
+    expect(box!.height).toBeGreaterThanOrEqual(24);
+    await page.getByLabel(/Kisumu store/i).fill("145");
+    await submit.click();
+    await expect(page.getByRole("status")).toContainText("You need 80% to pass");
+    const { scroll, client } = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      client: document.documentElement.clientWidth,
+    }));
+    expect(scroll).toBeLessThanOrEqual(client);
   });
 
   test("menu button opens, navigates and closes with Escape", async ({ page }) => {

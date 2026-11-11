@@ -1,6 +1,7 @@
-import { handleAssessment } from "@/server/math-assessment";
+import { handleAssessment } from "@/server/assessment";
 
-// Grades a mission assessment on the server. Nothing is saved yet (attempt storage needs Supabase).
+// Grades a mission assessment (Mathematics MA-101 and Excel EX-101/102/103) on the server.
+// Nothing is saved yet (attempt storage needs Supabase, which is paused).
 export async function POST(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { status, body } = await handleAssessment(slug, request);

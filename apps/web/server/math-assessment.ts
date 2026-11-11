@@ -12,27 +12,42 @@ export const MAX_BODY_BYTES = 16 * 1024;
 
 export type HandlerResponse = { status: number; body: AssessmentResult | { error: string } };
 
-/** Pure request handler so it can be unit-tested without a server. */
-export async function handleAssessment(slug: string, request: Request): Promise<HandlerResponse> {
-  const entry = MISSIONS[slug];
-  if (!entry) return { status: 404, body: { error: "Unknown mission." } };
-  if (!(request.headers.get("content-type") ?? "").toLowerCase().startsWith("application/json")) {
-    return { status: 415, body: { error: "Send JSON." } };
-  }
+export type ParsedAnswers = { ok: true; answers: Record<string, unknown> } | { ok: false; response: HandlerResponse };
+
+/** Shared by the Maths and Excel handlers: content type, size cap, JSON shape. */
+export async function parseAnswersRequest(request: Request): Promise<ParsedAnswers> {
+  const fail = (status: number, error: string): ParsedAnswers => ({ ok: false, response: { status, body: { error } } });
+  if (!(request.headers.get("content-type") ?? "").toLowerCase().startsWith("application/json")) return fail(415, "Send JSON.");
   const declared = Number(request.headers.get("content-length") ?? "0");
-  if (declared > MAX_BODY_BYTES) return { status: 413, body: { error: "Request too large." } };
+  if (declared > MAX_BODY_BYTES) return fail(413, "Request too large.");
   const text = await request.text();
-  if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) return { status: 413, body: { error: "Request too large." } };
+  if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) return fail(413, "Request too large.");
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
-    return { status: 400, body: { error: "Malformed JSON." } };
+    return fail(400, "Malformed JSON.");
   }
   const answers = (parsed as { answers?: unknown })?.answers;
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
-    return { status: 400, body: { error: "Expected { answers: { [itemId]: string } }." } };
+    return fail(400, "Expected { answers: { [itemId]: string } }.");
   }
-  return { status: 200, body: gradeMathAssessment(entry.mission, entry.keys, answers as Record<string, unknown>) };
+  return { ok: true, answers: answers as Record<string, unknown> };
 }
+
+export function hasMathAssessment(slug: string): boolean {
+  return Object.hasOwn(MISSIONS, slug);
+}
+
+/** Pure request handler so it can be unit-tested without a server. */
+export async function handleMathAssessment(slug: string, request: Request): Promise<HandlerResponse> {
+  if (!hasMathAssessment(slug)) return { status: 404, body: { error: "Unknown mission." } };
+  const parsed = await parseAnswersRequest(request);
+  if (!parsed.ok) return parsed.response;
+  const entry = MISSIONS[slug]!;
+  return { status: 200, body: gradeMathAssessment(entry.mission, entry.keys, parsed.answers) };
+}
+
+/** Kept for existing callers and tests: Maths missions only. The route uses ./assessment. */
+export const handleAssessment = handleMathAssessment;
