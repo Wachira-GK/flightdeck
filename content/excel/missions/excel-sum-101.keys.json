@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sum-101",
+  "items": [
+    {
+      "id": "s1-range-12-months",
+      "type": "single-choice",
+      "correctOptionId": "sum-range",
+      "rationale": "B2:B13 covers all twelve months. =SUM(B2,B13) and =B2+B13 add only the first and last month."
+    },
+    {
+      "id": "s2-kisumu-total",
+      "type": "numeric",
+      "expected": 145,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "rationale": "45 + 62 + 38 = 145K."
+    },
+    {
+      "id": "s3-copy-right",
+      "type": "single-choice",
+      "correctOptionId": "shifted",
+      "rationale": "Relative references move with the formula: one column right turns B into C."
+    },
+    {
+      "id": "s4-corrected-month",
+      "type": "numeric",
+      "expected": 368,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "rationale": "120 + 105 + 143 = 368K; the SUM updates by itself."
+    }
+  ]
+}

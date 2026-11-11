@@ -11,7 +11,7 @@ export interface EvalContext {
 
 const RANGE_IN_SCALAR = cellError(
   "#VALUE!",
-  "A range like A1:B5 can only be used inside SUM, AVERAGE, MIN, MAX or COUNT",
+  "A range like A1:B5 can only be used inside SUM, AVERAGE, MIN, MAX, COUNT or as an XLOOKUP lookup/return range",
 );
 
 function numResult(n: number): number | CellError {
@@ -150,7 +150,70 @@ function collectNumbers(name: FunctionName, args: AstNode[], ctx: EvalContext): 
   return nums;
 }
 
+/** Cell keys of a 1-D reference or range, in order, or an error when it is not a 1-D range. */
+function lookupCells(node: AstNode, what: string): { keys: string[]; rows: number; cols: number } | CellError {
+  if (node.type !== "ref" && node.type !== "range") {
+    return cellError("#VALUE!", `XLOOKUP needs a cell range for the ${what}, for example $A$2:$A$10`);
+  }
+  const start = node.type === "ref" ? node.ref : node.start;
+  const end = node.type === "ref" ? node.ref : node.end;
+  const rows = end.row - start.row + 1;
+  const cols = end.col - start.col + 1;
+  if (rows > 1 && cols > 1) {
+    return cellError("#VALUE!", `XLOOKUP's ${what} must be a single row or a single column, not a ${rows}x${cols} block`);
+  }
+  const keys: string[] = [];
+  for (let r = start.row; r <= end.row; r++) {
+    for (let c = start.col; c <= end.col; c++) keys.push(toKey({ row: r, col: c }));
+  }
+  return { keys, rows, cols };
+}
+
+/**
+ * Exact-match equality for XLOOKUP: same type only (a number never matches numeric text, as in
+ * Excel); text is case-insensitive; a blank lookup value matches only a blank cell.
+ */
+function lookupEquals(needle: Exclude<CellValue, CellError>, v: CellValue): boolean {
+  if (isCellError(v)) return false;
+  if (needle === null || v === null) return needle === v;
+  if (typeof needle !== typeof v) return false;
+  if (typeof needle === "string") return needle.toLowerCase() === (v as string).toLowerCase();
+  return needle === v;
+}
+
+/**
+ * XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found]), exact match only (ADR-004).
+ * First match wins. Errors inside lookup_array are skipped (they never match); an error in the
+ * matched return cell is returned. if_not_found is evaluated lazily, only when nothing matches.
+ */
+function evalXlookup(args: AstNode[], ctx: EvalContext): CellValue {
+  if (args.length > 4) {
+    return cellError(
+      "#VALUE!",
+      "This simulator's XLOOKUP supports exact match only: remove the match_mode/search_mode arguments (use 3 or 4 arguments)",
+    );
+  }
+  const needle = evalScalar(args[0]!, ctx);
+  if (isCellError(needle)) return needle;
+  const look = lookupCells(args[1]!, "lookup_array");
+  if (isCellError(look)) return look;
+  const ret = lookupCells(args[2]!, "return_array");
+  if (isCellError(ret)) return ret;
+  if (look.rows !== ret.rows || look.cols !== ret.cols) {
+    return cellError(
+      "#VALUE!",
+      `XLOOKUP's lookup_array (${look.rows}x${look.cols}) and return_array (${ret.rows}x${ret.cols}) must be the same size`,
+    );
+  }
+  for (let i = 0; i < look.keys.length; i++) {
+    if (lookupEquals(needle, ctx.getCell(look.keys[i]!))) return ctx.getCell(ret.keys[i]!);
+  }
+  if (args[3]) return evalScalar(args[3], ctx);
+  return cellError("#N/A", "XLOOKUP found no exact match for the lookup value");
+}
+
 function evalCall(name: FunctionName, args: AstNode[], ctx: EvalContext): CellValue {
+  if (name === "XLOOKUP") return evalXlookup(args, ctx);
   if (name === "IF") {
     // Lazy: only the chosen branch is evaluated.
     const cond = evalScalar(args[0]!, ctx);

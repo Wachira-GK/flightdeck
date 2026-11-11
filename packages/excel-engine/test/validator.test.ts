@@ -207,14 +207,14 @@ describe("helpers", () => {
       id: "Bad Id",
       grid: { rows: 200, cols: 3 },
       starter: { b1: "x", Z1: "y" },
-      allowedFunctions: ["XLOOKUP"],
+      allowedFunctions: ["VLOOKUP"],
       namedRanges: { Sales: "B2:B4" },
     } as unknown as ExerciseDefinition;
     const problems = checkExercise(bad, { ...key, hiddenTests: [{ id: "t", label: "", overrides: { B5: "1" }, expect: {} }] });
     expect(problems.join("\n")).toMatch(/kebab-case/);
     expect(problems.join("\n")).toMatch(/rows out of range/);
     expect(problems.join("\n")).toMatch(/not a canonical/);
-    expect(problems.join("\n")).toMatch(/XLOOKUP/);
+    expect(problems.join("\n")).toMatch(/VLOOKUP/);
     expect(problems.join("\n")).toMatch(/namedRanges/);
     expect(problems.join("\n")).toMatch(/overrides editable cell B5/);
   });

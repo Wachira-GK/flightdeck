@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-lookup-103",
+  "items": [
+    {
+      "id": "l1-boot-price",
+      "type": "numeric",
+      "expected": 4599,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "rationale": "Text matching ignores case, so bt-330 matches BT-330 in row 5, price 4,599."
+    },
+    {
+      "id": "l2-missing-code",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "With no exact match and no fourth argument, XLOOKUP returns #N/A."
+    },
+    {
+      "id": "l3-dollar-signs",
+      "type": "single-choice",
+      "correctOptionId": "fixed",
+      "rationale": "Absolute references do not shift when copied, so every row looks in the same list."
+    },
+    {
+      "id": "l4-line-total",
+      "type": "numeric",
+      "expected": 1497,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "rationale": "499 x 3 = 1,497."
+    }
+  ]
+}

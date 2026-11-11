@@ -8,7 +8,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "node -e \"process.exit(0)\"",
     "docs": "node scripts/generate-docs.ts",
-    "test:mutations": "bash scripts/mutation-check.sh"
+    "test:mutations": "bash scripts/mutation-check.sh",
+    "seed:generate": "node scripts/generate-seed.ts",
+    "seed:check": "node scripts/generate-seed.ts --check"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.0",

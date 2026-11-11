@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, buttonVariants, Card, Progress } from "@flightdeck/ui";
-import type { ExerciseDefinition } from "@flightdeck/excel-engine";
-import { ExcelGrid } from "@/components/excel";
+import { ExcelMissionStep, getExcelMission } from "@/components/excel";
 import { getMathMission, MathMissionStep } from "@/components/math";
-// Learner-safe exercise only; the matching *.key.json stays server-side (never import it in UI code).
-import sumExercise from "../../../../../content/excel/exercises/sum-relative-refs.json";
 import { StepRail } from "@/components/step-rail";
 import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
@@ -28,6 +25,7 @@ export default async function MissionPage({ params, searchParams }: Props) {
   if (!mission) notFound();
 
   const mathMission = mission.trackId === "mathlab" ? getMathMission(mission.slug) : undefined;
+  const excelMission = mission.trackId === "excel" ? getExcelMission(mission.slug) : undefined;
   const step = parseStep((await searchParams).step);
   const track = getTrack(mission.trackId);
   const { prev, next } = adjacentSteps(step);
@@ -80,6 +78,8 @@ export default async function MissionPage({ params, searchParams }: Props) {
             <div className="mt-4 space-y-4 text-fg">
               {mathMission ? (
                 <MathMissionStep mission={mathMission} step={step} />
+              ) : excelMission ? (
+                <ExcelMissionStep mission={excelMission} step={step} />
               ) : (
                 <StepContent step={step} mission={mission} />
               )}
@@ -144,12 +144,7 @@ function StepContent({ step, mission }: { step: MissionStep; mission: Mission })
         </>
       );
     case "simulation":
-      return (
-        <>
-          <p>{sumExercise.instructions}</p>
-          <ExcelGrid exercise={sumExercise as unknown as ExerciseDefinition} />
-        </>
-      );
+      return <p>This mission has no simulation yet.</p>;
     case "assessment":
       return (
         <p>

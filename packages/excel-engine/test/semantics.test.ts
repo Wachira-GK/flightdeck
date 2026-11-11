@@ -98,7 +98,7 @@ describe("comparison and concatenation", () => {
 });
 
 describe("error propagation", () => {
-  const cells = { A1: "=1/0", A2: '="x"+1', A3: "=XLOOKUP(1,B1:B2,C1:C2)" };
+  const cells = { A1: "=1/0", A2: '="x"+1', A3: "=VLOOKUP(1,B1:C2,2)" };
   it("propagates through arithmetic, comparison, concat, unary, %", () => {
     for (const f of ["=A1+1", "=1+A1", "=A1>1", '=A1&"x"', "=-A1", "=A1%", "=(A1)"]) {
       expect(code(ev(f, cells))).toBe("#DIV/0!");
@@ -116,10 +116,10 @@ describe("error propagation", () => {
   it("propagates #NAME? from unsupported functions", () => {
     expect(code(ev("=A3+1", cells))).toBe("#NAME?");
     const wb = createWorkbook();
-    wb.setCell("A1", "=XLOOKUP(1,B1:B2,C1:C2)");
+    wb.setCell("A1", "=VLOOKUP(1,B1:C2,2)");
     const v = wb.getValue("A1") as { error: string; message: string };
     expect(v.error).toBe("#NAME?");
-    expect(v.message).toMatch(/XLOOKUP is not available/);
+    expect(v.message).toMatch(/VLOOKUP is not available/);
   });
   it("syntax errors are #ERROR! values, not crashes", () => {
     expect(code(ev("=SUM(1"))).toBe("#ERROR!");

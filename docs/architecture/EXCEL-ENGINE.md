@@ -1,22 +1,22 @@
-# Excel simulator engine (FD-XLS01 spike)
+# Excel simulator engine (FD-XLS01 spike, v1)
 
-Status: spike complete, for review. Package: `packages/excel-engine` (`@flightdeck/excel-engine`, zero runtime dependencies). Browser runtime: `apps/web/components/excel/`. Fixtures: `content/excel/exercises/`. Threat model: CT4, CT5, TB7 in `docs/security/THREAT-MODEL-v0.1.md`.
+Status: v1. Engine decision accepted in `docs/decisions/ADR-004-excel-engine.md` (keep the custom engine; exact-match `XLOOKUP` added). Engine version `0.2.0`. Package: `packages/excel-engine` (`@flightdeck/excel-engine`, zero runtime dependencies). Browser runtime: `apps/web/components/excel/`. Fixtures: `content/excel/exercises/`. Threat model: CT4, CT5, TB7 in `docs/security/THREAT-MODEL-v0.1.md`.
 
 The simulator does **not** claim Microsoft Excel compatibility. It implements a small, documented subset with Excel-like semantics.
 
-## 1. Supported subset (v0)
+## 1. Supported subset (v1)
 
 | Area | Supported |
 |---|---|
 | Literals | numbers (`12`, `1.5`, `.5`, `1E3`), text in double quotes (`"a ""quoted"" word"`), `TRUE` / `FALSE` |
 | References | `A1`, `$A$1`, `A$1`, `$A1` (case-insensitive), ranges `A1:B5` (any corner order) |
 | Operators | `+ - * / ^`, unary `-` / `+`, postfix `%`, `&`, `= <> < > <= >=`, parentheses |
-| Functions | `SUM`, `AVERAGE`, `MIN`, `MAX`, `COUNT`, `IF` (case-insensitive) |
+| Functions (allow-list) | `SUM`, `AVERAGE`, `MIN`, `MAX`, `COUNT`, `IF`, `XLOOKUP` (exact match only) (case-insensitive). Each exercise further restricts this with `allowedFunctions`. |
 | Cell input | text starting with `=` is a formula; numbers, `12%`, `TRUE`/`FALSE` are typed; a leading `'` forces text; `""` clears |
 
 Anything else is rejected with a clear message:
 
-- Unknown functions (`XLOOKUP`, `VLOOKUP`, `NOW`, `INDIRECT`, ...), bare names, sheet refs, `A:A`, array constants, table refs, `@`, `;` separators, error literals → **`#NAME?`**.
+- Unknown functions (`VLOOKUP`, `MATCH`, `INDEX`, `NOW`, `INDIRECT`, ...), bare names, sheet refs, `A:A`, array constants, table refs, `@`, `;` separators, error literals → **`#NAME?`**.
 - Malformed formulas (`=1+`, `=(1`, `=SUM()`, empty arguments, wrong arity) → **`#ERROR!`** (Excel refuses entry; we store an error value).
 
 Precedence (high → low), as in Excel: range `:` → unary `-`/`+` → `%` → `^` (left-associative) → `* /` → `+ -` → `&` → comparisons. So `=-2^2` is **4** and `=2^3^2` is **64**. Both are Excel behaviours that surprise learners; course content should call them out.
@@ -38,9 +38,27 @@ Precedence (high → low), as in Excel: range `:` → unary `-`/`+` → `%` → 
 | `IF` | lazy: only the chosen branch is evaluated; omitted false branch returns `FALSE`; condition accepts numbers, booleans, blank (FALSE) and `"TRUE"`/`"FALSE"` text |
 | Comparisons | blanks take the other side's type; numbers < text < booleans; text is case-insensitive; text is **not** coerced (`="1"=1` is FALSE) |
 | `&` | numbers use General format (15 significant digits, so `0.1+0.2&""` is `"0.3"`) |
+| `XLOOKUP` | see §2.1 |
 | Circular references | every cell in the cycle gets **`#CIRC!`**; downstream cells inherit it; detection is static (an `IF` that would avoid the cycle does not hide it, matching Excel's check) |
 | Display | General-like: up to 15 significant digits; scientific (`1E+15`, `1.5E-07`) at the extremes; `-0` shows `0` |
 | Determinism | no `Date`, `Math.random`, timers or locale APIs; evaluation order is a stable topological order; same input → byte-identical output |
+
+### 2.1 `XLOOKUP` (v1, exact match only)
+
+`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])`
+
+| Rule | Behaviour |
+|---|---|
+| Arrays | `lookup_array` and `return_array` must be cell references or ranges, each **1-D** (one row or one column; a single cell is 1x1), with the **same shape** (same rows and columns). Otherwise `#VALUE!` with a message. A vertical lookup with a horizontal return range of the same length is also `#VALUE!`. |
+| Matching | exact match, first match wins (top to bottom / left to right). Text is **case-insensitive** (`"bt-100"` finds `"BT-100"`), as Excel. Numbers compare numerically (`1050`, `1000+50` and `1.05E3` all find `1050`). |
+| Numbers vs numeric text | **no coercion**: the number `1050` does not match the text `"1050"` (typed `'1050`), and `"1050"` does not match the number. Same as Excel. Booleans only match booleans. |
+| Blank lookup value | matches only a blank cell (not `0` or `""`). |
+| Not found | `if_not_found` when given, else **`#N/A`** (new error value). `if_not_found` is evaluated **lazily**, only when nothing matches, so `=XLOOKUP(x, A:A, B:B, 1/0)` is fine when found. |
+| Result | the matched `return_array` cell; a blank result shows `0` at the top level (as Excel). |
+| Errors | an error in `lookup_value` propagates; errors inside `lookup_array` never match and are skipped; an error in the **matched** return cell is returned; errors in other return cells are ignored. |
+| 5th/6th arguments | `match_mode` / `search_mode` parse but evaluate to `#VALUE!` with "supports exact match only". 2 or 7+ arguments are `#ERROR!` (arity). |
+| Dependencies | the cell depends on every cell of both ranges (plus `lookup_value` and `if_not_found` refs); each counts toward the edge limit. Changing any table cell recalculates the lookup. |
+| Not supported | approximate match, wildcards, binary search, reverse search, array results / spilling, `VLOOKUP`/`HLOOKUP`/`INDEX`/`MATCH`. Approximate-match tier tables are taught with the nested-`IF` exercise `commission-tier-if-chain`. |
 
 ### Deviations from Excel (deliberate, documented)
 
@@ -53,6 +71,7 @@ Precedence (high → low), as in Excel: range `:` → unary `-`/`+` → `%` → 
 7. **Empty arguments** (`=IF(A1,,1)`) are `#ERROR!`.
 8. **Long operator chains count toward AST depth**: `=A1+A2+...+A31` (31 terms) exceeds depth 30 and is `#LIMIT!`; the message suggests `SUM`.
 9. **Text results over 32,767 characters** are `#VALUE!` (Excel's cell limit), which also stops `&` doubling attacks.
+10. **`XLOOKUP` is exact match only**: `match_mode`/`search_mode` give `#VALUE!` (Excel would accept them). `lookup_array` must be a reference/range, not an array expression.
 
 ## 3. Limits
 
@@ -67,21 +86,23 @@ All configurable via `createWorkbook(limits)` / `evaluateSheet(cells, limits)`. 
 | Formula length | 1,024 chars (incl. `=`) | `#LIMIT!` |
 | Text length | 32,767 chars | typed text → `#LIMIT!`; computed text → `#VALUE!` |
 | Worker time | 500 ms hard timeout | main thread terminates the Worker (see §4) |
-| Submission | 256 KB (UTF-8) | validator rejects `too_large` before parsing |
+| Submission | 256 KB (UTF-8) | check API reads the raw body with a streamed cap (413) before parsing; validator also rejects `too_large` |
+| `XLOOKUP` ranges | 1-D, same shape; cells counted as dependency edges (5,000 total) | `#VALUE!`; `#LIMIT!` if the edge budget is exceeded |
 
 **Performance** (`test/perf.test.ts`, 500 non-empty cells, ~3,700 edges, mixed SUM/AVERAGE/IF/MAX/COUNT/`&` chains): full evaluation median **~10–30 ms** on the dev PC (target ≤ 100 ms; CI asserts < 400 ms). An incremental edit recalculates only dependents (25 cells, < 1 ms).
 
 ## 4. Architecture and security model
 
 ```
-browser (untrusted)                                     server (trusted, later)
-┌──────────────────────────────┐   submission JSON    ┌─────────────────────────────┐
-│ <ExcelGrid> (main thread)    │ ───────────────────► │ validateSubmission(ex, sub, │
-│  - 500 ms watchdog           │   cells only, ≤256KB │   key)  ← app_private.      │
-│  - terminate + restart Worker│                      │   exercise_keys             │
-│ engine.worker.ts (Worker)    │                      │ recompute from scratch,     │
-│  - evaluateSheet             │                      │ hidden tests, verdict via   │
-│  - practice validate         │                      │ record_exercise_verdict     │
+browser (untrusted)                                     server (trusted)
+┌──────────────────────────────┐ POST /api/exercises/ ┌─────────────────────────────┐
+│ <ExcelGrid> (main thread)    │   [id]/check         │ server/excel-check.ts       │
+│  - 500 ms watchdog           │ ───────────────────► │  handleCheck: 415/413/404/  │
+│  - terminate + restart Worker│   cells only, ≤256KB │  400/409, then              │
+│ engine.worker.ts (Worker)    │                      │  validateSubmission(ex, sub,│
+│  - evaluateSheet             │ ◄─────────────────── │   key) ← server/excel-keys  │
+│  - practice validate         │  passed, score,      │ recompute, hidden tests.    │
+│    (offline fallback)        │  safe checks         │ NOT persisted yet (Supabase)│
 └──────────────────────────────┘                      └─────────────────────────────┘
 ```
 
@@ -89,7 +110,17 @@ browser (untrusted)                                     server (trusted, later)
 - **Dependency graph**: each formula's precedents (ranges expanded) and a reverse dependents index. An edit collects the changed cell plus its transitive dependents, then runs an iterative Tarjan SCC over that subgraph: SCCs come out in topological order (precedents first); multi-cell SCCs and self-loops become `#CIRC!`. No recursion over cells, so long chains cannot overflow the stack.
 - **Worker (TB7)**: `new Worker(new URL("./engine.worker.ts", import.meta.url), { type: "module" })`. Turbopack bundles it as a same-origin classic worker (`/_next/static/chunks/turbopack-worker-*.js`), which the production CSP (`worker-src 'self' blob:`, `script-src 'self' 'unsafe-inline'`) allows; verified with `next build && next start`. The Worker deletes `fetch`, `XMLHttpRequest`, `WebSocket`, `WebTransport`, `EventSource`, `BroadcastChannel`, `indexedDB`, `caches` and `navigator` from its scope before handling messages (defence in depth). Messages are plain JSON. The Worker is stateless: each edit sends the whole sheet (≤ 500 cells), so a terminated Worker can be replaced with no state to rebuild.
 - **Watchdog**: `engine-client.ts` arms a 500 ms timer per request (an exercise may set a lower `timeoutMs`, never higher). On expiry it calls `worker.terminate()`, rejects pending requests with `EngineTimeoutError`, and starts a fresh Worker on the next request. The grid shows an alert and keeps Reset available.
-- **The client is untrusted.** Values computed in the browser are display only. The browser practice check is labelled "Practice check" and says the official result comes from the server. CT4: the client may insert a submission and evidence; `passed`/`score`/`status` are only written by the server after `validateSubmission`.
+- **The client is untrusted.** Values computed in the browser are display only. CT4: the client may insert a submission and evidence; `passed`/`score`/`status` are only written by the server after `validateSubmission`.
+
+### 4.1 Server check API (v1, no database)
+
+- **Route**: `POST /api/exercises/[id]/check` (`apps/web/app/api/exercises/[id]/check/route.ts`, default Node.js runtime; plain Web `Request`/streams only, so it runs under the OpenNext Cloudflare worker). Logic is the pure `handleCheck(id, request, lookup?)` in `apps/web/server/excel-check.ts` (unit-tested in `server/excel-check.test.ts`).
+- **Body**: `{ exerciseId, exerciseVersion, cells }` exactly as `buildSubmission` builds it. Any other field (`passed`, `score`, ...) is dropped before validation.
+- **Order of checks**: unknown `[id]` → **404**; content-type not `application/json` → **415**; `Content-Length` over 256 KB, or the raw body streamed past 256 KB (read with a byte cap, *before* parsing) → **413**; invalid UTF-8/JSON or wrong shape, `exerciseId` ≠ `[id]`, tampered cells (`locked_cell`, `invalid_ref`, `outside_grid`, non-text cells) → **400**; stale `exerciseVersion` → **409** ("reload the page"); misconfigured exercise → **500**.
+- **Response 200**: `{ passed, score, checks, validatorVersion }` plus `rejected` when the learner used a function outside the exercise allow-list or unsupported syntax (a graded failure, score 0). Checks contain only id, kind, pass/fail, message and cell. Hidden-test ids are replaced with `hidden:1..n`; `computed` and `mode` are not returned; messages never contain expected values or hidden inputs (tested per key file). `Cache-Control: no-store`.
+- **Keys stay server-side**: learner-safe exercises are registered in `components/excel/exercises.ts`; keys only in `apps/web/server/excel-keys.ts` (static JSON imports). `server-only` is not installed (no new dependencies), so the guards are a unit test that fails if any `"use client"` file or anything under `components/` imports `server/` or a `*.key(s).json`, and `apps/web/scripts/check-key-leak.mjs`, which greps `.next/static` after a build for hidden-test labels/ids, long expected-check labels and mission-key rationales from every key file (with a positive control proving the scan reads the bundle).
+- **Grid**: "Check my work" posts to the endpoint and shows "Checked by the server (not saved yet)". If the browser is offline, the request fails, or the server answers 404/5xx, it falls back to the local Worker practice check ("Practice check in your browser", structure-only without `practiceKey`) and says why. A 400/409/413/415 is shown as an error, with no fallback.
+- **Nothing is persisted.** Saving attempts, evidence and verdicts (`record_exercise_verdict`, `app_private.exercise_keys`) needs Supabase, which is paused. When it returns, the route keeps the same contract and adds the insert after grading; keys move from static imports to `app_private.exercise_keys`.
 
 ## 5. Validator design (`validateSubmission`)
 
@@ -100,15 +131,17 @@ browser (untrusted)                                     server (trusted, later)
 3. **Cell rules** → rejection codes: invalid key (`$B$5`, `B0`, `__proto__`) `invalid_ref`; duplicate key after normalisation `malformed`; outside the exercise grid `outside_grid`; changed non-editable cell `locked_cell` (resending the unchanged starter value is allowed); function outside the exercise allow-list `disallowed_function` (found by tokenising, so `=XLOOKUP(...)` is rejected even though it would only be `#NAME?`); unsupported syntax such as `Sheet2!A1` or `{1,2}` `unsupported_formula`.
 4. **Recompute from scratch**: starter + learner cells → `evaluateSheet` with the exercise's limits. Learner mistakes (syntax errors, bare names, `#DIV/0!`, `#CIRC!`) are graded failures, not rejections.
 5. **Checks** (weighted, default weight 1): `formula` (cell must start with `=`), `function` (e.g. B5 must use `SUM`), `value` (expected values: numbers with tolerance `1e-9 × max(1, |expected|)`, text case- and outer-space-insensitive unless `caseSensitive`, booleans, error codes), and `hidden` tests. A hidden test overrides locked input cells, recomputes and checks the outputs. This defeats typed constants (`358`) and hard-coded formulas (`=SUM(120,95,143)`), which match the visible values but fail every hidden test.
-6. **Result**: `score = round(100 × passed weight / total weight)`; `passed = score ≥ passThreshold` (default 100). Messages never contain expected values or hidden inputs (tested). `validatorVersion` is `excel-validator@0.1.0+engine@0.1.0`; store it with each verdict so re-grading is reproducible.
+6. **Result**: `score = round(100 × passed weight / total weight)`; `passed = score ≥ passThreshold` (default 100). Messages never contain expected values or hidden inputs (tested). `validatorVersion` is `excel-validator@0.1.0+engine@0.2.0`; store it with each verdict so re-grading is reproducible.
 
 Without a key (`mode: "structure-only"`), it runs steps 1–4 and checks only that editable cells are filled and error-free. Use this for the browser practice check in production.
 
 **Exercise contract**: learner-safe `content/excel/exercises/<id>.json` (starter, editable cells, allowed functions, hints; safe to ship to the browser) and server-only `<id>.key.json` (expected values, required formulas/functions, hidden tests; for `app_private.exercise_keys`). See `content/excel/EXERCISE-SPEC.md`.
 
-## 6. Lookup recommendation (open question: "XLOOKUP conditional on spike")
+## 6. Lookup (decided: ADR-004)
 
-v0 ships **no lookup function**. The third starter exercise (`commission-tier-if-chain`) uses the documented substitute: a nested `IF` over a visible tier table with absolute references, `=IF(B2>=$F$4,$G$4,IF(B2>=$F$3,$G$3,$G$2))`. Hidden tests change the table's rates and thresholds, so typed rates fail.
+**Decision (accepted 2026-11-11):** v1 ships exact-match `XLOOKUP` (§2.1). Starter exercise `xlookup-price-list` uses it (unit prices from a product table; hidden tests change prices, reorder the table, add a listing and change the order codes). `commission-tier-if-chain` stays as the approximate-match alternative. The original spike analysis follows.
+
+v0 shipped **no lookup function**. The third starter exercise (`commission-tier-if-chain`) uses the documented substitute: a nested `IF` over a visible tier table with absolute references, `=IF(B2>=$F$4,$G$4,IF(B2>=$F$3,$G$3,$G$2))`. Hidden tests change the table's rates and thresholds, so typed rates fail.
 
 Recommendation for v1:
 
@@ -116,9 +149,9 @@ Recommendation for v1:
 - Defer approximate match (`match_mode -1/1`), wildcards, binary search and `VLOOKUP`/`INDEX`/`MATCH`. Approximate match is what tier tables need in real Excel; keep teaching it with the IF chain until a later version adds `XLOOKUP(..., -1)` with documented sorted-input rules.
 - Do not return ranges from `XLOOKUP` (no spill) in v1.
 
-## 7. Library decision (open decision: "exact Excel formula/grid library after spike")
+## 7. Library decision (decided: ADR-004, keep the custom engine)
 
-This is a recommendation; the decision belongs to the product/architecture owner.
+Accepted 2026-11-11: keep the custom engine. The spike comparison is kept for the record.
 
 | Option | Licence | Fit | Risk |
 |---|---|---|---|
@@ -145,9 +178,12 @@ evaluateSheet({ A1: "2", A2: "=A1^2" }); // { A1: 2, A2: 4 }
 validateSubmission(exercise, rawBody, key);
 ```
 
-React (client): `import { ExcelGrid } from "@/components/excel";` then `<ExcelGrid exercise={exercise} />`. Pass `practiceKey` only while server grading is unavailable; it ships the answers to the browser.
+React (client): `import { ExcelGrid } from "@/components/excel";` then `<ExcelGrid exercise={exercise} />`. "Check my work" calls `/api/exercises/<id>/check`; pass `checkEndpoint={null}` for local-only previews. Pass `practiceKey` only while server grading is unavailable; it ships the answers to the browser.
+
+Missions (server component): `const excel = getExcelMission(slug); <ExcelMissionStep mission={excel} step={step} />`. Mission JSON lives in `content/excel/missions/<slug>.json` (blocks: `paragraph`, `list`, `formula`, `table`, `excel-grid`, `exercise-hints`, `assessment-items`); assessment keys in `<slug>.keys.json` are server-only. Types and `validateExcelMission` are in `components/excel/missions.ts`. Missions: `excel-sum-101` (EX-101), `excel-if-102` (EX-102), `excel-lookup-103` (EX-103). Assessment items are listed read-only until Excel assessment grading is wired up.
 
 ## 9. Tests
 
-- Engine: `pnpm --filter @flightdeck/excel-engine test` (parser, every function, semantics and coercion, error propagation, references, precedence, circular references, every limit, performance, determinism, security scan, validator acceptance/rejection, the 3 fixtures solved/unsolved).
-- Grid helpers and Worker client: `pnpm --filter @flightdeck/web exec vitest run --config components/excel/vitest.config.ts`. To run them in the default web suite, add `"components/**/*.test.ts"` to `include` in `apps/web/vitest.config.ts`.
+- Engine: `pnpm --filter @flightdeck/excel-engine test` (parser, every function incl. `test/xlookup.test.ts`, semantics and coercion, error propagation, references, precedence, circular references, every limit, performance, determinism, security scan, validator acceptance/rejection, the 4 fixtures solved/unsolved).
+- Web: `pnpm --filter @flightdeck/web test` runs grid helpers, Worker client, server-check client, mission content (`components/excel/*.test.ts`) and the check handler + server-only boundary (`server/excel-check.test.ts`).
+- Key leak: `pnpm --filter @flightdeck/web build` then `node apps/web/scripts/check-key-leak.mjs` (exit 1 on a leak).

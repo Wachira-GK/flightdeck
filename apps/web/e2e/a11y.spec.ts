@@ -9,6 +9,9 @@ const routes = [
   "/missions/descriptive-stats-101?step=training",
   "/missions/descriptive-stats-101?step=simulation",
   "/missions/descriptive-stats-101?step=assessment",
+  "/catalogue",
+  "/missions/excel-if-102?step=simulation",
+  "/missions/excel-lookup-103?step=simulation",
 ];
 
 async function axe(page: Page) {
@@ -134,4 +137,31 @@ test("Stats explorer: moving the outlier changes the mean but not the median", a
   await page.keyboard.press("End");
   await expect(main).not.toContainText("Mean 162.5");
   await expect(main).toContainText("Median 147");
+});
+
+test("Maths assessment is graded by the server and only reveals solutions on a pass", async ({ page }) => {
+  await page.goto("/missions/descriptive-stats-101?step=assessment");
+  await page.getByLabel(/mean number of pairs Store B/i).fill("1");
+  await page.getByRole("button", { name: "Submit assessment" }).click();
+  const status = page.getByRole("status");
+  await expect(status).toContainText("You need 75% to pass");
+  await expect(page.locator("main")).not.toContainText("105.2");
+
+  await page.getByLabel(/mean number of pairs Store B/i).fill("105.2");
+  await page.getByLabel(/median number of pairs Store B/i).fill("90");
+  await page.getByLabel(/sample standard deviation/i).fill("50.86");
+  await page.getByRole("radio", { name: "The median" }).check();
+  await page.getByRole("button", { name: "Submit assessment" }).click();
+  await expect(status).toContainText("Passed");
+  await expect(status).toContainText("100%");
+});
+
+test("Catalogue links to every published mission and the lesson pages load", async ({ page }) => {
+  await page.goto("/catalogue");
+  for (const code of ["EX-101", "EX-102", "EX-103", "MA-101"]) {
+    const link = page.getByRole("link", { name: new RegExp(`Start mission ${code}`) });
+    await expect(link).toBeVisible();
+  }
+  await page.getByRole("link", { name: /Start mission EX-103/ }).click();
+  await expect(page.locator("h1")).toContainText("XLOOKUP");
 });

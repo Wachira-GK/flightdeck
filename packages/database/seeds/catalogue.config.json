@@ -1,0 +1,64 @@
+{
+  "$comment": "FD-C01 catalogue structure. Content (missions, exercises, keys) comes from content/**; this file only maps it onto tracks, courses and course versions. Changing a published course's content = bump its version here and regenerate. See docs/data/CATALOGUE-SEEDING.md.",
+  "schemaVersion": 1,
+  "publishedAt": "2026-11-11T00:00:00Z",
+  "seedActors": {
+    "author": { "id": "5eed0000-0000-4000-8000-00000000a001", "email": "content-author@flightdeck.local" },
+    "reviewer": { "id": "5eed0000-0000-4000-8000-00000000a002", "email": "content-reviewer@flightdeck.local" }
+  },
+  "tracks": [
+    {
+      "slug": "excel-masterclass",
+      "title": "Excel Masterclass",
+      "subject": "Excel",
+      "description": "From SUM to lookups, built for analysts who live in spreadsheets.",
+      "contentDir": "excel",
+      "contentTrackIds": ["excel", "excel-masterclass"],
+      "status": "published",
+      "sortOrder": 1
+    },
+    {
+      "slug": "mathlab",
+      "title": "MathLab",
+      "subject": "Statistics foundations",
+      "description": "Averages, spread and distributions: the maths behind every business dashboard.",
+      "contentDir": "math",
+      "contentTrackIds": ["mathlab", "math"],
+      "status": "published",
+      "sortOrder": 2
+    },
+    {
+      "slug": "codeverse-sql",
+      "title": "CodeVerse SQL",
+      "subject": "SQL",
+      "description": "Query real datasets with SQL.",
+      "contentDir": null,
+      "contentTrackIds": ["codeverse-sql", "sql"],
+      "status": "draft",
+      "sortOrder": 3,
+      "lockedReason": "Coming later"
+    }
+  ],
+  "courses": [
+    {
+      "slug": "excel-foundations",
+      "track": "excel-masterclass",
+      "title": "Excel Foundations",
+      "summary": "Totals, IF decisions and lookups on real retail sheets, checked by the FlightDeck simulator.",
+      "level": "beginner",
+      "isFree": true,
+      "version": 1,
+      "changeNote": "Initial release from content/excel (FD-C01)."
+    },
+    {
+      "slug": "statistics-foundations",
+      "track": "mathlab",
+      "title": "Statistics Foundations",
+      "summary": "Describe business data with mean, median, range and standard deviation.",
+      "level": "beginner",
+      "isFree": true,
+      "version": 1,
+      "changeNote": "Initial release from content/math (FD-C01)."
+    }
+  ]
+}

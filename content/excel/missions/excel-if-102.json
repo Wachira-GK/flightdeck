@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-if-102",
+  "trackId": "excel",
+  "code": "EX-102",
+  "title": "Reorder flags with IF",
+  "summary": "Flag shoe lines that have fallen to their reorder point, so the replenishment list builds itself.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "if-business-thresholds",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Nakuru branch manager sends the stock count every Monday. Your job is to mark which lines need a reorder before the supplier cut-off at noon."
+        },
+        {
+          "type": "paragraph",
+          "text": "Each line has stock on hand and a reorder point. When stock is at or below the reorder point, the line needs a reorder. IF turns that rule into a formula, so the flags update as soon as the count changes."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use IF with a comparison to flag a business threshold.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=IF(condition, value_if_true, value_if_false)",
+          "text": "IF tests a condition that is TRUE or FALSE, then returns the first value when it is TRUE and the second when it is FALSE."
+        },
+        {
+          "type": "table",
+          "caption": "Comparison operators",
+          "columns": ["Operator", "Meaning", "Example"],
+          "rows": [
+            ["=", "equal to", "B2=C2"],
+            ["<>", "not equal to", "B2<>0"],
+            ["<", "less than", "B2<C2"],
+            ["<=", "at or below", "B2<=C2"],
+            [">", "more than", "B2>C2"],
+            [">=", "at or above", "B2>=50000"]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(B2<=C2,\"Reorder\",\"OK\")",
+          "text": "If on hand (B2) is at or below the reorder point (C2), show Reorder; otherwise show OK. Text results need double quotes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Watch the boundary. \"At or below\" is <=, not <. With 30 pairs on hand and a reorder point of 30, the line must be reordered."
+        },
+        {
+          "type": "paragraph",
+          "text": "Refer to the threshold cell (C2) instead of typing 25 into the formula. When the buyer changes a reorder point, every flag follows."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [{ "type": "excel-grid" }, { "type": "exercise-hints" }]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on IF and thresholds. Type numbers without commas or currency, for example 360."
+        },
+        { "type": "assessment-items", "itemIds": ["i1-boundary", "i2-bonus-formula", "i3-commission", "i4-threshold-cell"] }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "IF has three parts: a condition, the value if TRUE and the value if FALSE.",
+            "Choose the operator from the business rule: \"at or below\" is <=, \"at least\" is >=.",
+            "Text results need double quotes; numbers do not.",
+            "Point at threshold cells instead of typing numbers, so the rule follows the data."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: XLOOKUP, to pull prices from a product list instead of typing them."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-boundary",
+        "type": "single-choice",
+        "prompt": "Ankle boots: 30 pairs on hand (B4), reorder point 30 (C4). What does =IF(B4<=C4,\"Reorder\",\"OK\") show?",
+        "options": [
+          { "id": "reorder", "label": "Reorder" },
+          { "id": "ok", "label": "OK" },
+          { "id": "false", "label": "FALSE" },
+          { "id": "error", "label": "#VALUE!" }
+        ]
+      },
+      {
+        "id": "i2-bonus-formula",
+        "type": "single-choice",
+        "prompt": "A store earns a \"Bonus\" when weekly sales in B2 are at least KES 50,000; otherwise the cell stays empty. Which formula is correct?",
+        "options": [
+          { "id": "gt", "label": "=IF(B2>50000,\"Bonus\",\"\")" },
+          { "id": "gte", "label": "=IF(B2>=50000,\"Bonus\",\"\")" },
+          { "id": "no-quotes", "label": "=IF(B2>=50000,Bonus,\"\")" },
+          { "id": "lte", "label": "=IF(B2<=50000,\"Bonus\",\"\")" }
+        ]
+      },
+      {
+        "id": "i3-commission",
+        "type": "numeric",
+        "prompt": "A sales associate sold KES 7,200 of shoes (B2). What does =IF(B2>=5000,B2*5%,0) return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i4-threshold-cell",
+        "type": "single-choice",
+        "prompt": "Why write =IF(B2<=C2,\"Reorder\",\"OK\") instead of =IF(B2<=25,\"Reorder\",\"OK\") when C2 holds 25?",
+        "options": [
+          { "id": "follows-data", "label": "The flag updates when the reorder point in C2 changes" },
+          { "id": "faster", "label": "It calculates faster" },
+          { "id": "required", "label": "IF cannot compare with a typed number" },
+          { "id": "no-difference", "label": "There is no difference" }
+        ]
+      }
+    ]
+  }
+}

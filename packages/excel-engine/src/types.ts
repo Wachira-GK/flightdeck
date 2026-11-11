@@ -5,14 +5,18 @@
  * `new Function`, `with`, dynamic import, timers, Date, Math.random, network, storage or clipboard.
  */
 
-export const ENGINE_VERSION = "0.1.0";
+export const ENGINE_VERSION = "0.2.0";
 
-/** Error codes a cell can hold. `#CIRC!` and `#LIMIT!` are FlightDeck-specific (documented). */
+/**
+ * Error codes a cell can hold. `#CIRC!`, `#LIMIT!` and `#ERROR!` are FlightDeck-specific (documented).
+ * `#N/A` is returned by XLOOKUP when no match is found and no if_not_found value is given.
+ */
 export type ErrorCode =
   | "#DIV/0!"
   | "#VALUE!"
   | "#NAME?"
   | "#NUM!"
+  | "#N/A"
   | "#REF!"
   | "#CIRC!"
   | "#LIMIT!"

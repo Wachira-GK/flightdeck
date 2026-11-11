@@ -14,7 +14,7 @@
     "test": "turbo run test",
     "test:rls": "pnpm --filter @flightdeck/database test",
     "scan:secrets": "node scripts/scan-secrets.mjs",
-    "check": "pnpm scan:secrets && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "check": "pnpm scan:secrets && pnpm lint && pnpm typecheck && pnpm test && pnpm build && node apps/web/scripts/check-key-leak.mjs"
   },
   "devDependencies": {
     "turbo": "^2.5.0",

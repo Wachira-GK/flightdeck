@@ -2,8 +2,8 @@ import { tokenize, type Token } from "./lexer";
 import { parseCellRef, toKey, type CellRefParts } from "./refs";
 import { DEFAULT_LIMITS, LimitError, ParseError, type Limits } from "./types";
 
-/** The v0 function allow-list (CT5). Anything else is `#NAME?`. */
-export const SUPPORTED_FUNCTIONS = ["SUM", "AVERAGE", "MIN", "MAX", "COUNT", "IF"] as const;
+/** The engine function allow-list (CT5). Anything else is `#NAME?`. XLOOKUP added in v1 (ADR-004). */
+export const SUPPORTED_FUNCTIONS = ["SUM", "AVERAGE", "MIN", "MAX", "COUNT", "IF", "XLOOKUP"] as const;
 export type FunctionName = (typeof SUPPORTED_FUNCTIONS)[number];
 
 const FUNCTION_ARITY: Record<FunctionName, readonly [number, number]> = {
@@ -13,6 +13,9 @@ const FUNCTION_ARITY: Record<FunctionName, readonly [number, number]> = {
   MAX: [1, 255],
   COUNT: [1, 255],
   IF: [2, 3],
+  // Excel accepts up to 6 arguments. The 5th/6th (match_mode/search_mode) parse, but evaluate to
+  // #VALUE! with a message: only exact match is supported (ADR-004).
+  XLOOKUP: [3, 6],
 };
 
 export function isSupportedFunction(name: string): name is FunctionName {

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-103",
+  "trackId": "excel",
+  "code": "EX-103",
+  "title": "Prices with XLOOKUP",
+  "summary": "Pull unit prices from a product list by code, fix the list with $ signs and handle codes that are not listed.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "xlookup-price-list",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A Mombasa store has sent a back-to-school order by product code. Before the order is confirmed, each line needs its unit price in KES from the current price list."
+        },
+        {
+          "type": "paragraph",
+          "text": "Copying prices by hand is slow and breaks at the next price review. XLOOKUP finds the code in the price list and returns the matching price, so the order updates when the list changes."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: look up a value by code with an exact-match XLOOKUP.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])",
+          "text": "Find lookup_value in lookup_array, then return the cell in the same position of return_array. The two ranges must be the same size, in one column (or one row)."
+        },
+        {
+          "type": "table",
+          "caption": "Price list in E1:G6 (KES)",
+          "columns": ["Row", "E: Code", "F: Product", "G: Price (KES)"],
+          "rows": [
+            ["2", "SS-210", "School shoe", "2499"],
+            ["3", "SN-450", "Canvas sneaker", "1999"],
+            ["4", "SD-120", "Ladies sandal", "899"],
+            ["5", "BT-330", "Ankle boot", "4599"],
+            ["6", "SL-075", "Slipper", "499"]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"SN-450\",$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+          "text": "Look for the code SN-450 in the Code column and return the price from the same row. In the order sheet you will point at the code cell instead of typing it, and the $ signs keep the price list fixed when you copy the formula down."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Exact match only: XLOOKUP returns the first row whose code matches. Upper and lower case do not matter, so sd-120 finds SD-120.",
+            "A number never matches text that looks like a number: 1050 and \"1050\" are different codes.",
+            "When nothing matches, XLOOKUP shows #N/A. The optional fourth argument replaces it, for example \"Not listed\".",
+            "This simulator supports exact match only: the extra match_mode and search_mode arguments give #VALUE!. For tier tables, see the nested IF exercise."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [{ "type": "excel-grid" }, { "type": "exercise-hints" }]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the price list from Training (E1:G6). Type numbers without commas or currency, for example 2499."
+        },
+        { "type": "assessment-items", "itemIds": ["l1-boot-price", "l2-missing-code", "l3-dollar-signs", "l4-line-total"] }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "XLOOKUP(what, where, return) finds a code and returns the value from the same position.",
+            "Fix the lookup and return ranges with $ so the formula can be copied down.",
+            "Give a fourth argument such as \"Not listed\" so missing codes are clear instead of #N/A.",
+            "Because prices come from the list, a price review updates every order line automatically."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Real Excel also offers approximate match for tier tables. In this course, use the nested IF exercise (commission tiers) for that case."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-boot-price",
+        "type": "numeric",
+        "prompt": "What does =XLOOKUP(\"bt-330\",$E$2:$E$6,$G$2:$G$6) return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "l2-missing-code",
+        "type": "single-choice",
+        "prompt": "Gumboots (code GB-610) are not on the price list. What does =XLOOKUP(\"GB-610\",$E$2:$E$6,$G$2:$G$6) show?",
+        "options": [
+          { "id": "zero", "label": "0" },
+          { "id": "na", "label": "#N/A" },
+          { "id": "blank", "label": "An empty cell" },
+          { "id": "nearest", "label": "The price of the closest code" }
+        ]
+      },
+      {
+        "id": "l3-dollar-signs",
+        "type": "single-choice",
+        "prompt": "Why does the formula use $E$2:$E$6 rather than E2:E6?",
+        "options": [
+          { "id": "currency", "label": "Because the prices are in KES" },
+          { "id": "fixed", "label": "So the price list stays the same when the formula is copied down" },
+          { "id": "exact", "label": "It turns on exact match" },
+          { "id": "faster", "label": "It makes the lookup faster" }
+        ]
+      },
+      {
+        "id": "l4-line-total",
+        "type": "numeric",
+        "prompt": "An order line is 3 pairs of SL-075. What does =XLOOKUP(\"SL-075\",$E$2:$E$6,$G$2:$G$6)*3 return, in KES?",
+        "answerHint": "Whole number, in KES"
+      }
+    ]
+  }
+}

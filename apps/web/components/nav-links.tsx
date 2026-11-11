@@ -6,6 +6,7 @@ import { cn } from "@flightdeck/ui";
 
 const links = [
   { href: "/cockpit", label: "Cockpit" },
+  { href: "/catalogue", label: "Catalogue" },
   { href: "/missions/excel-sum-101", label: "Current mission" },
 ] as const;
 

@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-sum-101",
+  "trackId": "excel",
+  "code": "EX-101",
+  "title": "Totals with SUM",
+  "summary": "Add up a column of monthly sales and check your answer like a pro.",
+  "estimatedMinutes": 12,
+  "passMark": 0.8,
+  "exerciseId": "sum-relative-refs",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Finance needs the quarter's sales total before the 10:00 review. You will use SUM to add a range of cells instead of typing every number."
+        },
+        {
+          "type": "paragraph",
+          "text": "The sheet holds January to March sales, in KES thousands (K), for the North and South shoe-store regions. A typed total goes stale the moment someone corrects a month; a SUM formula never does."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: total a column with one formula.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 80% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUM(B2:B4)",
+          "text": "Adds every value from B2 to B4. The colon means \"through\", so the formula keeps working if a value changes."
+        },
+        {
+          "type": "table",
+          "caption": "North region sales, KES thousands (K)",
+          "columns": ["Row", "A: Month", "B: North (K)"],
+          "rows": [
+            ["2", "Jan", "120"],
+            ["3", "Feb", "95"],
+            ["4", "Mar", "143"]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Relative references move with the formula. Copy =SUM(B2:B4) from B5 one column to the right and Excel rewrites it as =SUM(C2:C4), the South column. One pattern, every region."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: select the range with your keyboard using Shift and the arrow keys, then press Enter."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [{ "type": "excel-grid" }, { "type": "exercise-hints" }]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four short questions check that you can choose the right range. Amounts are in KES thousands (K); type whole numbers."
+        },
+        { "type": "assessment-items", "itemIds": ["s1-range-12-months", "s2-kisumu-total", "s3-copy-right", "s4-corrected-month"] }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "SUM totals a range: =SUM(B2:B4).",
+            "Ranges use a colon: B2:B4 means B2 through B4.",
+            "Totals update automatically when a month is corrected, so never type a total by hand.",
+            "Relative references shift when you copy a formula, so one pattern totals every column."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Complete every mission in the Excel Masterclass to earn its Certificate. Next: IF and business thresholds."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "s1-range-12-months",
+        "type": "single-choice",
+        "prompt": "Monthly sales for a full year sit in B2 to B13. Which formula gives the yearly total?",
+        "options": [
+          { "id": "sum-range", "label": "=SUM(B2:B13)" },
+          { "id": "sum-two-cells", "label": "=SUM(B2,B13)" },
+          { "id": "add-two-cells", "label": "=B2+B13" },
+          { "id": "typed", "label": "Type the total from a calculator" }
+        ]
+      },
+      {
+        "id": "s2-kisumu-total",
+        "type": "numeric",
+        "prompt": "A Kisumu store sold school shoes worth 45K in January, 62K in February and 38K in March (B2:B4). What does =SUM(B2:B4) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "s3-copy-right",
+        "type": "single-choice",
+        "prompt": "B5 contains =SUM(B2:B4). You copy B5 into C5. What formula does C5 contain?",
+        "options": [
+          { "id": "same", "label": "=SUM(B2:B4)" },
+          { "id": "shifted", "label": "=SUM(C2:C4)" },
+          { "id": "down", "label": "=SUM(B3:B5)" },
+          { "id": "value", "label": "The number from B5" }
+        ]
+      },
+      {
+        "id": "s4-corrected-month",
+        "type": "numeric",
+        "prompt": "North's quarter is Jan 120K, Feb 95K and Mar 143K. Finance corrects February to 105K. What does the North total formula show now, in K?",
+        "answerHint": "Whole number, in K"
+      }
+    ]
+  }
+}

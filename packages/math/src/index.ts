@@ -7,3 +7,4 @@ export * from "./grade";
 export * from "./render";
 export * from "./explorer";
 export * from "./mission";
+export * from "./assessment";

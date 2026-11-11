@@ -31,22 +31,46 @@ import {
   type GridPos,
 } from "./grid-helpers";
 import { HARD_TIMEOUT_MS } from "./protocol";
+import { checkEndpointFor, checkOnServer, type ServerCheckResult } from "./server-check";
 
 export interface ExcelGridProps {
   /** Learner-safe exercise definition (content/excel/exercises/<id>.json). */
   exercise: ExerciseDefinition;
   /**
    * PRACTICE ONLY. The server-only answer key (<id>.key.json). Passing it ships the answers to the
-   * browser, so use it only while server grading is unavailable. Without it, "Check my work" runs a
-   * structure-only practice check.
+   * browser, so use it only while server grading is unavailable. Without it, the offline fallback
+   * runs a structure-only practice check.
    */
   practiceKey?: ExerciseKey;
-  /** Called after each practice check with the result and the submission that was checked. */
-  onCheck?: (result: ValidationResult, submission: Submission) => void;
+  /**
+   * Server check endpoint. Defaults to /api/exercises/<id>/check. Pass null to use only the local
+   * practice check (for previews without a server).
+   */
+  checkEndpoint?: string | null;
+  /** Called after each check with the result, the submission that was checked and where it was checked. */
+  onCheck?: (result: CheckView, submission: Submission, source: CheckSource) => void;
   className?: string;
 }
 
 type CalcState = "busy" | "idle" | "timeout" | "crashed";
+
+/** Where a check result came from: the server (authoritative, not saved yet) or the browser. */
+export type CheckSource = "server" | "local";
+
+/** The parts of a check result the grid shows (server and local results share this shape). */
+export type CheckView = Pick<ServerCheckResult, "passed" | "score" | "checks" | "rejected"> & {
+  mode?: ValidationResult["mode"];
+};
+
+interface CheckState {
+  source: CheckSource;
+  result: CheckView;
+  /** Why the local fallback ran, when it did. */
+  note?: string;
+}
+
+const SERVER_LABEL = "Checked by the server (not saved yet)";
+const LOCAL_LABEL = "Practice check in your browser";
 
 interface EditState {
   source: "cell" | "bar";
@@ -57,9 +81,10 @@ const ALIGN_CLASS = { left: "text-left", right: "text-right", center: "text-cent
 
 /**
  * Interactive Excel practice grid. Formulas run in a Web Worker (TB7) with a 500 ms hard timeout;
- * the result of "Check my work" is a local practice check, never the official verdict.
+ * "Check my work" posts to the server check API (authoritative, not saved yet) and falls back to a
+ * local practice check when the server cannot be reached.
  */
-export function ExcelGrid({ exercise, practiceKey, onCheck, className }: ExcelGridProps) {
+export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, className }: ExcelGridProps) {
   const uid = useId();
   const size = exercise.grid;
   const editable = useMemo(() => new Set(exercise.editableCells), [exercise.editableCells]);
@@ -71,7 +96,8 @@ export function ExcelGrid({ exercise, practiceKey, onCheck, className }: ExcelGr
   const [calc, setCalc] = useState<CalcState>("busy");
   const [sel, setSel] = useState<GridPos>(() => firstEditable(exercise.editableCells, size));
   const [edit, setEdit] = useState<EditState | null>(null);
-  const [check, setCheck] = useState<ValidationResult | null>(null);
+  const [check, setCheck] = useState<CheckState | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const [announcement, setAnnouncement] = useState("");
 
@@ -263,19 +289,51 @@ export function ExcelGrid({ exercise, practiceKey, onCheck, className }: ExcelGr
     setAnnouncement("The sheet was reset to its starting values.");
   };
 
-  const runCheck = () => {
+  const showCheck = (state: CheckState, submission: Submission) => {
+    const { result } = state;
+    setCheck(state);
+    setCheckError(null);
+    const passedCount = result.checks.filter((c) => c.passed).length;
+    const label = state.source === "server" ? SERVER_LABEL : LOCAL_LABEL;
+    setAnnouncement(`${label}: ${checkSummary(passedCount, result.checks.length, result.score, result.passed)}`);
+    onCheck?.(result, submission, state.source);
+  };
+
+  const runLocalCheck = async (submission: Submission, note?: string) => {
+    try {
+      const result = await getClient().validate(exercise, submission, practiceKey);
+      showCheck({ source: "local", result, note }, submission);
+    } catch (err) {
+      handleEngineError(err);
+    }
+  };
+
+  const runCheck = async () => {
     const submission = buildSubmission(exercise, inputs);
     setChecking(true);
-    getClient()
-      .validate(exercise, submission, practiceKey)
-      .then((result) => {
-        setCheck(result);
-        const passedCount = result.checks.filter((c) => c.passed).length;
-        setAnnouncement(`Practice check: ${checkSummary(passedCount, result.checks.length, result.score, result.passed)}`);
-        onCheck?.(result, submission);
-      })
-      .catch(handleEngineError)
-      .finally(() => setChecking(false));
+    setCheckError(null);
+    try {
+      const endpoint = checkEndpoint === undefined ? checkEndpointFor(exercise.id) : checkEndpoint;
+      if (endpoint === null) {
+        await runLocalCheck(submission);
+        return;
+      }
+      const outcome = await checkOnServer(submission, {
+        endpoint,
+        online: typeof navigator === "undefined" ? undefined : navigator.onLine,
+      });
+      if (outcome.kind === "graded") {
+        showCheck({ source: "server", result: outcome.result }, submission);
+      } else if (outcome.kind === "refused") {
+        setCheck(null);
+        setCheckError(outcome.message);
+        setAnnouncement(`The server could not check your work: ${outcome.message}`);
+      } else {
+        await runLocalCheck(submission, `${outcome.reason} This practice check ran in your browser instead.`);
+      }
+    } finally {
+      setChecking(false);
+    }
   };
 
   const rows = Array.from({ length: size.rows }, (_, r) => r);
@@ -444,30 +502,37 @@ export function ExcelGrid({ exercise, practiceKey, onCheck, className }: ExcelGr
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button onClick={runCheck} disabled={checking || calc === "busy"}>
+        <Button onClick={() => void runCheck()} disabled={checking || calc === "busy"}>
           {checking ? "Checking..." : "Check my work"}
         </Button>
         <Button variant="secondary" onClick={reset}>
           Reset
         </Button>
-        <Badge tone="muted">Practice check</Badge>
+        <Badge tone="muted">{check?.source === "local" ? "Practice check" : "Server check"}</Badge>
         {calc === "busy" ? <span className="text-xs text-fg-muted">Calculating...</span> : null}
       </div>
 
+      {checkError ? (
+        <p role="alert" className="rounded-md border border-danger bg-surface px-3 py-2 text-sm text-danger">
+          The server could not check your work: {checkError}
+        </p>
+      ) : null}
+
       {check ? (
         <section aria-labelledby={`${uid}-check`} className="rounded-md border border-border-strong bg-surface p-4 text-sm">
-          <h3 id={`${uid}-check`} className={cn("font-semibold", check.passed ? "text-success" : "text-fg")}>
-            Practice check:{" "}
+          <h3 id={`${uid}-check`} className={cn("font-semibold", check.result.passed ? "text-success" : "text-fg")}>
+            {check.source === "server" ? SERVER_LABEL : LOCAL_LABEL}:{" "}
             {checkSummary(
-              check.checks.filter((c) => c.passed).length,
-              check.checks.length,
-              check.score,
-              check.passed,
+              check.result.checks.filter((c) => c.passed).length,
+              check.result.checks.length,
+              check.result.score,
+              check.result.passed,
             )}
           </h3>
-          {check.rejected ? <p className="mt-1 text-danger">{check.rejected.message}</p> : null}
+          {check.note ? <p className="mt-1 text-fg-muted">{check.note}</p> : null}
+          {check.result.rejected ? <p className="mt-1 text-danger">{check.result.rejected.message}</p> : null}
           <ul className="mt-2 flex flex-col gap-1">
-            {check.checks.map((c) => (
+            {check.result.checks.map((c) => (
               <li key={c.id} className={c.passed ? "text-success" : "text-danger"}>
                 <span className="font-semibold">{c.passed ? "Pass" : "Not yet"}:</span>{" "}
                 <span className="text-fg">{c.message}</span>
@@ -475,10 +540,11 @@ export function ExcelGrid({ exercise, practiceKey, onCheck, className }: ExcelGr
             ))}
           </ul>
           <p className="mt-2 text-xs text-fg-muted">
-            {check.mode === "structure-only"
-              ? "This practice check only confirms your cells calculate. "
-              : "This is a practice check run in your browser. "}
-            Your official result will come from the server.
+            {check.source === "server"
+              ? "The server recalculated your sheet and ran hidden tests. Attempts are not saved yet."
+              : check.result.mode === "structure-only"
+                ? "This practice check only confirms your cells calculate. Your official result comes from the server."
+                : "This is a practice check run in your browser. Your official result comes from the server."}
           </p>
         </section>
       ) : null}

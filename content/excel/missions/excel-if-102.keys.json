@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-if-102",
+  "items": [
+    {
+      "id": "i1-boundary",
+      "type": "single-choice",
+      "correctOptionId": "reorder",
+      "rationale": "30 <= 30 is TRUE, so the line is at its reorder point and must be reordered."
+    },
+    {
+      "id": "i2-bonus-formula",
+      "type": "single-choice",
+      "correctOptionId": "gte",
+      "rationale": "\"At least\" includes 50,000 itself, so the comparison is >=. Text needs double quotes."
+    },
+    {
+      "id": "i3-commission",
+      "type": "numeric",
+      "expected": 360,
+      "tolerance": { "kind": "absolute", "value": 0 },
+      "rationale": "7,200 >= 5,000 is TRUE, so the result is 7,200 x 5% = 360."
+    },
+    {
+      "id": "i4-threshold-cell",
+      "type": "single-choice",
+      "correctOptionId": "follows-data",
+      "rationale": "Pointing at C2 keeps the business rule in the data: change the reorder point and every flag follows."
+    }
+  ]
+}

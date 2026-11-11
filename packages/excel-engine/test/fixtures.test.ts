@@ -13,6 +13,8 @@ import ifEx from "../../../content/excel/exercises/if-business-thresholds.json";
 import ifKey from "../../../content/excel/exercises/if-business-thresholds.key.json";
 import tierEx from "../../../content/excel/exercises/commission-tier-if-chain.json";
 import tierKey from "../../../content/excel/exercises/commission-tier-if-chain.key.json";
+import xlpEx from "../../../content/excel/exercises/xlookup-price-list.json";
+import xlpKey from "../../../content/excel/exercises/xlookup-price-list.key.json";
 
 interface Fixture {
   exercise: ExerciseDefinition;
@@ -64,6 +66,26 @@ const FIXTURES: Fixture[] = [
       "relative refs drift": rows(["C2", "C3", "C4", "C5"], (r) => `=IF(B${r}>=F${r + 2},G${r + 2},IF(B${r}>=F${r + 1},G${r + 1},G${r}))`),
     },
   },
+  {
+    exercise: xlpEx as unknown as ExerciseDefinition,
+    key: xlpKey as unknown as ExerciseKey,
+    solution: rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},$E$2:$E$6,$G$2:$G$6,"Not listed")`),
+    wrong: {
+      empty: {},
+      "typed constants": { C2: "2499", C3: "1999", C4: "899", C5: "Not listed" },
+      "positional refs instead of a lookup": { C2: "=XLOOKUP(B2,B2,$G$2)", C3: "=XLOOKUP(B3,B3,$G$3)", C4: "=XLOOKUP(B4,B4,$G$4)", C5: '=XLOOKUP(B5,$E$2:$E$6,$G$2:$G$6,"Not listed")' },
+      "no if_not_found (#N/A)": rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},$E$2:$E$6,$G$2:$G$6)`),
+      "price list missing its last row": rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},$E$2:$E$5,$G$2:$G$5,"Not listed")`),
+      "relative refs drift": rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},E${r}:E${r + 4},G${r}:G${r + 4},"Not listed")`),
+      "returns the product name": rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},$E$2:$E$6,$F$2:$F$6,"Not listed")`),
+      "hard-coded lookup values": {
+        C2: '=XLOOKUP("SS-210",$E$2:$E$6,$G$2:$G$6,"Not listed")',
+        C3: '=XLOOKUP("SN-450",$E$2:$E$6,$G$2:$G$6,"Not listed")',
+        C4: '=XLOOKUP("SD-120",$E$2:$E$6,$G$2:$G$6,"Not listed")',
+        C5: '=XLOOKUP("GB-610",$E$2:$E$6,$G$2:$G$6,"Not listed")',
+      },
+    },
+  },
 ];
 
 describe.each(FIXTURES)("exercise $exercise.id", ({ exercise, key, solution, wrong }) => {
@@ -106,8 +128,29 @@ describe.each(FIXTURES)("exercise $exercise.id", ({ exercise, key, solution, wro
   });
 });
 
+describe("xlookup-price-list", () => {
+  const ex = xlpEx as unknown as ExerciseDefinition;
+  const key = xlpKey as unknown as ExerciseKey;
+  it("rejects approximate-match arguments as a learner mistake, not a crash", () => {
+    const cells = rows(["C2", "C3", "C4", "C5"], (r) => `=XLOOKUP(B${r},$E$2:$E$6,$G$2:$G$6,"Not listed",-1)`);
+    const r = validateSubmission(ex, { exerciseId: ex.id, exerciseVersion: ex.version, cells }, key);
+    expect(r.rejected).toBeUndefined();
+    expect(r.passed).toBe(false);
+    expect(r.checks.find((c) => c.id === "value:line-1")?.message).toMatch(/#VALUE!.*exact match only/);
+  });
+  it("rejects IF (not in this exercise's allow-list)", () => {
+    const r = validateSubmission(ex, { exerciseId: ex.id, exerciseVersion: ex.version, cells: { C2: '=IF(B2="SS-210",$G$2,0)' } }, key);
+    expect(r.rejected?.code).toBe("disallowed_function");
+  });
+  it("check messages never reveal expected prices or hidden inputs", () => {
+    const r = validateSubmission(ex, { exerciseId: ex.id, exerciseVersion: ex.version, cells: { C2: "1" } }, key);
+    const text = JSON.stringify(r.checks);
+    for (const secret of ["2699", "2149", "949", "1299", "4599", "GB-610", "XX-000", "Gumboot"]) expect(text).not.toContain(secret);
+  });
+});
+
 describe("lookup substitute", () => {
-  it("XLOOKUP is rejected for the tier exercise (not in the v0 subset)", () => {
+  it("XLOOKUP is rejected for the tier exercise (not in its allow-list)", () => {
     const ex = tierEx as unknown as ExerciseDefinition;
     const r = validateSubmission(
       ex,

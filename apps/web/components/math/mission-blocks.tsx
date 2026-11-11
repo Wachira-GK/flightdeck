@@ -5,6 +5,7 @@ import {
   type MathMissionStepId,
   type MissionBlock,
 } from "@flightdeck/math";
+import { MathAssessmentForm } from "./assessment-form";
 import { MathTex } from "./math-tex";
 import { NumericQuestion } from "./numeric-question";
 import { StatsExplorer } from "./stats-explorer";
@@ -12,7 +13,7 @@ import { StatsExplorer } from "./stats-explorer";
 /**
  * Server Component that renders one step of a Mathematics mission from its JSON definition.
  * Mission JSON is client-safe (no answers). Answer keys (*.keys.json) must never be imported here.
- * Assessment items are listed read-only: graded attempts arrive with the server-side grader.
+ * Assessment items are graded by the server (/api/missions/[slug]/assessment); keys stay server-side.
  */
 export function MathMissionStep({ mission, step }: { mission: MathMission; step: MathMissionStepId }) {
   const def = mission.steps.find((s) => s.id === step);
@@ -66,24 +67,7 @@ function Block({ block, mission }: { block: MissionBlock; mission: MathMission }
     }
     case "assessment-items": {
       const items = mission.assessment.items.filter((it) => block.itemIds.includes(it.id));
-      return (
-        <ol className="list-decimal space-y-3 pl-6">
-          {items.map((item) => (
-            <li key={item.id}>
-              <p>{item.prompt}</p>
-              {item.type === "single-choice" ? (
-                <ul className="mt-1 list-[lower-alpha] pl-6 text-fg-muted">
-                  {item.options.map((o) => (
-                    <li key={o.id}>{o.label}</li>
-                  ))}
-                </ul>
-              ) : item.answerHint ? (
-                <p className="text-sm text-fg-muted">Answer format: {item.answerHint}</p>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      );
+      return <MathAssessmentForm missionSlug={mission.slug} items={items} passMark={mission.passMark} />;
     }
   }
 }

@@ -144,7 +144,7 @@ describe("parser: functions", () => {
 
 describe("parser: unsupported input is #NAME? with a clear message", () => {
   it.each([
-    ["=XLOOKUP(A1,B1:B5,C1:C5)", /XLOOKUP is not available/],
+    ["=MATCH(A1,B1:B5,0)", /MATCH is not available/],
     ["=VLOOKUP(A1,B1:C5,2,FALSE)", /VLOOKUP is not available/],
     ["=NOW()", /NOW is not available/],
     ['=INDIRECT("A1")', /INDIRECT is not available/],
