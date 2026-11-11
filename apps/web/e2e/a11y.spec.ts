@@ -165,3 +165,47 @@ test("Catalogue links to every published mission and the lesson pages load", asy
   await page.getByRole("link", { name: /Start mission EX-103/ }).click();
   await expect(page.locator("h1")).toContainText("XLOOKUP");
 });
+
+test.describe("phone width (375px)", () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  for (const route of [
+    "/cockpit",
+    "/catalogue",
+    "/missions/excel-sum-101?step=simulation",
+    "/missions/excel-lookup-103?step=simulation",
+    "/missions/descriptive-stats-101?step=simulation",
+    "/missions/descriptive-stats-101?step=training",
+  ]) {
+    test(`no sideways page scroll on ${route}`, async ({ page }) => {
+      await page.goto(route);
+      const { scroll, client } = await page.evaluate(() => ({
+        scroll: document.documentElement.scrollWidth,
+        client: document.documentElement.clientWidth,
+      }));
+      expect(scroll).toBeLessThanOrEqual(client);
+    });
+  }
+
+  test("starter values show immediately in the Excel grid", async ({ page }) => {
+    await page.goto("/missions/excel-sum-101?step=simulation");
+    await expect(page.getByRole("grid").locator('[aria-label^="B2"]').first()).toContainText("120");
+    // (Next's route announcer also uses role=alert, so check for the engine messages specifically.)
+    await expect(page.locator("main")).not.toContainText(/took longer than|engine stopped/i);
+  });
+
+  test("menu button opens, navigates and closes with Escape", async ({ page }) => {
+    await page.goto("/cockpit");
+    const menu = page.getByRole("button", { name: "Menu" });
+    await expect(menu).toHaveAttribute("aria-expanded", "false");
+    await menu.click();
+    await expect(menu).toHaveAttribute("aria-expanded", "true");
+    await page.keyboard.press("Escape");
+    await expect(menu).toHaveAttribute("aria-expanded", "false");
+    await expect(menu).toBeFocused();
+    await menu.click();
+    await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Catalogue" }).click();
+    await expect(page).toHaveURL(/\/catalogue$/);
+    await expect(page.getByRole("button", { name: "Menu" })).toHaveAttribute("aria-expanded", "false");
+  });
+});

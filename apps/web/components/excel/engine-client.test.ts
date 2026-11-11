@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import exercise from "../../../../content/excel/exercises/sum-relative-refs.json";
 import {
   createEngineClient,
+  EngineBootError,
   EngineCrashError,
   EngineTimeoutError,
   type Timers,
@@ -18,6 +19,11 @@ class FakeWorker implements WorkerLike {
   terminated = false;
   hang = false;
   received: WorkerRequest[] = [];
+
+  /** Real Workers announce readiness once their module has loaded; `silent` simulates one that never starts. */
+  constructor(silent = false) {
+    if (!silent) queueMicrotask(() => this.onmessage?.({ data: { id: 0, type: "ready" } }));
+  }
 
   postMessage(msg: WorkerRequest): void {
     this.received.push(msg);
@@ -78,11 +84,36 @@ describe("engine client", () => {
     expect(client.workersStarted).toBe(1);
   });
 
-  it("caps the timeout at the 500 ms hard limit", () => {
+  it("caps the timeout at the 500 ms hard limit (once the worker is ready)", async () => {
     const t = manualTimers();
     const client = createEngineClient({ createWorker: () => Object.assign(new FakeWorker(), { hang: true }), timeoutMs: 5000, timers: t.timers });
     void client.evaluate({}, {}).catch(() => undefined);
+    await Promise.resolve();
     expect(t.lastMs()).toBe(500);
+  });
+
+  it("does not count worker start-up against the 500 ms limit; requests wait for ready", async () => {
+    const t = manualTimers();
+    let w!: FakeWorker;
+    const client = createEngineClient({
+      createWorker: () => (w = new FakeWorker(true)),
+      timers: t.timers,
+    });
+    const p = client.evaluate({ A1: "5", A2: "=A1*2" }, {});
+    expect(t.lastMs()).toBe(15_000); // only the boot allowance is running
+    expect(w.received).toHaveLength(0); // queued, not sent
+    w.onmessage?.({ data: { id: 0, type: "ready" } });
+    expect(w.received).toHaveLength(1);
+    expect((await p).A2).toBe(10);
+  });
+
+  it("rejects with EngineBootError when the worker never starts", async () => {
+    const t = manualTimers();
+    const client = createEngineClient({ createWorker: () => new FakeWorker(true), timers: t.timers, bootTimeoutMs: 3000 });
+    const p = client.evaluate({ A1: "1" }, {});
+    expect(t.lastMs()).toBe(3000);
+    t.fireAll();
+    await expect(p).rejects.toBeInstanceOf(EngineBootError);
   });
 
   it("terminates a hung worker on timeout and recovers with a fresh one", async () => {
@@ -98,6 +129,7 @@ describe("engine client", () => {
       timers: t.timers,
     });
     const p = client.evaluate({ A1: "1" }, {});
+    await Promise.resolve(); // let the worker report ready, so only the 500 ms timer is pending
     t.fireAll();
     await expect(p).rejects.toBeInstanceOf(EngineTimeoutError);
     expect(workers[0]!.terminated).toBe(true);
@@ -107,15 +139,27 @@ describe("engine client", () => {
     expect(client.workersStarted).toBe(2);
   });
 
-  it("rejects pending requests when the worker errors", async () => {
+  it("rejects pending requests with EngineCrashError when a running worker errors", async () => {
     let worker: FakeWorker | null = null;
     const client = createEngineClient({
       createWorker: () => (worker = Object.assign(new FakeWorker(), { hang: true })),
       timers: manualTimers().timers,
     });
     const p = client.evaluate({}, {});
+    await Promise.resolve(); // worker is ready
     worker!.onerror?.(new Error("boom"));
     await expect(p).rejects.toBeInstanceOf(EngineCrashError);
+  });
+
+  it("treats an error before ready (script failed to load) as a boot failure", async () => {
+    let worker: FakeWorker | null = null;
+    const client = createEngineClient({
+      createWorker: () => (worker = new FakeWorker(true)),
+      timers: manualTimers().timers,
+    });
+    const p = client.evaluate({}, {});
+    worker!.onerror?.(new Error("404"));
+    await expect(p).rejects.toBeInstanceOf(EngineBootError);
   });
 
   it("runs the practice validation in the worker", async () => {

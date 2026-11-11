@@ -2,6 +2,7 @@
 
 import {
   buildSubmission,
+  evaluateSheet,
   exerciseLimits,
   formatValue,
   isCellError,
@@ -16,6 +17,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type Keyboard
 import {
   createBrowserEngineWorker,
   createEngineClient,
+  EngineBootError,
   EngineTimeoutError,
   type EngineClient,
 } from "./engine-client";
@@ -92,8 +94,10 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const timeoutMs = Math.min(exercise.timeoutMs ?? HARD_TIMEOUT_MS, HARD_TIMEOUT_MS);
 
   const [inputs, setInputs] = useState<Record<string, string>>(() => ({ ...exercise.starter }));
-  const [values, setValues] = useState<Record<string, CellValue>>({});
-  const [calc, setCalc] = useState<CalcState>("busy");
+  // Starter values are computed straight away on the main thread (small, limit-bounded sheet), so the
+  // grid never appears empty while the Worker downloads; edits are then calculated in the Worker.
+  const [values, setValues] = useState<Record<string, CellValue>>(() => evaluateSheet({ ...exercise.starter }, limits));
+  const [calc, setCalc] = useState<CalcState>("idle");
   const [sel, setSel] = useState<GridPos>(() => firstEditable(exercise.editableCells, size));
   const [edit, setEdit] = useState<EditState | null>(null);
   const [check, setCheck] = useState<CheckState | null>(null);
@@ -102,6 +106,8 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const [announcement, setAnnouncement] = useState("");
 
   const clientRef = useRef<EngineClient | null>(null);
+  /** Set when the Worker cannot start (blocked/slow network): calculate on the main thread instead. */
+  const inlineModeRef = useRef(false);
   const requestRef = useRef(0);
   const focusCellRef = useRef(false);
   const cellRefs = useRef(new Map<string, HTMLTableCellElement>());
@@ -122,6 +128,10 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   }, [timeoutMs]);
 
   const handleEngineError = useCallback((err: unknown) => {
+    if (err instanceof EngineBootError) {
+      inlineModeRef.current = true;
+      return;
+    }
     const timedOut = err instanceof EngineTimeoutError;
     setCalc(timedOut ? "timeout" : "crashed");
     setAnnouncement(
@@ -134,6 +144,12 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const recalc = useCallback(
     (next: Record<string, string>) => {
       const id = ++requestRef.current;
+      if (inlineModeRef.current) {
+        // Fallback: the engine is pure and limit-bounded (cells, AST depth, edges), so it is safe here.
+        setValues(evaluateSheet(next, limits));
+        setCalc("idle");
+        return;
+      }
       setCalc("busy");
       getClient()
         .evaluate(next, limits)
@@ -143,32 +159,30 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
           setCalc("idle");
         })
         .catch((err: unknown) => {
-          if (id === requestRef.current) handleEngineError(err);
+          if (id !== requestRef.current) return;
+          handleEngineError(err);
+          if (err instanceof EngineBootError) {
+            setValues(evaluateSheet(next, limits));
+            setCalc("idle");
+          }
         });
     },
     [getClient, limits, handleEngineError],
   );
 
-  // Start the Worker and compute the starter sheet; stop the Worker on unmount.
+  // Start (warm up) the Worker in the background; stop it on unmount. Starter values are already shown.
   useEffect(() => {
     const client = createEngineClient({ createWorker: createBrowserEngineWorker, timeoutMs });
     clientRef.current = client;
-    const id = ++requestRef.current;
-    client
-      .evaluate({ ...exercise.starter }, limits)
-      .then((v) => {
-        if (id !== requestRef.current) return;
-        setValues(v);
-        setCalc("idle");
-      })
-      .catch((err: unknown) => {
-        if (id === requestRef.current) handleEngineError(err);
-      });
+    inlineModeRef.current = false;
+    client.evaluate({ ...exercise.starter }, limits).catch((err: unknown) => {
+      if (err instanceof EngineBootError) inlineModeRef.current = true;
+    });
     return () => {
       client.dispose();
       if (clientRef.current === client) clientRef.current = null;
     };
-  }, [exercise.starter, limits, timeoutMs, handleEngineError]);
+  }, [exercise.starter, limits, timeoutMs]);
 
   // Move DOM focus with the roving tabindex, but only after keyboard/mouse interaction in the grid.
   useEffect(() => {
@@ -394,8 +408,13 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
         </div>
       ) : null}
 
-      {/* Grid */}
-      <div className="overflow-x-auto rounded-md border border-border-strong">
+      {/* Grid: wide sheets scroll sideways inside this box (row numbers stay pinned), never the page. */}
+      {size.cols > 3 ? (
+        <p className="text-xs text-fg-muted sm:hidden">
+          Swipe the sheet sideways to see columns A–{posToKey({ row: 0, col: size.cols - 1 }).replace(/\d+$/, "")}.
+        </p>
+      ) : null}
+      <div className="overflow-x-auto overscroll-x-contain rounded-md border border-border-strong">
         <table
           role="grid"
           aria-label={`${exercise.title} practice sheet`}
@@ -403,11 +422,11 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
           aria-rowcount={size.rows + 1}
           aria-colcount={size.cols + 1}
           aria-busy={calc === "busy"}
-          className="w-full min-w-[20rem] border-collapse font-mono text-sm"
+          className="w-full border-collapse font-mono text-xs sm:text-sm"
         >
           <thead>
             <tr role="row" aria-rowindex={1} className="bg-surface-2 text-fg-muted">
-              <th role="columnheader" aria-colindex={1} className="w-12 border-r border-b border-border-strong px-2 py-1.5">
+              <th role="columnheader" aria-colindex={1} className="sticky left-0 z-10 w-8 border-r border-b border-border-strong bg-surface-2 px-1 py-1.5 sm:w-12 sm:px-2">
                 <span className="sr-only">Row</span>
               </th>
               {cols.map((c) => (
@@ -415,7 +434,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                   key={c}
                   role="columnheader"
                   aria-colindex={c + 2}
-                  className="min-w-24 border-r border-b border-border-strong px-3 py-1.5 text-center font-semibold last:border-r-0"
+                  className="min-w-16 border-r border-b border-border-strong px-1.5 py-1.5 text-center font-semibold last:border-r-0 sm:min-w-24 sm:px-3"
                 >
                   {posToKey({ row: 0, col: c }).replace(/\d+$/, "")}
                 </th>
@@ -428,7 +447,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                 <th
                   role="rowheader"
                   aria-colindex={1}
-                  className="border-r border-border-strong bg-surface-2 px-2 py-1.5 text-center font-semibold text-fg-muted"
+                  className="sticky left-0 z-10 border-r border-border-strong bg-surface-2 px-2 py-1.5 text-center font-semibold text-fg-muted"
                 >
                   {r + 1}
                 </th>
@@ -460,7 +479,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                         if (isEditable && isSel) beginEdit("cell", input);
                       }}
                       className={cn(
-                        "h-9 border-r border-border-strong px-3 py-1 whitespace-nowrap last:border-r-0",
+                        "h-10 border-r border-border-strong px-1.5 py-1 whitespace-nowrap last:border-r-0 sm:h-9 sm:px-3",
                         "cursor-cell outline-offset-[-3px]",
                         isEditable
                           ? "bg-surface shadow-[inset_0_0_0_2px_var(--fd-accent)]"

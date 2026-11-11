@@ -53,3 +53,6 @@ scope.onmessage = (event) => {
   }
   scope.postMessage(response);
 };
+
+// Tell the main thread the engine is loaded, so its 500 ms per-calculation watchdog starts now.
+scope.postMessage({ id: 0, type: "ready" });

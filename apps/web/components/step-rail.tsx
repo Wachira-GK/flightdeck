@@ -17,24 +17,25 @@ export function StepRail({
 }) {
   return (
     <nav aria-label="Mission steps">
-      <ol className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+      {/* Phones: five equal columns (marker + short label) that always fit; desktop: vertical rail. */}
+      <ol className="grid grid-cols-5 gap-1 lg:flex lg:flex-col lg:gap-2">
         {MISSION_STEPS.map((step, i) => {
           const status = stepStatus(step, current, completed);
           return (
-            <li key={step} className="shrink-0">
+            <li key={step} className="min-w-0">
               <Link
                 href={`/missions/${slug}?step=${step}`}
                 aria-current={status === "current" ? "step" : undefined}
                 scroll={false}
                 className={cn(
-                  "flex items-center gap-3 rounded-md border px-3 py-2 text-sm transition-colors duration-(--fd-duration-fast)",
+                  "flex min-h-11 flex-col items-center gap-1 rounded-md border px-1 py-2 text-center text-[11px] leading-tight transition-colors duration-(--fd-duration-fast) sm:text-xs lg:flex-row lg:gap-3 lg:px-3 lg:text-left lg:text-sm",
                   status === "current"
                     ? "border-accent bg-accent-subtle font-semibold text-accent"
                     : "border-transparent text-fg hover:bg-surface-2",
                 )}
               >
                 <StepMarker index={i + 1} status={status} />
-                <span>{STEP_LABELS[step]}</span>
+                <span className="w-full truncate lg:w-auto">{STEP_LABELS[step]}</span>
                 {status === "complete" ? <span className="sr-only">(completed)</span> : null}
               </Link>
             </li>

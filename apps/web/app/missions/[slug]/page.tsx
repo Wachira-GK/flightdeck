@@ -60,13 +60,13 @@ export default async function MissionPage({ params, searchParams }: Props) {
         </div>
       </header>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[14rem_1fr]">
-        <aside aria-label="Mission navigation">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
+        <aside aria-label="Mission navigation" className="min-w-0">
           <StepRail slug={mission.slug} current={step} completed={mission.completedSteps} />
         </aside>
 
-        <section aria-labelledby="step-title">
-          <Card className="min-h-80">
+        <section aria-labelledby="step-title" className="min-w-0">
+          <Card className="min-h-80 p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <Badge tone="accent">
                 Step {stepIndex(step) + 1} of {MISSION_STEPS.length}

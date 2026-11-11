@@ -6,7 +6,7 @@ import type {
   Submission,
   ValidationResult,
 } from "@flightdeck/excel-engine";
-import { HARD_TIMEOUT_MS, type WorkerRequest, type WorkerResponse } from "./protocol";
+import { BOOT_TIMEOUT_MS, HARD_TIMEOUT_MS, type WorkerRequest, type WorkerResponse } from "./protocol";
 
 /** The subset of the Worker API the client needs (lets tests inject a fake). */
 export interface WorkerLike {
@@ -20,6 +20,14 @@ export class EngineTimeoutError extends Error {
   constructor(readonly timeoutMs: number) {
     super(`The calculation took longer than ${timeoutMs} ms and was stopped`);
     this.name = "EngineTimeoutError";
+  }
+}
+
+/** The Worker never reported "ready" (blocked, offline, or too slow to download). Callers may fall back. */
+export class EngineBootError extends Error {
+  constructor(readonly timeoutMs: number) {
+    super(`The calculation engine did not start within ${timeoutMs} ms`);
+    this.name = "EngineBootError";
   }
 }
 
@@ -37,8 +45,10 @@ export interface Timers {
 
 export interface EngineClientOptions {
   createWorker: () => WorkerLike;
-  /** Capped at the 500 ms hard timeout. */
+  /** Per-calculation limit, capped at the 500 ms hard timeout. Starts only once the Worker is ready. */
   timeoutMs?: number;
+  /** Start-up allowance for the Worker (download + parse). Default 15 s. */
+  bootTimeoutMs?: number;
   timers?: Timers;
 }
 
@@ -57,6 +67,8 @@ interface Pending {
   resolve(r: WorkerResponse): void;
   reject(e: Error): void;
   timer: unknown;
+  /** Message waiting for the Worker to become ready. */
+  queued?: WorkerRequest;
 }
 
 const defaultTimers: Timers = {
@@ -65,20 +77,29 @@ const defaultTimers: Timers = {
 };
 
 /**
- * Main-thread wrapper around the engine Worker. Every request has a hard timeout: if it expires,
- * the Worker is terminated (stopping any runaway calculation), all pending requests reject, and a
- * fresh Worker is started lazily on the next request.
+ * Main-thread wrapper around the engine Worker. A new Worker first gets a start-up allowance
+ * (bootTimeoutMs); requests sent meanwhile are queued. Once it reports "ready", every request has the
+ * hard calculation timeout: if it expires, the Worker is terminated (stopping any runaway calculation),
+ * all pending requests reject, and a fresh Worker is started lazily on the next request.
  */
 export function createEngineClient(options: EngineClientOptions): EngineClient {
   const timeoutMs = Math.min(options.timeoutMs ?? HARD_TIMEOUT_MS, HARD_TIMEOUT_MS);
+  const bootTimeoutMs = options.bootTimeoutMs ?? BOOT_TIMEOUT_MS;
   const timers = options.timers ?? defaultTimers;
   let worker: WorkerLike | null = null;
+  let ready = false;
+  let bootTimer: unknown = null;
   let started = 0;
   let nextId = 1;
   let disposed = false;
   const pending = new Map<number, Pending>();
 
   function kill(error: Error) {
+    if (bootTimer !== null) {
+      timers.clear(bootTimer);
+      bootTimer = null;
+    }
+    ready = false;
     if (worker) {
       worker.onmessage = null;
       worker.onerror = null;
@@ -96,17 +117,43 @@ export function createEngineClient(options: EngineClientOptions): EngineClient {
     if (worker) return worker;
     const w = options.createWorker();
     started++;
+    ready = false;
     w.onmessage = (event) => {
       const res = event.data;
+      if (res.type === "ready") {
+        if (worker !== w || ready) return;
+        ready = true;
+        if (bootTimer !== null) timers.clear(bootTimer);
+        bootTimer = null;
+        for (const [id, p] of pending) {
+          if (!p.queued) continue;
+          const msg = p.queued;
+          delete p.queued;
+          dispatch(w, id, p, msg);
+        }
+        return;
+      }
       const p = pending.get(res.id);
       if (!p) return;
       pending.delete(res.id);
       timers.clear(p.timer);
       p.resolve(res);
     };
-    w.onerror = () => kill(new EngineCrashError());
+    w.onerror = () => kill(ready ? new EngineCrashError() : new EngineBootError(bootTimeoutMs));
     worker = w;
+    bootTimer = timers.set(() => kill(new EngineBootError(bootTimeoutMs)), bootTimeoutMs);
     return w;
+  }
+
+  function dispatch(w: WorkerLike, id: number, p: Pending, msg: WorkerRequest) {
+    p.timer = timers.set(() => kill(new EngineTimeoutError(timeoutMs)), timeoutMs);
+    try {
+      w.postMessage(msg);
+    } catch (e) {
+      pending.delete(id);
+      timers.clear(p.timer);
+      p.reject(e instanceof Error ? e : new EngineCrashError());
+    }
   }
 
   function send(req: RequestBody): Promise<WorkerResponse> {
@@ -114,15 +161,11 @@ export function createEngineClient(options: EngineClientOptions): EngineClient {
     const id = nextId++;
     return new Promise<WorkerResponse>((resolve, reject) => {
       const w = ensureWorker();
-      const timer = timers.set(() => kill(new EngineTimeoutError(timeoutMs)), timeoutMs);
-      pending.set(id, { resolve, reject, timer });
-      try {
-        w.postMessage({ ...req, id } as WorkerRequest);
-      } catch (e) {
-        pending.delete(id);
-        timers.clear(timer);
-        reject(e instanceof Error ? e : new EngineCrashError());
-      }
+      const msg = { ...req, id } as WorkerRequest;
+      const p: Pending = { resolve, reject, timer: null };
+      pending.set(id, p);
+      if (ready) dispatch(w, id, p, msg);
+      else p.queued = msg;
     });
   }
 
