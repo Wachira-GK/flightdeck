@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794361761342,
+  "updated": 1794378525775,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -501,9 +501,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "Assessment versions, answers, grading and attempt history.",
+      "status": "active",
+      "progress": 40,
+      "notes": "11 Nov: server grading slice built (commit dbc3e2c, preview c341b831): pure graders for MA-101 and EX-101/102/103, pass mark from mission JSON, explanations only on a pass, keys server-only in apps/web/server, POST /api/missions/[slug]/assessment, client form, unit + e2e (375px) tests, key-leak scan OK. Remaining: attempt history, assessment versioning and persistence (needs Supabase, paused).",
       "after": [
         "mrjqnn7"
       ],

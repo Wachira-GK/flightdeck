@@ -180,7 +180,7 @@ validateSubmission(exercise, rawBody, key);
 
 React (client): `import { ExcelGrid } from "@/components/excel";` then `<ExcelGrid exercise={exercise} />`. "Check my work" calls `/api/exercises/<id>/check`; pass `checkEndpoint={null}` for local-only previews. Pass `practiceKey` only while server grading is unavailable; it ships the answers to the browser.
 
-Missions (server component): `const excel = getExcelMission(slug); <ExcelMissionStep mission={excel} step={step} />`. Mission JSON lives in `content/excel/missions/<slug>.json` (blocks: `paragraph`, `list`, `formula`, `table`, `excel-grid`, `exercise-hints`, `assessment-items`); assessment keys in `<slug>.keys.json` are server-only. Types and `validateExcelMission` are in `components/excel/missions.ts`. Missions: `excel-sum-101` (EX-101), `excel-if-102` (EX-102), `excel-lookup-103` (EX-103). Assessment items are listed read-only until Excel assessment grading is wired up.
+Missions (server component): `const excel = getExcelMission(slug); <ExcelMissionStep mission={excel} step={step} />`. Mission JSON lives in `content/excel/missions/<slug>.json` (blocks: `paragraph`, `list`, `formula`, `table`, `excel-grid`, `exercise-hints`, `assessment-items`); assessment keys in `<slug>.keys.json` are server-only. Types and `validateExcelMission` are in `components/excel/missions.ts`. Missions: `excel-sum-101` (EX-101), `excel-if-102` (EX-102), `excel-lookup-103` (EX-103). Assessment items render as a form (`components/excel/assessment-form.tsx`) that posts to `POST /api/missions/[slug]/assessment`; the server grades with `server/excel-assessment-grader.ts` and the keys in `<slug>.keys.json` (pass mark from the mission JSON, explanations revealed only on a pass, nothing persisted yet).
 
 ## 9. Tests
 
