@@ -16,6 +16,6 @@
     "@electric-sql/pglite": "^0.3.0",
     "@types/node": "^22.20.5",
     "typescript": "^5.7.0",
-    "vitest": "^3.2.0"
+    "vitest": "^5.1.0"
   }
 }

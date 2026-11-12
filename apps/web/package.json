@@ -17,13 +17,13 @@
     "cf:deploy": "node scripts/cf.mjs build && node scripts/cf.mjs deploy"
   },
   "dependencies": {
-    "@flightdeck/ui": "workspace:*",
-    "next": "16.4.6",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
     "@flightdeck/excel-engine": "workspace:*",
     "@flightdeck/math": "workspace:*",
-    "katex": "^0.16.22"
+    "@flightdeck/ui": "workspace:*",
+    "katex": "^0.18.10",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
@@ -39,7 +39,7 @@
     "eslint-config-next": "16.4.6",
     "tailwindcss": "^4.3.5",
     "typescript": "^5.7.0",
-    "vitest": "^3.2.0",
+    "vitest": "^5.1.0",
     "wrangler": "^4.160.0"
   }
 }

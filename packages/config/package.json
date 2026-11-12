@@ -15,5 +15,8 @@
     "lint": "node -e \"process.exit(0)\"",
     "typecheck": "node -e \"process.exit(0)\"",
     "test": "node -e \"process.exit(0)\""
+  },
+  "devDependencies": {
+    "vitest": "^5.1.0"
   }
 }
