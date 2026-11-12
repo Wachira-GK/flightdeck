@@ -9,6 +9,7 @@ const links = [
   { href: "/cockpit", label: "Cockpit" },
   { href: "/catalogue", label: "Catalogue" },
   { href: "/missions/excel-sum-101", label: "Current mission" },
+  { href: "/sign-in", label: "Sign in" },
 ] as const;
 
 function isActive(pathname: string, href: string) {

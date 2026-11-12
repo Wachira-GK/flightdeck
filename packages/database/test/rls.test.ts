@@ -284,4 +284,22 @@ describe('Data integrity (supporting evidence)', () => {
     });
     expect(rows).toEqual([{ role: 'learner' }]);
   });
+
+  it('DB-I05 sign-up display name is copied into the profile, cleaned and capped at 80 characters', async () => {
+    const names = await db.scenario(async (step) => {
+      const ins = (n: string, meta: string) =>
+        step('postgres', `insert into auth.users (id, email, raw_user_meta_data) values ('00000000-0000-4000-8000-0000000000${n}', '${n}@test.local', '${meta}'::jsonb)`);
+      await ins('a1', JSON.stringify({ display_name: '  Ada\u0007 Lovelace  ' }));
+      await ins('a2', JSON.stringify({ display_name: 'x'.repeat(200) }));
+      await ins('a3', JSON.stringify({ display_name: 42 }));
+      await ins('a4', '{}');
+      return step('postgres', `select right(user_id::text, 2) as k, display_name from public.profiles where user_id::text like '00000000-0000-4000-8000-0000000000a%' order by 1`);
+    });
+    expect(names).toEqual([
+      { k: 'a1', display_name: 'Ada Lovelace' },
+      { k: 'a2', display_name: 'x'.repeat(80) },
+      { k: 'a3', display_name: '' },
+      { k: 'a4', display_name: '' },
+    ]);
+  });
 });

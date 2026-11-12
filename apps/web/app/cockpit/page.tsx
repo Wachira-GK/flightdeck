@@ -3,16 +3,25 @@ import Link from "next/link";
 import { Badge, buttonVariants, Card, CardEyebrow, Progress } from "@flightdeck/ui";
 import { greetingFor, hourIn, relativeTime } from "@/lib/greeting";
 import { missionProgress, STEP_LABELS } from "@/lib/mission";
-import { getTrack, learner, missions, recentActivity, tracks } from "@/lib/mock-data";
+import { getTrack, missions, recentActivity, tracks } from "@/lib/mock-data";
+import { signOutAction } from "@/app/auth/actions";
+import { getOwnProfile } from "@/server/auth/gotrue";
+import { authConfig, requireUser } from "@/server/auth/session";
 
 export const metadata: Metadata = { title: "Cockpit" };
 
-// Rendered per request (time-of-day greeting) so the Cloudflare spike exercises real SSR.
+// Rendered per request: it depends on who is signed in (and the time-of-day greeting).
 export const dynamic = "force-dynamic";
 
-export default function CockpitPage() {
+export default async function CockpitPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const sp = await searchParams;
+  const { user, accessToken } = await requireUser("/cockpit", sp.refreshed === "1");
+  // Own profile + roles, read with the learner's own token: Row Level Security decides what is returned.
+  const profile = await getOwnProfile(authConfig(), accessToken);
+  const displayName = profile?.displayName || user.email.split("@")[0]!;
+  const roles = profile?.roles ?? [];
   const now = new Date();
-  const greeting = greetingFor(hourIn(now, learner.timeZone));
+  const greeting = greetingFor(hourIn(now, profile?.timeZone ?? "Africa/Nairobi"));
   const mission = missions[0]!;
   const track = getTrack(mission.trackId);
   const progress = missionProgress(mission.completedSteps);
@@ -23,9 +32,27 @@ export default function CockpitPage() {
       <header>
         <p className="text-sm text-fg-muted">Cockpit</p>
         <h1 className="mt-1 text-3xl font-semibold sm:text-4xl">
-          {greeting}, {learner.displayName}.
+          {greeting}, {displayName}.
         </h1>
         <p className="mt-2 text-fg-muted">Your next mission is cleared for take-off.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <span className="text-fg-muted" data-testid="signed-in-as">
+            Signed in as {user.email}
+          </span>
+          {roles.map((r) => (
+            <Badge key={r} tone={r === "learner" ? "muted" : "accent"}>
+              {r}
+            </Badge>
+          ))}
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              className="min-h-11 rounded-md border border-border-strong px-3 font-medium text-fg hover:bg-surface-2"
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
       </header>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">

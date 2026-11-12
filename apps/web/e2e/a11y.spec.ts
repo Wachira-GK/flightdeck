@@ -3,7 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 
 const routes = [
   "/",
-  "/cockpit",
+  "/sign-in",
+  "/sign-up",
   "/missions/excel-sum-101",
   "/missions/excel-sum-101?step=simulation",
   "/missions/descriptive-stats-101?step=training",
@@ -40,7 +41,7 @@ for (const route of routes) {
 }
 
 test("skip link is the first tab stop, is visible on focus and moves focus to main", async ({ page }) => {
-  await page.goto("/cockpit");
+  await page.goto("/catalogue");
   await page.keyboard.press("Tab");
   const skip = page.getByRole("link", { name: "Skip to main content" });
   await expect(skip).toBeFocused();
@@ -50,7 +51,7 @@ test("skip link is the first tab stop, is visible on focus and moves focus to ma
 });
 
 test("focused elements show a visible outline", async ({ page }) => {
-  await page.goto("/cockpit");
+  await page.goto("/catalogue");
   await page.keyboard.press("Tab");
   await page.keyboard.press("Tab");
   const outline = await page.evaluate(() => {
@@ -109,7 +110,7 @@ test("unknown mission renders not-found", async ({ page }) => {
 
 test("reduced motion collapses token durations", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/cockpit");
+  await page.goto("/catalogue");
   const d = await page.evaluate(() =>
     getComputedStyle(document.documentElement).getPropertyValue("--fd-duration-base").trim(),
   );
@@ -191,7 +192,8 @@ test.describe("phone width (375px)", () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
   for (const route of [
-    "/cockpit",
+    "/sign-in",
+    "/sign-up",
     "/catalogue",
     "/missions/excel-sum-101?step=simulation",
     "/missions/excel-lookup-103?step=simulation",
@@ -237,7 +239,7 @@ test.describe("phone width (375px)", () => {
   });
 
   test("menu button opens, navigates and closes with Escape", async ({ page }) => {
-    await page.goto("/cockpit");
+    await page.goto("/catalogue");
     const menu = page.getByRole("button", { name: "Menu" });
     await expect(menu).toHaveAttribute("aria-expanded", "false");
     await menu.click();
