@@ -1,7 +1,7 @@
 # Catalogue seeding (FD-C01)
 
-Status: draft, AI-generated, for Data Architect + Security Architect review. Last verified: 11 Nov 2026.
-**Supabase: PAUSED.** No Supabase project exists yet. Everything below runs on the embedded PostgreSQL 17 (PGlite) test harness in `packages/database`. The Supabase steps only apply once the owner creates the project.
+Status: draft, AI-generated, for Data Architect + Security Architect review. Last verified: 12 Nov 2026.
+**Supabase: LIVE (12 Nov).** `catalogue.sql` was applied to the free project after creating the two seed accounts in Dashboard > Authentication (auto-confirm), granting them `author`/`reviewer`, and running only `catalogue.sql` (never `local-users.sql`). Counts and key privacy were verified live. The test harness remains embedded PostgreSQL 17 (PGlite).
 
 ## Pipeline
 
@@ -67,7 +67,7 @@ The seed only *creates* a published version in an empty database. Against a data
 - **Local/test:** apply `local-users.sql` first. It inserts two password-less placeholder `auth.users` rows with fixed ids and gives them the `author`/`reviewer` roles. A production database can block it: `alter database postgres set flightdeck.allow_local_seed_users = 'off'` makes the file raise an error.
 - **Production:** never apply `local-users.sql`. Instead, create two real accounts (Dashboard → Authentication) with the emails in `catalogue.config.json`, grant them `author`/`reviewer`, and then run `catalogue.sql`. To use different people, change `seedActors` in the config and regenerate.
 
-## Applying on Supabase later (PAUSED until the owner creates the project)
+## Applying on Supabase (done once on 12 Nov; steps kept for staging/production)
 
 1. `supabase init` in `packages/database`, keeping `supabase/migrations/`.
 2. In `supabase/config.toml`, list the seeds for local resets:

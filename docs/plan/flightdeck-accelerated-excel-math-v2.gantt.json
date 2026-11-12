@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794378525775,
+  "updated": 1794500000000,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -304,9 +304,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "blocked",
+      "status": "todo",
       "progress": 0,
-      "notes": "PAUSED 11 Nov by Godfrey: Supabase Auth work waits for the Supabase free account/project details (calendar review item 1, 12 Nov). Cockpit shell itself exists (G1 prototype).",
+      "notes": "UNBLOCKED 12 Nov: Supabase free project live (anon key + DB connection saved in apps/web/.env.local; Auth works; two seed accounts exist). Next: sign-in/sign-up UI, session handling, role-aware Cockpit. Cockpit shell exists (G1 prototype).",
       "after": [
         "stfohg9",
         "0wu49hq",
@@ -328,8 +328,8 @@
         "c7dz1l8"
       ],
       "status": "active",
-      "progress": 70,
-      "notes": "12 Nov: seed generator content->catalogue.sql (3 tracks, 2 courses, 4 missions, 20 steps, keys only in app_private), 15 seed tests with drift check, static /catalogue page live. Remaining: missions.code/estimated_minutes migration; apply seed to Supabase (PAUSED until Godfrey creates the project).",
+      "progress": 85,
+      "notes": "12 Nov: seed generator content->catalogue.sql (3 tracks, 2 courses, 4 missions, 20 steps, keys only in app_private), 15 seed tests with drift check, static /catalogue page live. APPLIED to Supabase 12 Nov: author/reviewer roles granted to the two seed accounts, catalogue.sql loaded (tracks 3, courses 2, versions 2, missions 4, steps 20, exercises 5, assessments 4, items 16, keys 5+16), live checks all pass (anon sees published catalogue only, keys unreadable by anon/learner, seed idempotent). Remaining: missions.code/estimated_minutes migration; web catalogue reading from Supabase.",
       "after": [
         "0wu49hq",
         "ldzekm7"

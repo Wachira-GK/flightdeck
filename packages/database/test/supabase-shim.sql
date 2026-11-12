@@ -21,8 +21,11 @@ as $$
   select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
 $$;
 
-grant usage on schema auth to anon, authenticated, service_role, public;
-grant execute on function auth.uid() to public;
+-- Like real Supabase: only these three roles (NOT public) may use schema auth. A role that needs it,
+-- such as the helper owner app_definer, must be granted explicitly (see migration 20261112000400).
+grant usage on schema auth to anon, authenticated, service_role;
+revoke execute on function auth.uid() from public;
+grant execute on function auth.uid() to anon, authenticated, service_role;
 
 grant usage on schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
