@@ -31,6 +31,15 @@ function cookieOptions(maxAge: number) {
   };
 }
 
+/**
+ * Short-lived cookie for the Google round trip: PKCE verifier + where to go afterwards. Scoped to /auth,
+ * HttpOnly, SameSite=Lax (the return from Supabase is a top-level GET, so Lax still sends it), 10 minutes.
+ */
+export const OAUTH_COOKIE = "fd-oauth";
+export function oauthCookieOptions() {
+  return { httpOnly: true, sameSite: "lax" as const, secure: process.env.NODE_ENV === "production", path: "/auth", maxAge: 600 };
+}
+
 export function applySessionCookies(jar: CookieJar, tokens: Tokens): void {
   jar.set(ACCESS_COOKIE, tokens.accessToken, cookieOptions(tokens.expiresIn));
   jar.set(REFRESH_COOKIE, tokens.refreshToken, cookieOptions(REFRESH_MAX_AGE));

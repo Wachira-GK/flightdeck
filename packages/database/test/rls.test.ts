@@ -302,4 +302,24 @@ describe('Data integrity (supporting evidence)', () => {
       { k: 'a4', display_name: '' },
     ]);
   });
+
+  it('DB-I06 a Google account takes its name from full_name or name; display_name wins; blanks and non-text are skipped', async () => {
+    const names = await db.scenario(async (step) => {
+      const ins = (n: string, meta: object) =>
+        step('postgres', `insert into auth.users (id, email, raw_user_meta_data) values ('00000000-0000-4000-8000-0000000000${n}', '${n}@test.local', '${JSON.stringify(meta)}'::jsonb)`);
+      await ins('b1', { full_name: 'Godfrey Kariuki', name: 'G K', avatar_url: 'https://x/y.png' });
+      await ins('b2', { name: 'Only Name' });
+      await ins('b3', { display_name: 'Chosen', full_name: 'Ignored' });
+      await ins('b4', { display_name: '   ', full_name: 42, name: 'Third\u0007 Choice' });
+      await ins('b5', { full_name: ['x'], name: null });
+      return step('postgres', `select right(user_id::text, 2) as k, display_name from public.profiles where user_id::text like '00000000-0000-4000-8000-0000000000b%' order by 1`);
+    });
+    expect(names).toEqual([
+      { k: 'b1', display_name: 'Godfrey Kariuki' },
+      { k: 'b2', display_name: 'Only Name' },
+      { k: 'b3', display_name: 'Chosen' },
+      { k: 'b4', display_name: 'Third Choice' },
+      { k: 'b5', display_name: '' },
+    ]);
+  });
 });

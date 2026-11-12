@@ -48,6 +48,33 @@ test("refresh and confirm routes fail safely without credentials", async ({ page
   await expect(page).toHaveURL(/notice=link-invalid/);
 });
 
+test("both pages offer one-click Google sign-in and keep the destination", async ({ page }) => {
+  for (const route of ["/sign-in", "/sign-up"]) {
+    await page.goto(`${route}?next=%2Fcatalogue`);
+    const btn = page.getByRole("link", { name: "Continue with Google" });
+    await expect(btn).toBeVisible();
+    await expect(btn).toHaveAttribute("href", "/auth/google?next=%2Fcatalogue");
+  }
+});
+
+test("Google return route fails safely: no code, no cookie, cancelled, or a forged cookie", async ({ page, context }) => {
+  await page.goto("/auth/callback");
+  await expect(page).toHaveURL(/\/sign-in\?notice=google-failed$/);
+  await expect(page.getByRole("status").filter({ hasText: "Google sign-in did not finish" })).toBeVisible();
+  await page.goto("/auth/callback?error=access_denied&code=abc");
+  await expect(page).toHaveURL(/notice=google-failed/);
+  // a code with no matching secret in the cookie is refused before Supabase is even asked
+  await page.goto("/auth/callback?code=abc");
+  await expect(page).toHaveURL(/notice=google-failed/);
+  const forged = "not-a-real-verifier.%2Fcockpit";
+  await context.addCookies([{ name: "fd-oauth", value: forged, url: new URL(page.url()).origin + "/auth/callback" }]);
+  await page.goto("/auth/callback?code=abc");
+  await expect(page).toHaveURL(/notice=google-failed/);
+  const names = (await context.cookies()).map((c) => c.name);
+  expect(names).not.toContain("fd-at");
+  expect(names).not.toContain("fd-rt");
+});
+
 test("pages send no session cookie to anonymous visitors", async ({ page, context }) => {
   await page.goto("/sign-in");
   const names = (await context.cookies()).map((c) => c.name);

@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { getOwnProfile, getUser, refreshSession, signInWithPassword, signOut, signUp, verifyEmailLink, type AuthConfig } from "./gotrue";
+import {
+  exchangePkceCode,
+  getOwnProfile,
+  getUser,
+  googleAuthorizeUrl,
+  googleEnabled,
+  refreshSession,
+  signInWithPassword,
+  signOut,
+  signUp,
+  verifyEmailLink,
+  type AuthConfig,
+} from "./gotrue";
 
 interface Call {
   url: string;
@@ -136,5 +148,51 @@ describe("getOwnProfile (read with the user's token so Row Level Security applie
   it("falls back to null on any failure", async () => {
     expect(await getOwnProfile(fake({ status: 401 }, { status: 401 }).cfg, "t")).toBeNull();
     expect(await getOwnProfile(fake(new Error("boom"), new Error("boom")).cfg, "t")).toBeNull();
+  });
+});
+
+describe("Google sign-in (PKCE)", () => {
+  it("builds the Supabase authorize URL with provider, return address and the S256 challenge only", () => {
+    const { cfg } = fake();
+    const u = new URL(googleAuthorizeUrl(cfg, "https://app.example/auth/callback", "CHALLENGE"));
+    expect(u.origin + u.pathname).toBe("https://proj.supabase.co/auth/v1/authorize");
+    expect(Object.fromEntries(u.searchParams)).toEqual({
+      provider: "google",
+      redirect_to: "https://app.example/auth/callback",
+      code_challenge: "CHALLENGE",
+      code_challenge_method: "s256",
+    });
+  });
+
+  it("exchanges the one-time code with the verifier for tokens", async () => {
+    const { cfg, calls } = fake({ status: 200, json: tokens });
+    const r = await exchangePkceCode(cfg, "CODE", "VERIFIER");
+    expect(r).toEqual({ ok: true, value: { accessToken: "AT", refreshToken: "RT", expiresIn: 3600 } });
+    expect(calls[0]).toMatchObject({
+      url: "https://proj.supabase.co/auth/v1/token?grant_type=pkce",
+      method: "POST",
+      body: { auth_code: "CODE", code_verifier: "VERIFIER" },
+    });
+  });
+
+  it.each([
+    [400, { error_code: "bad_code_verifier" }, "invalid_credentials"],
+    [500, {}, "unavailable"],
+  ])("refuses a bad exchange (HTTP %i) without a session", async (status, json, reason) => {
+    const { cfg } = fake({ status, json });
+    expect(await exchangePkceCode(cfg, "CODE", "V")).toEqual({ ok: false, reason });
+  });
+
+  it("treats a 200 without tokens as unavailable", async () => {
+    const { cfg } = fake({ status: 200, json: {} });
+    expect(await exchangePkceCode(cfg, "C", "V")).toEqual({ ok: false, reason: "unavailable" });
+  });
+
+  it("reports whether Google is switched on, and false on any failure", async () => {
+    expect(await googleEnabled(fake({ status: 200, json: { external: { google: true } } }).cfg)).toBe(true);
+    expect(await googleEnabled(fake({ status: 200, json: { external: { google: false } } }).cfg)).toBe(false);
+    expect(await googleEnabled(fake({ status: 200, json: {} }).cfg)).toBe(false);
+    expect(await googleEnabled(fake({ status: 500 }).cfg)).toBe(false);
+    expect(await googleEnabled(fake(new Error("boom")).cfg)).toBe(false);
   });
 });

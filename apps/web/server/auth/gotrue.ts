@@ -159,6 +159,33 @@ export function verifyEmailLink(cfg: AuthConfig, tokenHash: string, type: "signu
   });
 }
 
+/** Is Google switched on in this Supabase project? (Public settings endpoint; no secrets involved.) */
+export async function googleEnabled(cfg: AuthConfig): Promise<boolean> {
+  try {
+    const r = await call(cfg, "/auth/v1/settings", { method: "GET" });
+    const ext = r.json?.external as Record<string, unknown> | undefined;
+    return r.status === 200 && ext?.google === true;
+  } catch {
+    return false;
+  }
+}
+
+/** Where to send the browser to start Google sign-in (Supabase talks to Google, then returns to redirectTo with ?code=). */
+export function googleAuthorizeUrl(cfg: AuthConfig, redirectTo: string, challenge: string): string {
+  const q = new URLSearchParams({ provider: "google", redirect_to: redirectTo, code_challenge: challenge, code_challenge_method: "s256" });
+  return `${base(cfg)}/auth/v1/authorize?${q.toString()}`;
+}
+
+/** Trades the one-time ?code= from the Google round trip (plus our secret verifier) for a session. */
+export function exchangePkceCode(cfg: AuthConfig, code: string, verifier: string): Promise<AuthResult<Tokens>> {
+  return safely(async () => {
+    const r = await call(cfg, "/auth/v1/token?grant_type=pkce", { method: "POST", body: { auth_code: code, code_verifier: verifier } });
+    if (r.status !== 200) return fail(reasonFor(r.status, r.json));
+    const t = toTokens(r.json);
+    return t ? { ok: true, value: t } : fail("unavailable");
+  });
+}
+
 export interface ProfileView {
   displayName: string;
   timeZone: string;

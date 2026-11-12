@@ -14,6 +14,8 @@ const NOTICES: Record<string, string> = {
   expired: "Your session ended. Sign in again to continue.",
   "link-invalid": "That confirmation link is not valid any more. Sign in, or create the account again.",
   confirmed: "Email confirmed. Sign in to continue.",
+  "google-failed": "Google sign-in did not finish. Try again, or use your email.",
+  "google-off": "Google sign-in is not switched on yet. Use your email for now.",
 };
 
 export default async function SignInPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
