@@ -29,6 +29,10 @@ grant usage on schema app_private to anon, authenticated;
 create role app_definer nologin noinherit;
 grant app_definer to current_user;
 grant usage on schema public, app_private to app_definer;
+-- Temporary: ALTER FUNCTION ... OWNER TO needs the NEW owner to hold CREATE on the schema. A superuser
+-- (local/test harness) skips that check; the Supabase `postgres` role is not a superuser. Revoked again
+-- right after the ownership changes in section 4, so app_definer keeps no CREATE privilege.
+grant create on schema public, app_private to app_definer;
 
 grant select on public.user_roles, public.courses, public.course_versions, public.missions,
   public.exercises, public.assessments, public.assessment_items, public.enrolments,
@@ -219,6 +223,7 @@ alter function app_private.can_attempt_exercise(uuid)          owner to app_defi
 alter function app_private.answer_slot_open(uuid, uuid)        owner to app_definer;
 alter function public.verify_certificate(text)                 owner to app_definer;
 alter function app_private.handle_new_user()                   owner to app_definer;
+revoke create on schema public, app_private from app_definer;
 
 revoke execute on all functions in schema app_private from public, anon, authenticated;
 revoke execute on function public.verify_certificate(text) from public;
