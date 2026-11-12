@@ -1,6 +1,6 @@
 # ADR-002: Direct owner-only browser writes vs server-only mutations
 
-Status: **Proposed 2026-11-11 — pending Security Architect + Product Owner decision** (open decision from G0).
+Status: **Accepted 2026-11-12 (Product Owner Godfrey, GREEN): the hybrid** — owner-only browser writes for safe rows (profile, preferences, notes, bookmarks, step progress), server-only mutations for grades, pass, completion, entitlements and certificates. Security Architect review still pending at Gate 1. (Originally proposed 2026-11-11, open decision from G0.)
 
 ## Context
 Supabase lets the browser write through the Data API, protected by grants + RLS. Every direct write path is attack surface; every server-only path costs a server action and latency.
