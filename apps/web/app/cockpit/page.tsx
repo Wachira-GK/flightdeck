@@ -4,7 +4,6 @@ import { Badge, buttonVariants, Card, CardEyebrow, Progress } from "@flightdeck/
 import { greetingFor, hourIn, relativeTime } from "@/lib/greeting";
 import { missionProgress, STEP_LABELS } from "@/lib/mission";
 import { getTrack, missions, recentActivity, tracks } from "@/lib/mock-data";
-import { signOutAction } from "@/app/auth/actions";
 import { getOwnProfile } from "@/server/auth/gotrue";
 import { authConfig, requireUser } from "@/server/auth/session";
 
@@ -44,14 +43,6 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
               {r}
             </Badge>
           ))}
-          <form action={signOutAction}>
-            <button
-              type="submit"
-              className="min-h-11 rounded-md border border-border-strong px-3 font-medium text-fg hover:bg-surface-2"
-            >
-              Sign out
-            </button>
-          </form>
         </div>
       </header>
 
