@@ -91,6 +91,15 @@ test("Google return route fails safely: no code, no cookie, cancelled, or a forg
   expect(names).not.toContain("fd-rt");
 });
 
+test("the header offers Sign in to visitors and no Sign out", async ({ page }) => {
+  await page.goto("/catalogue");
+  await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Sign in" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0);
+  const res = await page.request.get("/api/session");
+  expect(await res.json()).toEqual({ signedIn: false });
+  expect(res.headers()["cache-control"]).toContain("no-store");
+});
+
 test("pages send no session cookie to anonymous visitors", async ({ page, context }) => {
   await page.goto("/sign-in");
   const names = (await context.cookies()).map((c) => c.name);
@@ -148,7 +157,10 @@ test.describe("live sign-in (needs FD_E2E_EMAIL and FD_E2E_PASSWORD)", () => {
     await page.goto("/cockpit");
     await expect(page.getByTestId("signed-in-as")).toContainText(email.toLowerCase());
 
-    await page.getByRole("button", { name: "Sign out" }).click();
+    // the header also shows Sign out once signed in: assert it, then use the one on the page
+    await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("button", { name: "Sign out" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Sign in" })).toHaveCount(0);
+    await page.getByRole("main").getByRole("button", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/sign-in\?notice=signed-out$/);
     await page.goto("/cockpit");
     await expect(page).toHaveURL(/\/sign-in\?next=%2Fcockpit$/);

@@ -4,13 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@flightdeck/ui";
+import { signOutAction } from "@/app/auth/actions";
 
 const links = [
   { href: "/cockpit", label: "Cockpit" },
   { href: "/catalogue", label: "Catalogue" },
   { href: "/missions/excel-sum-101", label: "Current mission" },
-  { href: "/sign-in", label: "Sign in" },
 ] as const;
+
+const SIGN_IN = { href: "/sign-in", label: "Sign in" } as const;
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -39,6 +41,45 @@ export function NavLinks() {
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
+  // null = not known yet (nothing is shown rather than a wrong "Sign in"); asked again after every page change.
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  useEffect(() => {
+    let live = true;
+    fetch("/api/session", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { signedIn?: boolean } | null) => {
+        if (live) setSignedIn(j ? j.signedIn === true : false);
+      })
+      .catch(() => {
+        if (live) setSignedIn(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, [pathname]);
+
+  const accountItem = (mobile: boolean) =>
+    signedIn === null ? null : (
+      <li key="account">
+        {signedIn ? (
+          <form action={signOutAction}>
+            <button type="submit" className={cn(linkClass(false), mobile ? "flex min-h-11 w-full items-center" : "")}>
+              Sign out
+            </button>
+          </form>
+        ) : (
+          <Link
+            href={SIGN_IN.href}
+            aria-current={isActive(pathname, SIGN_IN.href) ? "page" : undefined}
+            onClick={mobile ? () => setOpen(false) : undefined}
+            className={cn(linkClass(isActive(pathname, SIGN_IN.href)), mobile ? "flex min-h-11 items-center" : "")}
+          >
+            {SIGN_IN.label}
+          </Link>
+        )}
+      </li>
+    );
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -64,6 +105,7 @@ export function NavLinks() {
             </li>
           );
         })}
+        {accountItem(false)}
       </ul>
 
       <div className="sm:hidden">
@@ -105,6 +147,7 @@ export function NavLinks() {
                 </li>
               );
             })}
+            {accountItem(true)}
           </ul>
         </div>
       </div>

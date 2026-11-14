@@ -22,7 +22,7 @@ const FAILURE_TEXT: Record<AuthFailure, string> = {
   email_not_confirmed: "Confirm your email first: open the link we sent you, then sign in.",
   rate_limited: "Too many attempts. Wait a minute and try again.",
   weak_password: "That password is too easy to guess. Choose a longer, less common one.",
-  invalid_request: "We could not process that. Check the details and try again.",
+  invalid_request: "We could not process that. Check the details. If you already have an account with this email, sign in instead.",
   unavailable: "Sign-in is temporarily unavailable. Try again shortly.",
 };
 
