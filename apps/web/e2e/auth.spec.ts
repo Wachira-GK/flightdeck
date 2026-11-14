@@ -31,6 +31,22 @@ test("the sign-up form enforces name and password rules on the server", async ({
   await expect(page.getByLabel("Your name")).toHaveValue("Ada Lovelace");
 });
 
+test("the Check-your-email screen shows the address, a way to sign in and a resend button", async ({ page }) => {
+  await page.goto("/check-email?email=Ada%40Example.com");
+  await expect(page.getByRole("heading", { level: 1, name: "Check your email" })).toBeVisible();
+  await expect(page.getByTestId("check-email-address")).toHaveText("ada@example.com");
+  await expect(page.getByRole("link", { name: "Go to sign in" })).toHaveAttribute("href", "/sign-in?next=%2Fcockpit");
+  await expect(page.getByRole("button", { name: "Send the email again" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Start again" })).toBeVisible();
+});
+
+test("the Check-your-email screen without a valid address goes back to sign-up", async ({ page }) => {
+  await page.goto("/check-email");
+  await expect(page).toHaveURL(/\/sign-up$/);
+  await page.goto("/check-email?email=nonsense");
+  await expect(page).toHaveURL(/\/sign-up$/);
+});
+
 test("a hostile ?next= is ignored (no open redirect)", async ({ page }) => {
   for (const evil of ["//evil.example", "https://evil.example/x", "/\\evil.example"]) {
     await page.goto(`/sign-in?next=${encodeURIComponent(evil)}`);

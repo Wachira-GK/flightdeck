@@ -6,6 +6,7 @@ import {
   googleAuthorizeUrl,
   googleEnabled,
   refreshSession,
+  resendSignupEmail,
   signInWithPassword,
   signOut,
   signUp,
@@ -92,6 +93,18 @@ describe("signUp", () => {
   it("maps a weak password and a rate limit", async () => {
     expect(await signUp(fake({ status: 422, json: { error_code: "weak_password" } }).cfg, { email: "a@b.co", password: "x", displayName: "A" })).toEqual({ ok: false, reason: "weak_password" });
     expect(await signUp(fake({ status: 429, json: { error_code: "over_email_send_rate_limit" } }).cfg, { email: "a@b.co", password: "x", displayName: "A" })).toEqual({ ok: false, reason: "rate_limited" });
+  });
+});
+
+describe("resendSignupEmail", () => {
+  it("asks Supabase to resend the sign-up email for that address", async () => {
+    const { cfg, calls } = fake({ status: 200, json: {} });
+    expect(await resendSignupEmail(cfg, "ada@example.com")).toEqual({ ok: true, value: true });
+    expect(calls[0]).toMatchObject({ url: "https://proj.supabase.co/auth/v1/resend", method: "POST", body: { type: "signup", email: "ada@example.com" } });
+  });
+  it("maps a rate limit and an outage", async () => {
+    expect(await resendSignupEmail(fake({ status: 429, json: { error_code: "over_email_send_rate_limit" } }).cfg, "a@b.co")).toEqual({ ok: false, reason: "rate_limited" });
+    expect(await resendSignupEmail(fake(new Error("down")).cfg, "a@b.co")).toEqual({ ok: false, reason: "unavailable" });
   });
 });
 

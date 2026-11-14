@@ -119,6 +119,18 @@ export function signUp(
   });
 }
 
+/**
+ * Asks Supabase to send the sign-up confirmation email again. Supabase answers 200 whether or not the
+ * address exists, and the caller shows one neutral message either way (no account enumeration).
+ */
+export function resendSignupEmail(cfg: AuthConfig, email: string): Promise<AuthResult<true>> {
+  return safely(async () => {
+    const r = await call(cfg, "/auth/v1/resend", { method: "POST", body: { type: "signup", email } });
+    if (r.status !== 200) return fail(reasonFor(r.status, r.json));
+    return { ok: true, value: true };
+  });
+}
+
 export function refreshSession(cfg: AuthConfig, refreshToken: string): Promise<AuthResult<Tokens>> {
   return safely(async () => {
     const r = await call(cfg, "/auth/v1/token?grant_type=refresh_token", { method: "POST", body: { refresh_token: refreshToken } });

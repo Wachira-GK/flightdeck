@@ -99,6 +99,13 @@ export function AuthForm({ mode, action, next }: Props) {
       <div role="alert" id={errId}>
         {state.error ? <p className="text-danger">{state.error}</p> : null}
       </div>
+      {state.unconfirmed && state.email ? (
+        <p className="text-sm">
+          <Link className="font-medium text-accent underline" href={`/check-email?email=${encodeURIComponent(state.email)}&next=${encodeURIComponent(next)}`}>
+            Send the confirmation email again
+          </Link>
+        </p>
+      ) : null}
       <div role="status">{state.notice ? <p className="text-fg">{state.notice}</p> : null}</div>
 
       <Button type="submit" disabled={pending} className="w-full sm:w-auto">
