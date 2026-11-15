@@ -5,7 +5,7 @@
  * `new Function`, `with`, dynamic import, timers, Date, Math.random, network, storage or clipboard.
  */
 
-export const ENGINE_VERSION = "0.2.0";
+export const ENGINE_VERSION = "0.3.0";
 
 /**
  * Error codes a cell can hold. `#CIRC!`, `#LIMIT!` and `#ERROR!` are FlightDeck-specific (documented).

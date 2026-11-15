@@ -257,6 +257,7 @@ class WorkbookImpl implements Workbook {
     const ctx = {
       getCell: (k: string): CellValue => this.values.get(k) ?? null,
       maxStringLength: this.limits.maxStringLength,
+      maxScanCells: this.limits.maxEdges * 4,
     };
     for (const scc of stronglyConnected(nodes, succ)) {
       const first = scc[0]!;

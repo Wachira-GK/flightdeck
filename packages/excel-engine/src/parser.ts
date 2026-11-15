@@ -2,8 +2,37 @@ import { tokenize, type Token } from "./lexer";
 import { parseCellRef, toKey, type CellRefParts } from "./refs";
 import { DEFAULT_LIMITS, LimitError, ParseError, type Limits } from "./types";
 
-/** The engine function allow-list (CT5). Anything else is `#NAME?`. XLOOKUP added in v1 (ADR-004). */
-export const SUPPORTED_FUNCTIONS = ["SUM", "AVERAGE", "MIN", "MAX", "COUNT", "IF", "XLOOKUP"] as const;
+/**
+ * The engine function allow-list (CT5). Anything else is `#NAME?`. XLOOKUP added in v1 (ADR-004);
+ * the numeric/logic/conditional-aggregate/text families were added in engine 0.3.0 (ADR-004 addendum).
+ */
+export const SUPPORTED_FUNCTIONS = [
+  "SUM",
+  "AVERAGE",
+  "MIN",
+  "MAX",
+  "COUNT",
+  "IF",
+  "XLOOKUP",
+  "ROUND",
+  "ABS",
+  "AND",
+  "OR",
+  "NOT",
+  "IFERROR",
+  "MEDIAN",
+  "SUMIF",
+  "COUNTIF",
+  "AVERAGEIF",
+  "SUMIFS",
+  "COUNTIFS",
+  "LEN",
+  "LEFT",
+  "RIGHT",
+  "UPPER",
+  "LOWER",
+  "TRIM",
+] as const;
 export type FunctionName = (typeof SUPPORTED_FUNCTIONS)[number];
 
 const FUNCTION_ARITY: Record<FunctionName, readonly [number, number]> = {
@@ -13,6 +42,26 @@ const FUNCTION_ARITY: Record<FunctionName, readonly [number, number]> = {
   MAX: [1, 255],
   COUNT: [1, 255],
   IF: [2, 3],
+  ROUND: [2, 2],
+  ABS: [1, 1],
+  AND: [1, 255],
+  OR: [1, 255],
+  NOT: [1, 1],
+  IFERROR: [2, 2],
+  MEDIAN: [1, 255],
+  SUMIF: [2, 3],
+  COUNTIF: [2, 2],
+  AVERAGEIF: [2, 3],
+  // SUMIFS(sum_range, criteria_range1, criteria1, ...): 3 + 2k arguments (odd count, checked below).
+  SUMIFS: [3, 255],
+  // COUNTIFS(criteria_range1, criteria1, ...): 2k arguments (even count, checked below).
+  COUNTIFS: [2, 254],
+  LEN: [1, 1],
+  LEFT: [1, 2],
+  RIGHT: [1, 2],
+  UPPER: [1, 1],
+  LOWER: [1, 1],
+  TRIM: [1, 1],
   // Excel accepts up to 6 arguments. The 5th/6th (match_mode/search_mode) parse, but evaluate to
   // #VALUE! with a message: only exact match is supported (ADR-004).
   XLOOKUP: [3, 6],
@@ -277,6 +326,20 @@ class Parser {
     if (args.length < min || args.length > max) {
       const want = min === max ? `${min}` : max === 255 ? `at least ${min}` : `${min} or ${max}`;
       throw new ParseError(`${name} needs ${want} argument${want === "1" ? "" : "s"}, got ${args.length}`, "#ERROR!", t.pos);
+    }
+    if (name === "SUMIFS" && args.length % 2 === 0) {
+      throw new ParseError(
+        "SUMIFS needs a sum_range followed by criteria_range/criteria pairs: SUMIFS(sum_range, criteria_range1, criteria1, ...)",
+        "#ERROR!",
+        t.pos,
+      );
+    }
+    if (name === "COUNTIFS" && args.length % 2 === 1) {
+      throw new ParseError(
+        "COUNTIFS needs criteria_range/criteria pairs: COUNTIFS(criteria_range1, criteria1, ...)",
+        "#ERROR!",
+        t.pos,
+      );
     }
     return { type: "call", name, args };
   }

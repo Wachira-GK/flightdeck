@@ -33,7 +33,7 @@ export function toNumber(v: CellValue): number | CellError {
 }
 
 /** Condition coercion for IF: numbers (non-zero), booleans, blank (FALSE), "TRUE"/"FALSE" text. */
-export function toBoolean(v: CellValue): boolean | CellError {
+export function toBoolean(v: CellValue, fn = "IF"): boolean | CellError {
   if (v === null) return false;
   if (typeof v === "boolean") return v;
   if (typeof v === "number") return v !== 0;
@@ -41,7 +41,7 @@ export function toBoolean(v: CellValue): boolean | CellError {
     const u = v.trim().toUpperCase();
     if (u === "TRUE") return true;
     if (u === "FALSE") return false;
-    return cellError("#VALUE!", "IF needs a TRUE/FALSE condition, but got text");
+    return cellError("#VALUE!", `${fn} needs a TRUE/FALSE condition, but got text`);
   }
   return v;
 }

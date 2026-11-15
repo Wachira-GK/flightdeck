@@ -31,7 +31,7 @@ describe("handleCheck: grading", () => {
     const r = await handleCheck("xlookup-price-list", post("xlookup-price-list", sub("xlookup-price-list", XLP_SOLVED)));
     expect(r.status).toBe(200);
     expect(body(r)).toMatchObject({ passed: true, score: 100 });
-    expect(body(r).validatorVersion).toMatch(/^excel-validator@.+\+engine@0\.2\.0$/);
+    expect(body(r).validatorVersion).toMatch(/^excel-validator@.+\+engine@0\.3\.0$/);
     expect(Object.keys(body(r)).sort()).toEqual(["checks", "passed", "score", "validatorVersion"]);
   });
 
