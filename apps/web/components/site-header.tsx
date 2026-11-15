@@ -32,6 +32,14 @@ export function SiteFooter() {
     <footer className="mt-16 border-t border-border">
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-fg-muted sm:px-6">
         <p>FlightDeck G1 prototype. Sign-in is real; mission progress and activity on these pages are still sample data.</p>
+        <p className="mt-2 flex gap-4">
+          <Link href="/privacy" className="inline-block py-1 underline">
+            Privacy
+          </Link>
+          <Link href="/terms" className="inline-block py-1 underline">
+            Terms
+          </Link>
+        </p>
       </div>
     </footer>
   );

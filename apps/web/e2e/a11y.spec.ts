@@ -5,6 +5,8 @@ const routes = [
   "/",
   "/sign-in",
   "/sign-up",
+  "/privacy",
+  "/terms",
   "/missions/excel-sum-101",
   "/missions/excel-sum-101?step=simulation",
   "/missions/descriptive-stats-101?step=training",
