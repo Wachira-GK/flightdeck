@@ -5,6 +5,7 @@ const routes = [
   "/",
   "/sign-in",
   "/sign-up",
+  "/forgot-password",
   "/privacy",
   "/terms",
   "/missions/excel-sum-101",
@@ -196,6 +197,7 @@ test.describe("phone width (375px)", () => {
   for (const route of [
     "/sign-in",
     "/sign-up",
+  "/forgot-password",
     "/catalogue",
     "/missions/excel-sum-101?step=simulation",
     "/missions/excel-lookup-103?step=simulation",

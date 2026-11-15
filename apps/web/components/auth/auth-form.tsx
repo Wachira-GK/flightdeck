@@ -93,7 +93,13 @@ export function AuthForm({ mode, action, next }: Props) {
           <p id={`${uid}-pw-hint`} className="mt-1 text-sm text-fg-muted">
             At least 10 characters. A few random words work well.
           </p>
-        ) : null}
+        ) : (
+          <p className="mt-1 text-sm">
+            <Link className="font-medium text-accent underline" href="/forgot-password">
+              Forgot your password?
+            </Link>
+          </p>
+        )}
       </div>
 
       <div role="alert" id={errId}>

@@ -29,10 +29,12 @@ export async function GET(request: NextRequest) {
     return res;
   };
 
-  if (p.get("error") || !code || code.length > 500 || !isVerifier(verifier)) return go("/sign-in?notice=google-failed");
+  // The same return point serves Google sign-in and password-reset links; only the failure message differs.
+  const failed = next === "/reset-password" ? "/forgot-password?notice=reset-failed" : "/sign-in?notice=google-failed";
+  if (p.get("error") || !code || code.length > 500 || !isVerifier(verifier)) return go(failed);
 
   const r = await exchangePkceCode(authConfig(), code, verifier);
-  if (!r.ok) return go("/sign-in?notice=google-failed");
+  if (!r.ok) return go(failed);
 
   const res = go(next);
   applySessionCookies(res.cookies, r.value);

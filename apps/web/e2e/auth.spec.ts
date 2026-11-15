@@ -166,3 +166,25 @@ test.describe("live sign-in (needs FD_E2E_EMAIL and FD_E2E_PASSWORD)", () => {
     await expect(page).toHaveURL(/\/sign-in\?next=%2Fcockpit$/);
   });
 });
+
+test("the sign-in page links to Forgot your password and the page asks only for an email", async ({ page }) => {
+  await page.goto("/sign-in");
+  await page.getByRole("link", { name: "Forgot your password?" }).click();
+  await expect(page).toHaveURL(/\/forgot-password$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Forgot your password?" })).toBeVisible();
+  await page.getByLabel("Email").fill("not-an-email");
+  await page.getByRole("button", { name: "Send reset link" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Enter a valid email address." })).toBeVisible();
+});
+
+test("a failed reset link explains itself and offers a new one", async ({ page }) => {
+  await page.goto("/forgot-password?notice=reset-failed");
+  await expect(page.getByRole("status").filter({ hasText: "That reset link did not work" })).toBeVisible();
+});
+
+test("the reset page is for signed-in learners only and a bad link ends on Forgot password", async ({ page }) => {
+  await page.goto("/reset-password");
+  await expect(page).toHaveURL(/\/sign-in\?next=%2Freset-password$/);
+  await page.goto("/auth/callback?code=forged");
+  await expect(page).toHaveURL(/\/sign-in\?notice=google-failed$/);
+});

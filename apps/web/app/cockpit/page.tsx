@@ -48,6 +48,11 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
             </Badge>
           ))}
         </div>
+        {sp.password === "changed" ? (
+          <p role="status" className="mt-3 rounded-md bg-accent-subtle px-3 py-2 text-sm">
+            Password changed. Use it next time you sign in.
+          </p>
+        ) : null}
         {saved === null ? (
           <p role="status" className="mt-3 text-sm text-fg-muted">
             We could not load your saved progress just now. Your work is not lost; refresh the page to try again.

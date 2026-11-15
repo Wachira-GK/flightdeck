@@ -131,6 +131,32 @@ export function resendSignupEmail(cfg: AuthConfig, email: string): Promise<AuthR
   });
 }
 
+/**
+ * Asks Supabase to email a password-reset link. PKCE is used (code_challenge) so the link comes back to
+ * `redirectTo` with a one-time ?code= that the server exchanges for a session, exactly like Google sign-in;
+ * the default Supabase email template needs no change. Supabase answers 200 whether or not the address
+ * exists, and the caller shows one neutral message either way (no account enumeration).
+ */
+export function requestPasswordReset(cfg: AuthConfig, email: string, redirectTo: string, challenge: string): Promise<AuthResult<true>> {
+  return safely(async () => {
+    const r = await call(cfg, `/auth/v1/recover?redirect_to=${encodeURIComponent(redirectTo)}`, {
+      method: "POST",
+      body: { email, code_challenge: challenge, code_challenge_method: "s256" },
+    });
+    if (r.status !== 200) return fail(reasonFor(r.status, r.json));
+    return { ok: true, value: true };
+  });
+}
+
+/** Sets a new password for the signed-in user (the token proves who they are). */
+export function updatePassword(cfg: AuthConfig, accessToken: string, password: string): Promise<AuthResult<true>> {
+  return safely(async () => {
+    const r = await call(cfg, "/auth/v1/user", { method: "PUT", body: { password }, bearer: accessToken });
+    if (r.status !== 200) return fail(reasonFor(r.status, r.json));
+    return { ok: true, value: true };
+  });
+}
+
 export function refreshSession(cfg: AuthConfig, refreshToken: string): Promise<AuthResult<Tokens>> {
   return safely(async () => {
     const r = await call(cfg, "/auth/v1/token?grant_type=refresh_token", { method: "POST", body: { refresh_token: refreshToken } });
