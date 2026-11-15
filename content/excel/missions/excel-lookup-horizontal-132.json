@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-horizontal-132",
+  "trackId": "excel",
+  "code": "EX-132",
+  "title": "Lookups across a row",
+  "summary": "Look up months across a row of headings and return the matching sales and target from rows below.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "horizontal-month-lookup",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The monthly sales summary for an Eldoret store is laid out across the page: months run along row 1, with sales in row 2 and target in row 3. A manager wants to pick any month and see the sales, the target, the variance and a status."
+        },
+        {
+          "type": "paragraph",
+          "text": "Because the months are in a row, the lookup range is a row too. XLOOKUP works the same way, but the return range must also be a row of the same length."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use XLOOKUP on a row-oriented list and keep the lookup and return ranges the same shape.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"May\",$B$1:$G$1,$B$2:$G$2)",
+          "text": "The months are in B1:G1, which is a row of 6 cells. The return range B2:G2 is also a row of 6 cells, so they line up. XLOOKUP finds May in the 5th cell and returns the 5th cell of the sales row."
+        },
+        {
+          "type": "table",
+          "caption": "Monthly summary in A1:G3 (K = KES thousands)",
+          "columns": [
+            "Row",
+            "A",
+            "B: Jan",
+            "C: Feb",
+            "D: Mar",
+            "E: Apr",
+            "F: May",
+            "G: Jun"
+          ],
+          "rows": [
+            [
+              "1",
+              "Month",
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun"
+            ],
+            [
+              "2",
+              "Sales (K)",
+              "4200",
+              "3900",
+              "4650",
+              "4400",
+              "5100",
+              "4800"
+            ],
+            [
+              "3",
+              "Target (K)",
+              "4500",
+              "4000",
+              "4500",
+              "4600",
+              "5000",
+              "5000"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Looking up May in the sales row gives 5,100K. Looking it up with the target row as the return range, $B$3:$G$3, gives 5,000K."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(B$5,$B$1:$G$1,$B$2:$G$2)",
+          "text": "B$5 holds the month to find. The $ before the 5 keeps the row fixed, while the column letter changes when you copy the formula across to C and D. This is called a mixed reference."
+        },
+        {
+          "type": "list",
+          "items": [
+            "A row lookup needs a row return range: $B$1:$G$1 with $B$2:$G$2 works.",
+            "A row of 6 cells with a column of 6 cells does not work. For example $B$1:$G$1 with $A$2:$A$7 gives #VALUE!, because the shapes differ even though the counts are equal.",
+            "Months and sizes are often laid out as headings across the top. XLOOKUP reads them in either direction without any change to the formula pattern."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: when you copy a formula across, ask which references should stay and which should move. Put $ in front of what must stay."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the monthly summary from Training (A1:G3). Type numbers without commas. A negative number needs a minus sign."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "h1-may-sales",
+            "h2-shape",
+            "h3-april-variance",
+            "h4-mixed-ref"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "XLOOKUP works across a row exactly as it does down a column.",
+            "The lookup range and the return range must both be rows of the same length.",
+            "A row with a column of the same count still gives #VALUE!.",
+            "Use a mixed reference such as B$5 to copy a formula across."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A row layout needs no new function, only matching row-shaped ranges."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "h1-may-sales",
+        "type": "numeric",
+        "prompt": "What does =XLOOKUP(\"May\",$B$1:$G$1,$B$2:$G$2) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "h2-shape",
+        "type": "single-choice",
+        "prompt": "What does =XLOOKUP(\"Mar\",$B$1:$G$1,$A$2:$A$7) show, where $A$2:$A$7 is a column of 6 cells?",
+        "options": [
+          {
+            "id": "value",
+            "label": "#VALUE!, because a row lookup range needs a row return range"
+          },
+          {
+            "id": "mar",
+            "label": "The value for March from column A"
+          },
+          {
+            "id": "na",
+            "label": "#N/A, because Mar is not in the list"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          }
+        ]
+      },
+      {
+        "id": "h3-april-variance",
+        "type": "numeric",
+        "prompt": "Variance is sales minus target. What is the variance for April, in K? Use a minus sign if it is negative.",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "h4-mixed-ref",
+        "type": "single-choice",
+        "prompt": "Why is the month written as B$5 in the formula in B6, then copied across to C6 and D6?",
+        "options": [
+          {
+            "id": "row",
+            "label": "The $ keeps the row at 5, while the column moves to C5 and D5"
+          },
+          {
+            "id": "col",
+            "label": "The $ keeps the column at B"
+          },
+          {
+            "id": "money",
+            "label": "The $ shows the result is money"
+          },
+          {
+            "id": "fast",
+            "label": "It makes the formula faster"
+          }
+        ]
+      }
+    ]
+  }
+}

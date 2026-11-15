@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-variance-114",
+  "trackId": "excel",
+  "code": "EX-114",
+  "title": "Variance with ABS and tolerance flags",
+  "summary": "Compare actual sales with plan, measure the size of the gap with ABS and flag only the gaps above a tolerance.",
+  "estimatedMinutes": 15,
+  "passMark": 0.8,
+  "exerciseId": "plan-variance-flags",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Every Monday the regional manager reviews five stores against their weekly plan. Stores that are far above or far below plan need a phone call. Stores close to plan do not."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your job is to calculate the variance for each store and flag it when the size of the gap is more than a tolerance. The tolerance sits in an input cell so the manager can tighten or loosen it."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use ABS and IF to flag gaps in either direction.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 80% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=C2-B2",
+          "text": "Variance is actual minus plan. A positive result means ahead of plan and a negative result means behind plan."
+        },
+        {
+          "type": "formula",
+          "formula": "=ABS(number)",
+          "text": "ABS returns the absolute value: the number without its sign. ABS(-55) is 55 and ABS(55) is 55."
+        },
+        {
+          "type": "paragraph",
+          "text": "Why use ABS? A store that is 55K behind plan and a store that is 55K ahead both have a gap of 55K. ABS lets one test catch both."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(ABS(D2)>$B$8,\"Check\",\"OK\")",
+          "text": "If the size of the gap is more than the tolerance in B8, show Check. Otherwise show OK."
+        },
+        {
+          "type": "table",
+          "caption": "Example: plan 600K, tolerance 40K",
+          "columns": [
+            "Actual (K)",
+            "Variance (K)",
+            "Absolute variance (K)",
+            "Flag"
+          ],
+          "rows": [
+            [
+              "660",
+              "60",
+              "60",
+              "Check"
+            ],
+            [
+              "550",
+              "-50",
+              "50",
+              "Check"
+            ],
+            [
+              "630",
+              "30",
+              "30",
+              "OK"
+            ],
+            [
+              "560",
+              "-40",
+              "40",
+              "OK"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: \"more than\" is >, so a gap exactly equal to the tolerance is not flagged. Say clearly in the business rule whether the limit itself is allowed."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on variance and ABS. Type numbers without commas, for example 150 or -45."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-variance",
+            "i2-abs",
+            "i3-both-directions",
+            "i4-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Variance = actual minus plan; the sign tells the direction.",
+            "ABS gives the size of the gap and ignores the sign.",
+            "Compare ABS(variance) with a tolerance held in an input cell.",
+            "> means strictly more than, so a gap equal to the tolerance is not flagged."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: AND, to test several conditions at once."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-variance",
+        "type": "numeric",
+        "prompt": "A store has a plan of 540K (B2) and actual sales of 495K (C2). What does =C2-B2 return, in K?",
+        "answerHint": "Whole number in K; use a minus sign for a negative result"
+      },
+      {
+        "id": "i2-abs",
+        "type": "numeric",
+        "prompt": "A store has a plan of 1,200K in B2 and actual sales of 1,350K in C2. What does =ABS(C2-B2) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i3-both-directions",
+        "type": "single-choice",
+        "prompt": "Which formula flags a store whose actual sales are more than 50 above OR more than 50 below plan, where D2 is the variance and B8 holds 50?",
+        "options": [
+          {
+            "id": "abs-gt",
+            "label": "=IF(ABS(D2)>$B$8,\"Check\",\"OK\")"
+          },
+          {
+            "id": "plain-gt",
+            "label": "=IF(D2>$B$8,\"Check\",\"OK\")"
+          },
+          {
+            "id": "abs-lt",
+            "label": "=IF(ABS(D2)<$B$8,\"Check\",\"OK\")"
+          },
+          {
+            "id": "abs-outside",
+            "label": "=ABS(IF(D2>$B$8,\"Check\",\"OK\"))"
+          }
+        ]
+      },
+      {
+        "id": "i4-boundary",
+        "type": "single-choice",
+        "prompt": "The tolerance in B8 is 50 and a store's absolute variance in E2 is exactly 50. What does =IF(E2>$B$8,\"Check\",\"OK\") show?",
+        "options": [
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "check",
+            "label": "Check"
+          },
+          {
+            "id": "choice-c",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      }
+    ]
+  }
+}

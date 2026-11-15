@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "article-prefix-left",
+  "version": 1,
+  "title": "Article prefixes with LEFT",
+  "objective": "Use LEFT to take the first characters of an article code and feed the result into a lookup.",
+  "instructions": "Each article code in column A starts with a two-letter category prefix and a six-character style code (for example SN-450). In B2:B7, extract the two-letter prefix with LEFT. In C2:C7, look the prefix in column B up in the category list in F1:G6 with XLOOKUP, showing the text \"Unknown\" when the prefix is not in the list. In D2:D7, extract the six-character style code with LEFT. Fix the category list with $ signs.",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Article code",
+    "B1": "Category prefix",
+    "C1": "Category",
+    "D1": "Style code",
+    "F1": "Prefix",
+    "G1": "Category",
+    "A2": "SN-450-42",
+    "A3": "SD-120-38",
+    "A4": "bt-330-41",
+    "A5": "SS-210-44",
+    "A6": "XX-001-40",
+    "A7": "SL-075-39",
+    "F2": "SN",
+    "G2": "Sneaker",
+    "F3": "SD",
+    "G3": "Sandal",
+    "F4": "BT",
+    "G4": "Boot",
+    "F5": "SS",
+    "G5": "School shoe",
+    "F6": "SL",
+    "G6": "Slipper"
+  },
+  "editableCells": [
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7"
+  ],
+  "allowedFunctions": [
+    "LEFT",
+    "XLOOKUP"
+  ],
+  "hints": [
+    "LEFT(text, number_of_characters) returns characters from the start of the text. =LEFT(A2,2) gives the first two characters of A2.",
+    "The style code is the first six characters, so use LEFT(A2,6). For the category use =XLOOKUP(B2,$F$2:$F$6,$G$2:$G$6,\"Unknown\").",
+    "Matching ignores upper and lower case, so bt in a lower-case code still finds BT in the list. A prefix that is not in the list, like XX, returns the fourth argument."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-median-144",
+  "trackId": "excel",
+  "code": "EX-144",
+  "title": "Median or average? Reporting weekly sales",
+  "summary": "Spot when one unusual week distorts the average, and choose the figure that tells the truth about a typical week.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "median-vs-average-weekly-sales",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Nakuru store manager says the store sells about KES 170K a week. You look at the weekly figures and see that nearly every week is close to KES 120K. One week had a huge bulk school order."
+        },
+        {
+          "type": "paragraph",
+          "text": "The average is being pulled up by that one week. The median, the middle value, is not. You will work out both, measure the gap and let a formula pick the fairer figure to report."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: compare AVERAGE and MEDIAN and decide which one to report.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "AVERAGE adds up all the values and divides by how many there are. One very large value pulls the average upwards, so it can describe a week that never really happened."
+        },
+        {
+          "type": "formula",
+          "formula": "=AVERAGE(B2:B9)",
+          "text": "Adds the eight weekly sales and divides by 8."
+        },
+        {
+          "type": "formula",
+          "formula": "=MEDIAN(B2:B9)",
+          "text": "Puts the values in order and picks the middle one. With an even number of values, MEDIAN returns the mean of the two middle values. Excel sorts for you."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example: five weeks of sales in K",
+          "columns": [
+            "Measure",
+            "Working",
+            "Result"
+          ],
+          "rows": [
+            [
+              "Average",
+              "(40 + 42 + 41 + 43 + 300) / 5",
+              "93.2"
+            ],
+            [
+              "Median",
+              "Sorted: 40, 41, 42, 43, 300. The middle one is the third.",
+              "42"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: a value far away from all the others is called an outlier. When the average and median are far apart, an outlier is usually the reason. Report the median for a typical week, and mention the outlier separately."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(E4>E5*E3,E3,E2)",
+          "text": "If the gap between average and median (E4) is more than the skew limit (E5) times the median (E3), report the median. Otherwise the average is safe to report."
+        },
+        {
+          "type": "paragraph",
+          "text": "Keep the limit in its own cell (E5) instead of typing 0.1 inside the formula. Then the rule can be changed in one place. A percentage is stored as a decimal: 10% is 0.1."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on average and median. Type numbers without commas, for example 125."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-median-odd",
+            "i2-median-even",
+            "i3-which-figure",
+            "i4-outlier-grows"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "AVERAGE adds everything and divides by the count, so outliers pull it.",
+            "MEDIAN returns the middle value, or the mean of the two middle values when the count is even.",
+            "A big gap between average and median is a warning sign of an outlier.",
+            "Keep rules such as the skew limit in a cell and point the formula at it."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: sell-through %, to see how fast each style is moving."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-median-odd",
+        "type": "numeric",
+        "prompt": "Weekly sales in K for five weeks are 12, 15, 11, 90 and 14. What is the MEDIAN, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i2-median-even",
+        "type": "numeric",
+        "prompt": "Weekly sales in K for four weeks are 100, 120, 130 and 900. What is the MEDIAN, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i3-which-figure",
+        "type": "single-choice",
+        "prompt": "A store sells about KES 120K in most weeks, but one week had a KES 540K bulk order. Which figure best describes a typical week?",
+        "options": [
+          {
+            "id": "average",
+            "label": "The average, because it uses every week"
+          },
+          {
+            "id": "median",
+            "label": "The median, because the bulk order does not drag it upwards"
+          },
+          {
+            "id": "max",
+            "label": "The maximum, because it shows what the store can do"
+          },
+          {
+            "id": "sum",
+            "label": "The total, because it is the largest number"
+          }
+        ]
+      },
+      {
+        "id": "i4-outlier-grows",
+        "type": "single-choice",
+        "prompt": "In a list of eight weekly sales, the biggest value is changed from 540 to 5,400. What happens?",
+        "options": [
+          {
+            "id": "both-rise",
+            "label": "Both the average and the median rise a lot"
+          },
+          {
+            "id": "median-same",
+            "label": "The average rises a lot, but the median stays the same"
+          },
+          {
+            "id": "avg-same",
+            "label": "The median rises a lot, but the average stays the same"
+          },
+          {
+            "id": "neither",
+            "label": "Neither changes"
+          }
+        ]
+      }
+    ]
+  }
+}

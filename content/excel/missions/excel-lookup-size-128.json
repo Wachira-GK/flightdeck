@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-size-128",
+  "trackId": "excel",
+  "code": "EX-128",
+  "title": "Look up by size",
+  "summary": "Use a shoe size as the lookup key to pull the size-run quantity and the price for each order line.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "size-run-lookup",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A Nakuru store orders shoes by size. Each line shows the size wanted. Merchandising needs two numbers for every line: how many pairs are in the size run for that size, and the unit price."
+        },
+        {
+          "type": "paragraph",
+          "text": "Both numbers sit in a size table. A size such as 40 is a number, so XLOOKUP can match it directly. You will see that a number and text that looks like a number are not the same thing."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use XLOOKUP with a size number as the key, and understand why a size must be the same kind of value in both places.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "XLOOKUP finds a value (the key) in one list and returns the item in the same position of another list. Here the key is a shoe size. The size table lists each size once, with its size run and price."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])",
+          "text": "lookup_value is the size to find. lookup_array is the Size column. return_array is the column you want back. Both columns must have the same number of rows."
+        },
+        {
+          "type": "table",
+          "caption": "Size table in F1:H10 (EU sizes, prices in KES)",
+          "columns": [
+            "Row",
+            "F: Size (EU)",
+            "G: Pairs in run",
+            "H: Price (KES)"
+          ],
+          "rows": [
+            [
+              "2",
+              "36",
+              "4",
+              "2,199"
+            ],
+            [
+              "3",
+              "37",
+              "6",
+              "2,199"
+            ],
+            [
+              "4",
+              "38",
+              "10",
+              "2,299"
+            ],
+            [
+              "5",
+              "39",
+              "14",
+              "2,299"
+            ],
+            [
+              "6",
+              "40",
+              "16",
+              "2,399"
+            ],
+            [
+              "7",
+              "41",
+              "12",
+              "2,399"
+            ],
+            [
+              "8",
+              "42",
+              "8",
+              "2,499"
+            ],
+            [
+              "9",
+              "43",
+              "6",
+              "2,499"
+            ],
+            [
+              "10",
+              "44",
+              "4",
+              "2,599"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(40,$F$2:$F$10,$G$2:$G$10)",
+          "text": "Find the size 40 in the Size column and return the pairs in run from the same row. Size 40 is in row 6, so the answer is 16. Change the return range to $H$2:$H$10 and the same key returns the price, 2,399."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Sizes in the table are numbers, so the size you look for must also be a number. A size typed as text (for example '40 with a leading apostrophe) is a different kind of value, and XLOOKUP will not match it.",
+            "Fix the table with $ signs so the formula can be copied down, and point at the size cell (for example B2) instead of typing the size inside the formula.",
+            "A size that is not in the table gives #N/A. Add a fourth argument such as \"Not stocked\" to show a clear message instead."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: if a size lookup fails and the size looks right, check whether the size in the order was typed as text. Numbers line up to the right of a cell by default, text lines up to the left."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the size table from Training (F1:H10). Type numbers without commas, for example 2499."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "s1-run-size-40",
+            "s2-text-size",
+            "s3-run-value",
+            "s4-new-size"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "The size is the key: XLOOKUP(size, size column, return column) returns the item from the same row.",
+            "Change only the return range to get a different answer for the same size, such as pairs or price.",
+            "A size typed as text will not match a size stored as a number.",
+            "Ranges must cover every row of the table, so extend them when you add a size."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A size-keyed lookup keeps every order line tied to one size table, so a price change is made once."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "s1-run-size-40",
+        "type": "numeric",
+        "prompt": "What does =XLOOKUP(40,$F$2:$F$10,$G$2:$G$10) return? Give the number of pairs in the size run.",
+        "answerHint": "Whole number of pairs"
+      },
+      {
+        "id": "s2-text-size",
+        "type": "single-choice",
+        "prompt": "In an order line, the size wanted was typed as text, '39, and the size table holds the number 39. What does XLOOKUP return?",
+        "options": [
+          {
+            "id": "na",
+            "label": "#N/A, because the text 39 does not match the number 39"
+          },
+          {
+            "id": "found",
+            "label": "The row for size 39, because the digits are the same"
+          },
+          {
+            "id": "zero",
+            "label": "0, because the value is text"
+          },
+          {
+            "id": "nearest",
+            "label": "The row for size 40, the closest number"
+          }
+        ]
+      },
+      {
+        "id": "s3-run-value",
+        "type": "numeric",
+        "prompt": "One size run of size 43 is ordered. Value it at the unit price: pairs in run multiplied by the price. Give the answer in KES.",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "s4-new-size",
+        "type": "single-choice",
+        "prompt": "A customer asks for size 47, which is not in the table. You add it in a new row 11. The formulas still use $F$2:$F$10. What should you do so size 47 is found?",
+        "options": [
+          {
+            "id": "fallback",
+            "label": "Change the fourth argument to \"Found\""
+          },
+          {
+            "id": "extend",
+            "label": "Add the size 47 row to the table and extend the ranges to row 11"
+          },
+          {
+            "id": "format",
+            "label": "Format the size cell as a number"
+          },
+          {
+            "id": "nothing",
+            "label": "Nothing, XLOOKUP reads the whole sheet"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "safe-sell-through",
+  "version": 1,
+  "title": "Clean up divide-by-zero errors with IFERROR",
+  "objective": "Wrap a division in IFERROR so that a zero divisor shows a readable message instead of #DIV/0!.",
+  "instructions": "Sell-through is units sold divided by units received. In E2:E6 work it out, but show \"No stock\" when the division gives an error. Stock cover in weeks is stock left (received minus sold) divided by weekly unit sales. In F2:F6 work it out, but show \"No sales\" when the division gives an error. Sell-through is stored as a decimal, so 0.07 means 7%.",
+  "grid": {
+    "rows": 6,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Received (units)",
+    "C1": "Sold (units)",
+    "D1": "Weekly sales (units)",
+    "E1": "Sell-through",
+    "F1": "Stock cover (weeks)",
+    "A2": "Nairobi",
+    "B2": "400",
+    "C2": "260",
+    "D2": "40",
+    "A3": "Mombasa",
+    "B3": "0",
+    "C3": "0",
+    "D3": "0",
+    "A4": "Kisumu",
+    "B4": "250",
+    "C4": "175",
+    "D4": "25",
+    "A5": "Nakuru",
+    "B5": "300",
+    "C5": "90",
+    "D5": "0",
+    "A6": "Eldoret",
+    "B6": "150",
+    "C6": "60",
+    "D6": "12"
+  },
+  "editableCells": [
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "allowedFunctions": [
+    "IFERROR"
+  ],
+  "hints": [
+    "Start with the plain division: =C2/B2. For Mombasa it shows #DIV/0! because nothing was received.",
+    "IFERROR(value, value_if_error) shows the second argument when the first is an error: =IFERROR(C2/B2,\"No stock\").",
+    "For cover, put the whole division inside IFERROR: =IFERROR((B2-C2)/D2,\"No sales\"). The brackets make the subtraction happen first."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

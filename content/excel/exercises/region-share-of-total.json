@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "region-share-of-total",
+  "version": 1,
+  "title": "Each region's share of total sales",
+  "objective": "Work out a share of total as part divided by total, using an absolute reference for the total.",
+  "instructions": "B7 already holds the total sales of the five regions. In C2:C6, work out each region's share of total: the region's sales divided by the total in B7. Write the formula so you can copy it down without changing the reference to the total (use $B$7). Answers are decimals, so 0.07 means 7%. In C7, add up the five shares with SUM.",
+  "grid": {
+    "rows": 7,
+    "cols": 3
+  },
+  "starter": {
+    "A1": "Region",
+    "B1": "Sales (K)",
+    "C1": "Share of total",
+    "A7": "Total",
+    "B7": "=SUM(B2:B6)",
+    "A2": "Nairobi",
+    "B2": "540",
+    "A3": "Mombasa",
+    "B3": "300",
+    "A4": "Kisumu",
+    "B4": "180",
+    "A5": "Nakuru",
+    "B5": "120",
+    "A6": "Eldoret",
+    "B6": "60"
+  },
+  "editableCells": [
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7"
+  ],
+  "allowedFunctions": [
+    "SUM"
+  ],
+  "hints": [
+    "A share is the part divided by the total: =B2/B7. Dividing, not multiplying by 100, gives a decimal such as 0.25.",
+    "Put $ signs on the total, =B2/$B$7, so it stays on B7 when you copy the formula down. B2 should still change to B3, B4 and so on.",
+    "In C7, use =SUM(C2:C6). Shares of a complete total always add up to the whole, which is 100%."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

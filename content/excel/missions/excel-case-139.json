@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-case-139",
+  "trackId": "excel",
+  "code": "EX-139",
+  "title": "Standard case with UPPER and LOWER",
+  "summary": "Make store codes consistent with UPPER and LOWER and learn when letter case does and does not matter.",
+  "estimatedMinutes": 12,
+  "passMark": 0.75,
+  "exerciseId": "store-code-case",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Store codes reach the merchandising team from several systems, and people type them in different ways: nbo-01, Nbo-01 and NBO-01 all mean the Nairobi store. Reports are easier to read, and exports easier to join, when every code looks the same."
+        },
+        {
+          "type": "paragraph",
+          "text": "UPPER and LOWER change the letter case of text. In this mission you will standardise store codes and look up the region of each store."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: standardise letter case with UPPER and LOWER.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=UPPER(text)   and   =LOWER(text)",
+          "text": "UPPER returns the text with every letter in capitals. LOWER returns it with every letter in small letters. Digits, hyphens and spaces stay as they are."
+        },
+        {
+          "type": "table",
+          "caption": "UPPER and LOWER on store codes",
+          "columns": [
+            "Typed",
+            "UPPER",
+            "LOWER"
+          ],
+          "rows": [
+            [
+              "nbo-01",
+              "NBO-01",
+              "nbo-01"
+            ],
+            [
+              "Msa-02",
+              "MSA-02",
+              "msa-02"
+            ],
+            [
+              "KSM-03",
+              "KSM-03",
+              "ksm-03"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(UPPER(A2),$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+          "text": "Put the typed code into capitals, then look it up in the store list. You can also keep the clean code in its own column and look that up."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Inside Excel, = and XLOOKUP ignore case: =\"NBO-01\"=\"nbo-01\" is TRUE. So case rarely stops a lookup inside the sheet.",
+            "Standardise anyway. Some other tools, for example Power Query merges, treat NBO-01 and nbo-01 as different text, and a report with mixed case looks careless.",
+            "UPPER and LOWER do not change the length of the text, so LEN(UPPER(A2)) is the same as LEN(A2).",
+            "Tip: choose one standard (capitals for codes is common) and apply it to the whole column before you share the data."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces, for example 12."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-upper-result",
+            "l2-compare-case",
+            "l3-upper-length",
+            "l4-why-standard"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "UPPER(text) gives capitals; LOWER(text) gives small letters.",
+            "Digits, hyphens and spaces are not changed, and the length stays the same.",
+            "Excel comparisons and XLOOKUP ignore case, but other tools may not.",
+            "Standardise codes in one column, then use that column for lookups and exports."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "One standard case across the whole data set saves arguments later."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-upper-result",
+        "type": "single-choice",
+        "prompt": "What does =UPPER(\"Nbo-01\") return?",
+        "options": [
+          {
+            "id": "caps",
+            "label": "NBO-01"
+          },
+          {
+            "id": "lower",
+            "label": "nbo-01"
+          },
+          {
+            "id": "same",
+            "label": "Nbo-01"
+          },
+          {
+            "id": "first",
+            "label": "N"
+          }
+        ]
+      },
+      {
+        "id": "l2-compare-case",
+        "type": "single-choice",
+        "prompt": "What does =(\"NBO-01\"=\"nbo-01\") return in Excel?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          }
+        ]
+      },
+      {
+        "id": "l3-upper-length",
+        "type": "numeric",
+        "prompt": "What does =LEN(UPPER(\"Eldoret\")) return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l4-why-standard",
+        "type": "single-choice",
+        "prompt": "Excel ignores case in comparisons and lookups. Why should you still standardise the case of codes?",
+        "options": [
+          {
+            "id": "other-tools",
+            "label": "Other tools, such as Power Query merges, can treat NBO-01 and nbo-01 as different, and consistent codes read better"
+          },
+          {
+            "id": "formulas",
+            "label": "Because Excel formulas cannot compare lower-case text"
+          },
+          {
+            "id": "shorter",
+            "label": "Because UPPER makes the codes shorter"
+          },
+          {
+            "id": "xlookup",
+            "label": "Because XLOOKUP only works on capitals"
+          }
+        ]
+      }
+    ]
+  }
+}

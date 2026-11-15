@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "median-vs-average-weekly-sales",
+  "version": 1,
+  "title": "Average, median and the figure to report",
+  "objective": "Compare AVERAGE and MEDIAN and let IF choose the fairer figure to report.",
+  "instructions": "B2:B9 holds eight weeks of sales in K for one store. Week 4 includes a one-off bulk order. In E2 work out the average, in E3 the median and in E4 the gap (average minus median). In E6 report the median when the gap is more than the skew limit (E5) multiplied by the median. Otherwise report the average.",
+  "grid": {
+    "rows": 9,
+    "cols": 5
+  },
+  "starter": {
+    "A1": "Week",
+    "B1": "Sales (K)",
+    "D1": "Measure",
+    "E1": "Result",
+    "D2": "Average (K)",
+    "D3": "Median (K)",
+    "D4": "Gap (K)",
+    "D5": "Skew limit",
+    "E5": "0.1",
+    "D6": "Figure to report (K)",
+    "A2": "Wk 1",
+    "B2": "118",
+    "A3": "Wk 2",
+    "B3": "124",
+    "A4": "Wk 3",
+    "B4": "121",
+    "A5": "Wk 4",
+    "B5": "540",
+    "A6": "Wk 5",
+    "B6": "119",
+    "A7": "Wk 6",
+    "B7": "126",
+    "A8": "Wk 7",
+    "B8": "123",
+    "A9": "Wk 8",
+    "B9": "120"
+  },
+  "editableCells": [
+    "E2",
+    "E3",
+    "E4",
+    "E6"
+  ],
+  "allowedFunctions": [
+    "AVERAGE",
+    "MEDIAN",
+    "IF"
+  ],
+  "hints": [
+    "AVERAGE(B2:B9) and MEDIAN(B2:B9) both take the whole range of weekly sales.",
+    "The gap is the average minus the median: E2-E3 (or refer to the cells you filled).",
+    "Test the condition with E4>E5*E3. If TRUE return E3, if FALSE return E2."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

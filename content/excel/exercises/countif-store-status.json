@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "id": "countif-store-status",
+  "version": 1,
+  "title": "Store status counts",
+  "objective": "Count stores by status with COUNTIF, using a criteria cell, a text criterion and a not-equal criterion.",
+  "instructions": "The store list is in A1:C11. In F2:F4, use COUNTIF on the Status column (C2:C11) to count the stores with the status named in E2:E4. Fix the range with $ signs and point the criteria at the cell in column E. In F5, count the stores that are not Open, using \"<>Open\". In F6, count the stores whose Region (B2:B11) is Kisumu by typing the text \"Kisumu\" in the formula.",
+  "grid": {
+    "rows": 11,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Region",
+    "C1": "Status",
+    "E1": "Question",
+    "F1": "Answer",
+    "E2": "Open",
+    "E3": "Closed",
+    "E4": "Renovation",
+    "E5": "Not open",
+    "E6": "Stores in Kisumu",
+    "A2": "Westlands",
+    "B2": "Nairobi",
+    "C2": "Open",
+    "A3": "Karen",
+    "B3": "Nairobi",
+    "C3": "Open",
+    "A4": "Eastleigh",
+    "B4": "Nairobi",
+    "C4": "Renovation",
+    "A5": "Nyali",
+    "B5": "Mombasa",
+    "C5": "Open",
+    "A6": "Bamburi",
+    "B6": "Mombasa",
+    "C6": "Closed",
+    "A7": "Likoni",
+    "B7": "Mombasa",
+    "C7": "open",
+    "A8": "Kondele",
+    "B8": "Kisumu",
+    "C8": "Open",
+    "A9": "Milimani",
+    "B9": "Kisumu",
+    "C9": "Closed",
+    "A10": "Nakuru CBD",
+    "B10": "Nakuru",
+    "C10": "Open",
+    "A11": "Eldoret CBD",
+    "B11": "Eldoret",
+    "C11": "Renovation"
+  },
+  "editableCells": [
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "allowedFunctions": [
+    "COUNTIF"
+  ],
+  "hints": [
+    "COUNTIF has two parts: =COUNTIF(where to look, what to count).",
+    "For F2, look in the Status column $C$2:$C$11 and count the status in E2. Copy the same pattern for F3 and F4.",
+    "For F5 use the criteria \"<>Open\" in double quotes. For F6 look in the Region column $B$2:$B$11 and use \"Kisumu\". Some list entries use lower case; COUNTIF ignores case."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

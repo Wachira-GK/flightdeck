@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-stock-cover-146",
+  "trackId": "excel",
+  "code": "EX-146",
+  "title": "Stock cover in weeks",
+  "summary": "Turn stock on hand and weekly sales into weeks of cover, then label each style Low, OK or Overstock.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "stock-cover-weeks-status",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A pile of 300 pairs can be too much or too little. It depends on how fast the style sells. Stock cover answers it: how many weeks will today's stock last at the current rate of sales?"
+        },
+        {
+          "type": "paragraph",
+          "text": "You will calculate cover for six styles, handle a style that has stopped selling, and label every style Low, OK, Overstock or Check."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate stock cover with a zero-sales guard and label it against low and overstock limits.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=B2/C2",
+          "text": "Stock cover in weeks = stock on hand (B2) divided by average weekly sales (C2). 120 pairs at 40 pairs a week is 3 weeks of cover."
+        },
+        {
+          "type": "paragraph",
+          "text": "If a style sold nothing, C2 is 0 and the division fails with #DIV/0!. A style with no sales has no meaningful cover, so show a clear message instead of an error."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(ROUND(B2/C2,1),\"No sales\")",
+          "text": "ROUND keeps 1 decimal place. IFERROR replaces the error with the text No sales. Text results need double quotes."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example",
+          "columns": [
+            "On hand",
+            "Weekly sales",
+            "Cover (weeks)"
+          ],
+          "rows": [
+            [
+              "120",
+              "40",
+              "3.0"
+            ],
+            [
+              "95",
+              "40",
+              "1.8 (70 / 40 = 1.75, rounded)"
+            ],
+            [
+              "80",
+              "0",
+              "No sales"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(D2=\"No sales\",\"Check\",IF(D2<$G$2,\"Low\",IF(D2>$G$3,\"Overstock\",\"OK\")))",
+          "text": "Nested IF tests one rule at a time. First the no-sales case, then below the low limit, then above the overstock limit. Anything left is OK. The limits sit in G2 and G3, locked with $ signs."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: check the special case (No sales) first. Comparing the text No sales with a number would give a wrong answer if you tested the limits first."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on stock cover. Type numbers without commas, for example 8."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-cover",
+            "i2-cover-rounded",
+            "i3-iferror-text",
+            "i4-double-sales"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Stock cover (weeks) = stock on hand / average weekly sales.",
+            "IFERROR guards the division when weekly sales are 0.",
+            "ROUND(x,1) keeps one decimal place so the numbers are easy to read.",
+            "A nested IF labels the cover against limits kept in cells, testing the special case first."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: reorder quantity, to turn cover targets into an order."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-cover",
+        "type": "numeric",
+        "prompt": "A style has 240 pairs on hand and sells 30 pairs a week. How many weeks of cover is that?",
+        "answerHint": "Number of weeks"
+      },
+      {
+        "id": "i2-cover-rounded",
+        "type": "numeric",
+        "prompt": "A style has 95 pairs on hand and sells 40 a week. What does =ROUND(95/40,1) return?",
+        "answerHint": "Number, 1 decimal place"
+      },
+      {
+        "id": "i3-iferror-text",
+        "type": "single-choice",
+        "prompt": "Why use IFERROR(ROUND(B2/C2,1),\"No sales\") instead of the plain division?",
+        "options": [
+          {
+            "id": "zero",
+            "label": "When weekly sales are 0 the division gives #DIV/0!, and IFERROR turns that into a readable message"
+          },
+          {
+            "id": "round",
+            "label": "Because IFERROR rounds the result"
+          },
+          {
+            "id": "faster",
+            "label": "Because it makes the cover number larger"
+          },
+          {
+            "id": "negative",
+            "label": "Because it stops stock on hand going negative"
+          }
+        ]
+      },
+      {
+        "id": "i4-double-sales",
+        "type": "single-choice",
+        "prompt": "A style sells twice as fast as before, and stock on hand stays the same. What happens to its cover in weeks?",
+        "options": [
+          {
+            "id": "doubles",
+            "label": "It doubles"
+          },
+          {
+            "id": "halves",
+            "label": "It halves"
+          },
+          {
+            "id": "same",
+            "label": "It stays the same"
+          },
+          {
+            "id": "zero",
+            "label": "It becomes zero"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-clean-lookup-142",
+  "items": [
+    {
+      "id": "l1-order-of-work",
+      "type": "single-choice",
+      "correctOptionId": "trim",
+      "rationale": "Excel evaluates the innermost function first and works outwards: TRIM(A2), then UPPER on that result, then XLOOKUP on the cleaned code. Being written first does not mean being evaluated first."
+    },
+    {
+      "id": "l2-price-after-trim",
+      "type": "numeric",
+      "expected": 499,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "TRIM and UPPER turn the text into SL-075, which is in row 6 of the price list with a price of 499."
+    },
+    {
+      "id": "l3-trailing-space",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "XLOOKUP needs an exact match and the trailing space makes the text different from SD-120. With no match and no fourth argument the result is #N/A, which is why TRIM is needed."
+    },
+    {
+      "id": "l4-upper-role",
+      "type": "single-choice",
+      "correctOptionId": "optional",
+      "rationale": "Excel's XLOOKUP matches text without regard to case, so lower-case codes are found anyway. It does not ignore spaces, and UPPER does not remove them. UPPER is still useful to produce a standard code."
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-countifs-125",
+  "trackId": "excel",
+  "code": "EX-125",
+  "title": "Counting with two conditions: COUNTIFS",
+  "summary": "Count rows that meet two conditions, including a stock band such as 10 to 19 pairs built from two criteria on the same column.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "countifs-stock-bands",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Stock analysts group lines into bands: very low stock, healthy stock and overstock. A band is a range of numbers, such as at least 10 pairs but fewer than 20. Counting a band needs two conditions on the same column."
+        },
+        {
+          "type": "paragraph",
+          "text": "COUNTIFS counts the rows where every condition is true. Use it for \"Nairobi sneakers\" (two columns) and for number bands (one column used twice)."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: count rows with two conditions using COUNTIFS, including a number band.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=COUNTIFS(criteria_range1, criteria1, criteria_range2, criteria2)",
+          "text": "Give each condition as a pair: where to look, then what to match. Add more pairs as needed. A row is counted only when all conditions are true. There is no sum range because COUNTIFS counts rows."
+        },
+        {
+          "type": "table",
+          "caption": "Store stock in A1:B8",
+          "columns": [
+            "Row",
+            "A: Region",
+            "B: Pairs in stock"
+          ],
+          "rows": [
+            [
+              "2",
+              "Nairobi",
+              "8"
+            ],
+            [
+              "3",
+              "Nairobi",
+              "14"
+            ],
+            [
+              "4",
+              "Mombasa",
+              "5"
+            ],
+            [
+              "5",
+              "Nairobi",
+              "22"
+            ],
+            [
+              "6",
+              "Mombasa",
+              "10"
+            ],
+            [
+              "7",
+              "Kisumu",
+              "19"
+            ],
+            [
+              "8",
+              "Nairobi",
+              "10"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIFS(A2:A8,\"Nairobi\",B2:B8,\"<10\")",
+          "text": "Count rows where the region is Nairobi and the pairs in stock are fewer than 10. Only row 2 (8 pairs) qualifies, so the answer is 1."
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIFS(B2:B8,\">=10\",B2:B8,\"<20\")",
+          "text": "A number band uses the same range twice, once for the lower limit and once for the upper limit. This counts lines with at least 10 and fewer than 20 pairs."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Both conditions must be true on the same row (AND). Two different regions on the same column can never both be true, so that count is 0.",
+            "Use >= for the lower limit and < for the upper limit. Then neighbouring bands (0 to <10, 10 to <20, 20 and over) never share a value and nothing is counted twice.",
+            "Build band limits from cells with &, for example \">=\"&F7 and \"<\"&G7, so you can change a band without editing the formula."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the store stock from Training (A1:B8). Type whole numbers, for example 3."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-band",
+            "l2-region-and-stock",
+            "l3-band-edges",
+            "l4-same-column-twice"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "COUNTIFS(range1, criteria1, range2, criteria2) counts rows where all conditions are true.",
+            "A number band is the same column twice: \">=low\" and \"<high\".",
+            "Use >= for the lower limit and < for the upper limit so bands do not overlap.",
+            "Build the band limits from cells with & so the bands can be changed easily."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Stock bands built with COUNTIFS give a quick picture of how many lines are low, healthy or overstocked."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-band",
+        "type": "numeric",
+        "prompt": "What does =COUNTIFS(B2:B8,\">=10\",B2:B8,\"<20\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l2-region-and-stock",
+        "type": "numeric",
+        "prompt": "What does =COUNTIFS(A2:A8,\"Nairobi\",B2:B8,\">=10\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l3-band-edges",
+        "type": "single-choice",
+        "prompt": "Two bands are written \">=10 and <=20\" and \">=20 and <=30\". What happens to a line with exactly 20 pairs?",
+        "options": [
+          {
+            "id": "both",
+            "label": "It is counted in both bands"
+          },
+          {
+            "id": "neither",
+            "label": "It is counted in neither band"
+          },
+          {
+            "id": "first",
+            "label": "It is counted only in the first band"
+          },
+          {
+            "id": "error",
+            "label": "Excel shows an error"
+          }
+        ]
+      },
+      {
+        "id": "l4-same-column-twice",
+        "type": "single-choice",
+        "prompt": "What does =COUNTIFS(A2:A8,\"Nairobi\",A2:A8,\"Mombasa\") return?",
+        "options": [
+          {
+            "id": "zero",
+            "label": "0, because no cell can be both Nairobi and Mombasa"
+          },
+          {
+            "id": "both",
+            "label": "The number of Nairobi and Mombasa rows together"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "one",
+            "label": "1"
+          }
+        ]
+      }
+    ]
+  }
+}

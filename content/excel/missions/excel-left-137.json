@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-left-137",
+  "trackId": "excel",
+  "code": "EX-137",
+  "title": "Pull prefixes with LEFT",
+  "summary": "Extract the category prefix and style code from article codes with LEFT, then use the prefix to look up the category.",
+  "estimatedMinutes": 12,
+  "passMark": 0.75,
+  "exerciseId": "article-prefix-left",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A Kisumu store manager sends sales by article code, such as SN-450-42. The first two letters say which category the shoe belongs to, and the first six characters identify the style, whatever the size."
+        },
+        {
+          "type": "paragraph",
+          "text": "To report by category, you need those pieces in their own columns. LEFT takes the first characters of a piece of text, so you can split the code without retyping it, and then use the prefix to find the category name."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: extract the start of a code with LEFT and use it in a lookup.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=LEFT(text, [num_chars])",
+          "text": "LEFT returns num_chars characters from the start of the text. If you leave num_chars out, you get 1 character."
+        },
+        {
+          "type": "table",
+          "caption": "LEFT on article codes",
+          "columns": [
+            "Code",
+            "LEFT(code,2)",
+            "LEFT(code,6)"
+          ],
+          "rows": [
+            [
+              "SN-450-42",
+              "SN",
+              "SN-450"
+            ],
+            [
+              "BT-330-41",
+              "BT",
+              "BT-330"
+            ],
+            [
+              "SS-210-44",
+              "SS",
+              "SS-210"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(LEFT(A2,2),$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+          "text": "Take the first two characters of A2 and look them up in the prefix list, returning the category name. You can nest LEFT inside XLOOKUP, or keep the prefix in its own column first."
+        },
+        {
+          "type": "list",
+          "items": [
+            "LEFT always returns text, even when the characters are digits: LEFT(\"2499\",2) is the text 24. Excel still converts numeric-looking text when you do arithmetic with it, so LEFT(\"2499\",2)+1 is 25.",
+            "If num_chars is bigger than the text, you get the whole text: LEFT(\"SN-45\",20) is SN-45.",
+            "LEFT counts from the very first character. If a code starts with a space, the space is counted too, which is why cleaning with TRIM matters.",
+            "Tip: keep the prefix length in mind. This works only because every code uses a two-letter prefix."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces, for example 12."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-left-two",
+            "l2-left-default",
+            "l3-left-arith",
+            "l4-left-long"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "LEFT(text, n) returns the first n characters; n defaults to 1.",
+            "LEFT always returns text, but numeric-looking text still works in arithmetic.",
+            "Use LEFT results as lookup keys to turn codes into category names.",
+            "Asking for more characters than exist returns the whole text."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Splitting codes with LEFT lets you report by category without changing the source data."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-left-two",
+        "type": "single-choice",
+        "prompt": "What does =LEFT(\"BT-330-41\",2) return?",
+        "options": [
+          {
+            "id": "bt",
+            "label": "BT"
+          },
+          {
+            "id": "bt-dash",
+            "label": "BT-"
+          },
+          {
+            "id": "b",
+            "label": "B"
+          },
+          {
+            "id": "330",
+            "label": "330"
+          }
+        ]
+      },
+      {
+        "id": "l2-left-default",
+        "type": "single-choice",
+        "prompt": "What does =LEFT(\"SN-450-42\") return, with no second argument?",
+        "options": [
+          {
+            "id": "s",
+            "label": "S"
+          },
+          {
+            "id": "sn",
+            "label": "SN"
+          },
+          {
+            "id": "full",
+            "label": "SN-450-42"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l3-left-arith",
+        "type": "numeric",
+        "prompt": "What does =LEFT(\"2499\",2)+1 return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l4-left-long",
+        "type": "numeric",
+        "prompt": "What does =LEN(LEFT(\"SD-120-38\",20)) return?",
+        "answerHint": "Whole number"
+      }
+    ]
+  }
+}

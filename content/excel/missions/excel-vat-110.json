@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-vat-110",
+  "trackId": "excel",
+  "code": "EX-110",
+  "title": "VAT and discounts",
+  "summary": "Add VAT to a price, take it out again, and apply a percentage discount, using rates held in input cells.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "vat-and-discount-prices",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The store system holds prices without VAT, but customers see prices with VAT, and marketing wants a sale price on top. You need all three numbers for every item."
+        },
+        {
+          "type": "paragraph",
+          "text": "In this mission the VAT rate sits in an input cell. The rate used is an example: 16% is Kenya's standard VAT rate, per the Kenya Revenue Authority (KRA), but rates can change, so always check the current rate before using one in real work. Prices and discounts are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate VAT, price including VAT, and a discounted price using input cells.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "VAT and discount formulas (rate in B1, discount in B2)",
+          "columns": [
+            "To find",
+            "Formula",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "VAT amount",
+              "=B5*$B$1",
+              "price excluding VAT times the VAT rate"
+            ],
+            [
+              "Price including VAT",
+              "=B5+C5",
+              "price plus the VAT amount (same as =B5*(1+$B$1))"
+            ],
+            [
+              "Price excluding VAT",
+              "=D5/(1+$B$1)",
+              "take VAT out of a price that includes it"
+            ],
+            [
+              "Price after discount",
+              "=D5*(1-$B$2)",
+              "keep what is left after the discount"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example, using an example VAT rate of 16%. A pair is KES 2,000 excluding VAT. VAT is 2,000 x 16% = 320, so the price including VAT is 2,320."
+        },
+        {
+          "type": "paragraph",
+          "text": "To go backwards, divide, do not subtract. KES 2,320 including VAT is the price times 1.16, so the price excluding VAT is 2,320 / 1.16 = 2,000. Taking 16% off 2,320 gives 1,948.80, which is wrong, because the 16% was worked out on the smaller price."
+        },
+        {
+          "type": "paragraph",
+          "text": "A discount of 15% leaves 100% - 15% = 85% of the price, so multiply by (1 - 15%). On a price of 2,320 that is 2,320 x 0.85 = 1,972. The brackets matter: the subtraction must happen before the multiplication."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: keep the VAT rate and the discount in input cells and refer to them with $ signs. When the rate changes, change one cell and every price updates. Never type 0.16 into a formula."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on VAT and discounts. Use the example VAT rate of 16% where a rate is needed. Type numbers without commas."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-input-cell",
+            "i2-remove-vat",
+            "i3-discount-formula",
+            "i4-combined"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "VAT amount = price excluding VAT x rate. Price including VAT = price x (1 + rate).",
+            "To remove VAT, divide by (1 + rate). Do not subtract the rate from the bigger price.",
+            "A discount keeps (1 - discount) of the price, so multiply by it.",
+            "Keep rates in input cells and use $ signs so one change updates every formula."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: order of operations, so Excel calculates what you mean."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-input-cell",
+        "type": "single-choice",
+        "prompt": "Your price sheet works out VAT with =B5*$B$1, where B1 holds the VAT rate. The government announces a new VAT rate. What do you do?",
+        "options": [
+          {
+            "id": "change-b1",
+            "label": "Change B1 only, and every price updates"
+          },
+          {
+            "id": "edit-all",
+            "label": "Edit every formula and type the new rate in it"
+          },
+          {
+            "id": "nothing",
+            "label": "Nothing, because Excel updates the rate itself"
+          },
+          {
+            "id": "copy",
+            "label": "Copy the old sheet and change the labels"
+          }
+        ]
+      },
+      {
+        "id": "i2-remove-vat",
+        "type": "numeric",
+        "prompt": "A pair is priced at KES 2,320 including VAT at the example rate of 16%. What is the price excluding VAT, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i3-discount-formula",
+        "type": "single-choice",
+        "prompt": "The price is in D2. Which formula gives the price after a 10% discount?",
+        "options": [
+          {
+            "id": "times-90",
+            "label": "=D2*(1-10%)"
+          },
+          {
+            "id": "minus-ten",
+            "label": "=D2-10%"
+          },
+          {
+            "id": "times-10",
+            "label": "=D2*10%"
+          },
+          {
+            "id": "divide",
+            "label": "=D2/(1-10%)"
+          }
+        ]
+      },
+      {
+        "id": "i4-combined",
+        "type": "numeric",
+        "prompt": "A pair costs KES 1,000 excluding VAT. Add VAT at the example rate of 16%, then take 15% off the price including VAT. What is the sale price, in KES?",
+        "answerHint": "Whole number, in KES"
+      }
+    ]
+  }
+}

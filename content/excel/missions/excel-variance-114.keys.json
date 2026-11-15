@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-variance-114",
+  "items": [
+    {
+      "id": "i1-variance",
+      "type": "numeric",
+      "expected": -45,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Variance is actual minus plan, so 495 - 540 = -45. The negative sign shows the store is behind plan."
+    },
+    {
+      "id": "i2-abs",
+      "type": "numeric",
+      "expected": 150,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "C2-B2 is 150 and ABS keeps 150. For a store 150K behind plan, ABS would also give 150, which is why it measures size only."
+    },
+    {
+      "id": "i3-both-directions",
+      "type": "single-choice",
+      "correctOptionId": "abs-gt",
+      "rationale": "ABS(D2) turns a shortfall into a positive size, so one comparison catches both directions. D2>B8 misses stores far below plan. ABS(D2)<B8 is the opposite test. ABS cannot be wrapped around text."
+    },
+    {
+      "id": "i4-boundary",
+      "type": "single-choice",
+      "correctOptionId": "ok",
+      "rationale": "50 > 50 is FALSE because > means strictly more than. The false branch returns OK. Use >= if the limit itself should be flagged."
+    }
+  ]
+}

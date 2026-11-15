@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "plan-variance-flags",
+  "version": 1,
+  "title": "Variance against plan with ABS",
+  "objective": "Work out variance, absolute variance and a flag when the gap is bigger than a tolerance.",
+  "instructions": "Plan is in column B and actual sales in column C, both in KES thousands (K). In D2:D6 work out the variance: actual minus plan. In E2:E6 work out the absolute variance, which is the size of the gap whether it is above or below plan. In F2:F6 show \"Check\" when the absolute variance is more than the tolerance in B8, otherwise \"OK\".",
+  "grid": {
+    "rows": 8,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Plan (K)",
+    "C1": "Actual (K)",
+    "D1": "Variance (K)",
+    "E1": "Absolute variance (K)",
+    "F1": "Flag",
+    "A2": "Nairobi",
+    "B2": "820",
+    "C2": "765",
+    "A3": "Mombasa",
+    "B3": "610",
+    "C3": "655",
+    "A4": "Kisumu",
+    "B4": "430",
+    "C4": "432",
+    "A5": "Nakuru",
+    "B5": "380",
+    "C5": "445",
+    "A6": "Eldoret",
+    "B6": "300",
+    "C6": "250",
+    "A8": "Tolerance (K)",
+    "B8": "50"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "allowedFunctions": [
+    "ABS",
+    "IF"
+  ],
+  "hints": [
+    "Variance is actual minus plan: =C2-B2. A negative result means the store is below plan.",
+    "ABS removes the sign: =ABS(D2) turns -12 into 12.",
+    "Use IF with the tolerance cell: =IF(E2>$B$8,\"Check\",\"OK\"). A gap exactly equal to the tolerance is still OK."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

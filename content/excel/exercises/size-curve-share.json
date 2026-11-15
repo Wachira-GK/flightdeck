@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "size-curve-share",
+  "version": 1,
+  "title": "Size-curve shares and the top size",
+  "objective": "Calculate each size's share of total pairs and find the biggest size.",
+  "instructions": "A2:A8 are shoe sizes and B2:B8 are pairs sold. In B9 add up the pairs sold. In C2:C8 work out each size's share of the total as a percentage (pairs divided by the total in B9, times 100), rounded to 1 decimal place with ROUND. Use absolute references so the formula can be copied down. In F2 find the most pairs sold in one size, in F3 use XLOOKUP to find which size that is, and in F4 find the largest share.",
+  "grid": {
+    "rows": 9,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Size",
+    "B1": "Pairs sold",
+    "C1": "Share (%)",
+    "A9": "Total",
+    "E1": "Summary",
+    "E2": "Most pairs in one size",
+    "E3": "Size that sells most",
+    "E4": "Its share (%)",
+    "A2": "38",
+    "B2": "14",
+    "A3": "39",
+    "B3": "26",
+    "A4": "40",
+    "B4": "48",
+    "A5": "41",
+    "B5": "62",
+    "A6": "42",
+    "B6": "55",
+    "A7": "43",
+    "B7": "31",
+    "A8": "44",
+    "B8": "14"
+  },
+  "editableCells": [
+    "B9",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "allowedFunctions": [
+    "SUM",
+    "ROUND",
+    "MAX",
+    "XLOOKUP"
+  ],
+  "hints": [
+    "B9 is =SUM(B2:B8). Each share is =B2/$B$9*100 with the total locked by dollar signs.",
+    "Wrap the share in ROUND(...,1). F2 is MAX over the pairs column and F4 is MAX over the share column.",
+    "For F3 look up F2 in B2:B8 and return from A2:A8: XLOOKUP(lookup value, lookup range, return range)."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

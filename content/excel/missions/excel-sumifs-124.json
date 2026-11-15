@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-sumifs-124",
+  "trackId": "excel",
+  "code": "EX-124",
+  "title": "Two conditions with SUMIFS",
+  "summary": "Total sales that match two conditions at once, such as one region and one category, with SUMIFS.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "sumifs-region-category",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Nairobi area manager does not only want Nairobi sales. She wants Nairobi sneaker sales, to see whether a new range is working. That is two conditions at the same time: region and category."
+        },
+        {
+          "type": "paragraph",
+          "text": "SUMIFS adds the numbers on rows where every condition is true. It is SUMIF with room for more conditions."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: total a column using two conditions with SUMIFS.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUMIFS(sum_range, criteria_range1, criteria1, criteria_range2, criteria2)",
+          "text": "First say what to add (sum_range), then give each condition as a pair: where to look, then what to match. Add more pairs for more conditions. All ranges must be the same size. A row is added only when all conditions are true."
+        },
+        {
+          "type": "table",
+          "caption": "Sales list in A1:C8 (sales in K)",
+          "columns": [
+            "Row",
+            "A: Region",
+            "B: Category",
+            "C: Sales (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "Nairobi",
+              "Sneakers",
+              "120"
+            ],
+            [
+              "3",
+              "Nairobi",
+              "Sandals",
+              "45"
+            ],
+            [
+              "4",
+              "Mombasa",
+              "Sandals",
+              "70"
+            ],
+            [
+              "5",
+              "Nairobi",
+              "Sneakers",
+              "95"
+            ],
+            [
+              "6",
+              "Mombasa",
+              "Sneakers",
+              "60"
+            ],
+            [
+              "7",
+              "Kisumu",
+              "Sandals",
+              "40"
+            ],
+            [
+              "8",
+              "Mombasa",
+              "Sandals",
+              "55"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=SUMIFS(C2:C8,A2:A8,\"Mombasa\",B2:B8,\"Sandals\")",
+          "text": "Add column C where the region is Mombasa and the category is Sandals. Rows 4 and 8 match: 70 + 55 = 125K."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Order matters: SUMIFS starts with the range to add. In SUMIF the range to add comes last, so do not mix them up.",
+            "The conditions are joined with AND. A row that is Mombasa but not Sandals is left out.",
+            "If no row meets both conditions, the answer is 0, not an error.",
+            "Criteria can be typed in quotes or taken from cells, and you can use \">=100\" style criteria too. Use $ signs when copying down."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the sales list from Training (A1:C8). Type whole numbers, for example 125."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-nairobi-sneakers",
+            "l2-no-match",
+            "l3-order",
+            "l4-and"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "SUMIFS(sum_range, criteria_range1, criteria1, criteria_range2, criteria2) adds rows where all conditions are true.",
+            "The range to add comes first, unlike SUMIF.",
+            "No row meeting all conditions gives 0.",
+            "Use cell references for the criteria and $ on the ranges to copy one formula down a summary."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "You can now cut sales by any two attributes at once, such as region and category."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-nairobi-sneakers",
+        "type": "numeric",
+        "prompt": "What does =SUMIFS(C2:C8,A2:A8,\"Nairobi\",B2:B8,\"Sneakers\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l2-no-match",
+        "type": "numeric",
+        "prompt": "What does =SUMIFS(C2:C8,A2:A8,\"Kisumu\",B2:B8,\"Sneakers\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l3-order",
+        "type": "single-choice",
+        "prompt": "In SUMIFS, which range comes first?",
+        "options": [
+          {
+            "id": "sum-range",
+            "label": "The range to add up (sum_range)"
+          },
+          {
+            "id": "first-criteria",
+            "label": "The first criteria range"
+          },
+          {
+            "id": "criteria-text",
+            "label": "The first criteria, for example \"Nairobi\""
+          },
+          {
+            "id": "count",
+            "label": "The number of conditions"
+          }
+        ]
+      },
+      {
+        "id": "l4-and",
+        "type": "single-choice",
+        "prompt": "How does =SUMIFS(C2:C8,A2:A8,\"Nairobi\",B2:B8,\"Sandals\") treat the two conditions?",
+        "options": [
+          {
+            "id": "and",
+            "label": "It adds rows that are Nairobi and also Sandals"
+          },
+          {
+            "id": "or",
+            "label": "It adds rows that are Nairobi or Sandals"
+          },
+          {
+            "id": "first",
+            "label": "It uses only the first condition"
+          },
+          {
+            "id": "error",
+            "label": "It returns an error, because SUMIFS takes one condition"
+          }
+        ]
+      }
+    ]
+  }
+}

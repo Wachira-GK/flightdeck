@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-sell-through-145",
+  "trackId": "excel",
+  "code": "EX-145",
+  "title": "Sell-through % and slow sellers",
+  "summary": "Work out what share of the available pairs has sold and flag the styles that are moving too slowly.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "sell-through-slow-sellers",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Every Monday the regional merchandiser asks the same question: which styles are selling and which are sitting? Sell-through % answers it with a single number per style."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will calculate sell-through for six styles, make the formula safe when a style has no stock at all, and flag every style below the slow-seller limit."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate sell-through %, guard it with IFERROR, round it with ROUND and flag slow sellers with IF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Sell-through % is the share of the available stock that has sold. A common way to measure it is: sold divided by (sold plus on hand), multiplied by 100. Some teams use sold divided by pairs received. The two agree when nothing has been returned or transferred out, so always say which one you use."
+        },
+        {
+          "type": "formula",
+          "formula": "=B2/(B2+C2)*100",
+          "text": "Sold (B2) as a share of everything available, written as a number between 0 and 100."
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(number, digits)",
+          "text": "ROUND shortens a number to the digits you ask for. ROUND(56.6667,1) gives 56.7."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(value, value_if_error)",
+          "text": "IFERROR returns the value when it works. If the value is an error such as #DIV/0!, it returns the second argument instead."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(ROUND(B2/(B2+C2)*100,1),0)",
+          "text": "A style with 0 sold and 0 on hand would divide by zero. IFERROR shows 0 instead of an error."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example",
+          "columns": [
+            "Sold",
+            "On hand",
+            "Working",
+            "Sell-through (%)"
+          ],
+          "rows": [
+            [
+              "60",
+              "40",
+              "60 / (60 + 40) x 100",
+              "60.0"
+            ],
+            [
+              "45",
+              "55",
+              "45 / (45 + 55) x 100",
+              "45.0"
+            ],
+            [
+              "0",
+              "0",
+              "0 / 0 gives #DIV/0!, so IFERROR returns the fallback",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(D2<$G$2,\"Slow\",\"OK\")",
+          "text": "Flag the style as Slow when its sell-through is below the limit in G2. The dollar signs lock G2 so the same limit is used when the formula is copied down."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: \"below the limit\" is <, so a style exactly on the limit is not slow."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on sell-through. Type numbers without the % sign, for example 30."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-basic",
+            "i2-rounding",
+            "i3-iferror",
+            "i4-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Sell-through % = sold / (sold + on hand) x 100, or sold / received. Say which one you use.",
+            "ROUND(x,1) keeps one decimal place.",
+            "IFERROR(value, fallback) replaces an error with a safe value.",
+            "IF compares the result with a limit kept in its own cell, locked with $ signs."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: stock cover in weeks, to see how long today's stock will last."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-basic",
+        "type": "numeric",
+        "prompt": "A style sold 48 pairs and has 112 pairs on hand. Using sold / (sold + on hand), what is the sell-through %, to 1 decimal place?",
+        "answerHint": "Number, 1 decimal place, without the % sign"
+      },
+      {
+        "id": "i2-rounding",
+        "type": "numeric",
+        "prompt": "A style sold 25 pairs and has 50 on hand. What does =ROUND(25/(25+50)*100,1) return?",
+        "answerHint": "Number, 1 decimal place"
+      },
+      {
+        "id": "i3-iferror",
+        "type": "single-choice",
+        "prompt": "Why wrap the sell-through formula in IFERROR(...,0)?",
+        "options": [
+          {
+            "id": "new-line",
+            "label": "A new style with no stock makes sold + on hand equal 0, and IFERROR replaces the #DIV/0! error with 0"
+          },
+          {
+            "id": "faster",
+            "label": "It makes the sheet calculate faster"
+          },
+          {
+            "id": "round",
+            "label": "It rounds the answer to 1 decimal place"
+          },
+          {
+            "id": "negative",
+            "label": "It stops sell-through from going above 100%"
+          }
+        ]
+      },
+      {
+        "id": "i4-boundary",
+        "type": "single-choice",
+        "prompt": "The slow-seller limit in G2 is 40. A style has a sell-through of exactly 40.0 in D2. What does =IF(D2<$G$2,\"Slow\",\"OK\") return?",
+        "options": [
+          {
+            "id": "slow",
+            "label": "Slow"
+          },
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "choice-c",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#DIV/0!"
+          }
+        ]
+      }
+    ]
+  }
+}

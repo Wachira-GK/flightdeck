@@ -1,0 +1,8 @@
+{
+    "cells":  {
+                  "D5":  "=IF(B5\u003c=C5,\"Reorder\",\"OK\")",
+                  "D3":  "=IF(B3\u003c=C3,\"Reorder\",\"OK\")",
+                  "D4":  "=IF(B4\u003c=C4,\"Reorder\",\"OK\")",
+                  "D2":  "=IF(B2\u003c=C2,\"Reorder\",\"OK\")"
+              }
+}

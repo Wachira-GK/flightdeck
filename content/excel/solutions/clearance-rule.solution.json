@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "F2": "=NOT(E2=\"Yes\")",
+    "F3": "=NOT(E3=\"Yes\")",
+    "F4": "=NOT(E4=\"Yes\")",
+    "F5": "=NOT(E5=\"Yes\")",
+    "F6": "=NOT(E6=\"Yes\")",
+    "F7": "=NOT(E7=\"Yes\")",
+    "G2": "=IF(AND(NOT(D2=\"Core\"),OR(B2>=$B$9,C2<$B$10),F2),\"Clearance\",\"Keep\")",
+    "G3": "=IF(AND(NOT(D3=\"Core\"),OR(B3>=$B$9,C3<$B$10),F3),\"Clearance\",\"Keep\")",
+    "G4": "=IF(AND(NOT(D4=\"Core\"),OR(B4>=$B$9,C4<$B$10),F4),\"Clearance\",\"Keep\")",
+    "G5": "=IF(AND(NOT(D5=\"Core\"),OR(B5>=$B$9,C5<$B$10),F5),\"Clearance\",\"Keep\")",
+    "G6": "=IF(AND(NOT(D6=\"Core\"),OR(B6>=$B$9,C6<$B$10),F6),\"Clearance\",\"Keep\")",
+    "G7": "=IF(AND(NOT(D7=\"Core\"),OR(B7>=$B$9,C7<$B$10),F7),\"Clearance\",\"Keep\")"
+  }
+}

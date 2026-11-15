@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "id": "discount-price-points",
+  "version": 1,
+  "title": "Discounted price points",
+  "objective": "Round a discounted price to the nearest KES 10 with ROUND, then subtract 1 to make a charm price.",
+  "instructions": "The discount rate is in B7. In D2:D5 work out the discounted price: list price times (1 minus the discount). In E2:E5 round the discounted price to the nearest KES 10. In F2:F5 make the charm price by subtracting 1 from the rounded price, so it ends in 9.",
+  "grid": {
+    "rows": 7,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Item",
+    "B1": "List price (KES)",
+    "D1": "Discounted",
+    "E1": "Nearest 10",
+    "F1": "Charm price",
+    "A2": "Sneakers",
+    "B2": "1899",
+    "A3": "Sandals",
+    "B3": "749",
+    "A4": "Boots",
+    "B4": "2450",
+    "A5": "School shoes",
+    "B5": "1299",
+    "A7": "Discount",
+    "B7": "15%"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "allowedFunctions": [
+    "ROUND"
+  ],
+  "hints": [
+    "The discounted price is the list price times (1 minus the discount). Use the discount cell with a dollar lock: =B2*(1-$B$7).",
+    "Round the discounted price, not the list price: =ROUND(D2,-1) rounds to the nearest 10.",
+    "The charm price is the rounded price minus 1: =E2-1. Always round first, then subtract."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

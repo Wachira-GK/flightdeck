@@ -1,0 +1,14 @@
+{
+  "cells": {
+    "C2": "=XLOOKUP(B2,$F$2:$F$10,$G$2:$G$10,\"Not stocked\")",
+    "D2": "=XLOOKUP(B2,$F$2:$F$10,$H$2:$H$10,\"Not stocked\")",
+    "C3": "=XLOOKUP(B3,$F$2:$F$10,$G$2:$G$10,\"Not stocked\")",
+    "D3": "=XLOOKUP(B3,$F$2:$F$10,$H$2:$H$10,\"Not stocked\")",
+    "C4": "=XLOOKUP(B4,$F$2:$F$10,$G$2:$G$10,\"Not stocked\")",
+    "D4": "=XLOOKUP(B4,$F$2:$F$10,$H$2:$H$10,\"Not stocked\")",
+    "C5": "=XLOOKUP(B5,$F$2:$F$10,$G$2:$G$10,\"Not stocked\")",
+    "D5": "=XLOOKUP(B5,$F$2:$F$10,$H$2:$H$10,\"Not stocked\")",
+    "C6": "=XLOOKUP(B6,$F$2:$F$10,$G$2:$G$10,\"Not stocked\")",
+    "D6": "=XLOOKUP(B6,$F$2:$F$10,$H$2:$H$10,\"Not stocked\")"
+  }
+}

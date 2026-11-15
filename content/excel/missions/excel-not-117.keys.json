@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-not-117",
+  "items": [
+    {
+      "id": "i1-not-result",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "5>3 is TRUE and NOT flips it to FALSE."
+    },
+    {
+      "id": "i2-same-as-not",
+      "type": "single-choice",
+      "correctOptionId": "not-equal",
+      "rationale": "<> means not equal to, so D2<>\"Core\" is TRUE exactly when D2=\"Core\" is FALSE. Comparing with \"Not Core\" tests for different text, > is an ordering test, and a minus sign on text causes an error."
+    },
+    {
+      "id": "i3-count-clearance",
+      "type": "numeric",
+      "expected": 2,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Line 1 passes: not Core, 13 is at least 12, not marked down. Line 2 is Core, so it fails. Line 3 is already marked down, so it fails. Line 4 passes: not Core, sell-through 29% is below 30%, not marked down. So 2 lines go on clearance."
+    },
+    {
+      "id": "i4-exclude-marked-down",
+      "type": "single-choice",
+      "correctOptionId": "not-yes",
+      "rationale": "AND needs the line to pass every test. NOT(E2=\"Yes\") is FALSE when E2 is Yes, so AND fails and the line stays out. E2=\"Yes\" does the opposite, OR(E2,\"Yes\") is not a valid test, and NOT(E2=\"No\") would be FALSE for lines that have not been marked down."
+    }
+  ]
+}

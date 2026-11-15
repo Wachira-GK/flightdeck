@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-count-106",
+  "items": [
+    {
+      "id": "i1-count",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "COUNT counts only numbers: 12, 0, 5 and 30 make 4. The text n/a and the empty cell are ignored, but 0 is a number so it is counted."
+    },
+    {
+      "id": "i2-zero",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "COUNT looks at the type of the cell, not its size. 0 is a number, so it is counted. This matters: a line with 0 pairs has been counted, while an empty cell has not."
+    },
+    {
+      "id": "i3-average",
+      "type": "numeric",
+      "expected": 20,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "SUM adds 25 + 40 + 0 + 15 = 80 and COUNT finds 4 numbers, so 80 / 4 = 20. The text TBC and the empty cell are in neither the total nor the count."
+    },
+    {
+      "id": "i4-text-number",
+      "type": "single-choice",
+      "correctOptionId": "ignores",
+      "rationale": "An apostrophe at the front tells Excel to store the entry as text, and COUNT counts only real numbers. It does not return an error: the cell is simply skipped."
+    }
+  ]
+}

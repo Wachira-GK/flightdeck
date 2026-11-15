@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-countif-121",
+  "trackId": "excel",
+  "code": "EX-121",
+  "title": "Counting by status with COUNTIF",
+  "summary": "Count how many stores are open, closed or being renovated with COUNTIF, using text and cell-reference criteria.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "countif-store-status",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Head office wants a quick status check: how many stores are trading, how many are closed and how many are being renovated? The store list has a Status column, but counting by eye invites mistakes."
+        },
+        {
+          "type": "paragraph",
+          "text": "COUNTIF counts the cells in a range that meet a condition. It answers \"how many?\", while SUMIF answers \"how much?\"."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: count rows that match a condition with COUNTIF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=COUNTIF(range, criteria)",
+          "text": "Count the cells in range that meet criteria. There is no third argument: COUNTIF counts the rows, it does not add numbers."
+        },
+        {
+          "type": "table",
+          "caption": "Store list in A1:B8",
+          "columns": [
+            "Row",
+            "A: Store",
+            "B: Status"
+          ],
+          "rows": [
+            [
+              "2",
+              "Westlands",
+              "Open"
+            ],
+            [
+              "3",
+              "Nyali",
+              "Closed"
+            ],
+            [
+              "4",
+              "Karen",
+              "Open"
+            ],
+            [
+              "5",
+              "Bamburi",
+              "Open"
+            ],
+            [
+              "6",
+              "Milimani",
+              "Renovation"
+            ],
+            [
+              "7",
+              "Likoni",
+              "Closed"
+            ],
+            [
+              "8",
+              "Kondele",
+              "Open"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIF(B2:B8,\"Closed\")",
+          "text": "Count the cells in B2:B8 that say Closed. Nyali and Likoni match, so the answer is 2."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Upper and lower case do not matter: \"closed\" counts Closed.",
+            "Point at a cell to avoid retyping, for example =COUNTIF($B$2:$B$8,E2) when E2 holds the word Renovation.",
+            "\"<>Open\" means not equal to Open. It counts every cell that is anything other than Open.",
+            "When nothing matches, COUNTIF returns 0, not an error.",
+            "Use $ signs on the range when you copy the formula down."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the store list from Training (A1:B8). Type whole numbers, for example 3."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-open-count",
+            "l2-not-open",
+            "l3-no-match",
+            "l4-which-function"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "COUNTIF(range, criteria) counts the cells that meet the criteria.",
+            "\"<>Open\" counts everything that is not Open.",
+            "A cell reference as criteria lets one formula be copied down a list of statuses.",
+            "No match returns 0, never an error."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A status summary that took ten minutes of counting now updates by itself when the store list changes."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-open-count",
+        "type": "numeric",
+        "prompt": "What does =COUNTIF(B2:B8,\"Open\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l2-not-open",
+        "type": "numeric",
+        "prompt": "What does =COUNTIF(B2:B8,\"<>Open\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l3-no-match",
+        "type": "single-choice",
+        "prompt": "No store in the list has the status \"Relocated\". What does =COUNTIF(B2:B8,\"Relocated\") show?",
+        "options": [
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "blank",
+            "label": "An empty cell"
+          },
+          {
+            "id": "one",
+            "label": "1, because Excel rounds up"
+          }
+        ]
+      },
+      {
+        "id": "l4-which-function",
+        "type": "single-choice",
+        "prompt": "You want the number of order lines for Nairobi, not their value in KES. Which function fits?",
+        "options": [
+          {
+            "id": "countif",
+            "label": "COUNTIF, because you want how many lines"
+          },
+          {
+            "id": "sumif",
+            "label": "SUMIF, because it also looks at one column"
+          },
+          {
+            "id": "average",
+            "label": "AVERAGE, because it summarises a list"
+          },
+          {
+            "id": "if",
+            "label": "IF, because it tests one cell"
+          }
+        ]
+      }
+    ]
+  }
+}

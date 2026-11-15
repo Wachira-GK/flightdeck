@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-exceptions-127",
+  "items": [
+    {
+      "id": "l1-share",
+      "type": "numeric",
+      "expected": 66.7,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.1
+      },
+      "rationale": "Four lines are flagged Yes (rows 2, 4, 6 and 7): 4 out of 6 lines. 4 / 6 = 0.6667, which is 66.7%."
+    },
+    {
+      "id": "l2-kisumu-value",
+      "type": "numeric",
+      "expected": 57,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Both Kisumu lines are below reorder point (9 below 25 and 10 below 12). Their values are 27 and 30, which add to 57."
+    },
+    {
+      "id": "l3-helper",
+      "type": "single-choice",
+      "correctOptionId": "row-compare",
+      "rationale": "A criteria such as \"<20\" compares each cell to one fixed number. Here each line has its own reorder point, so we first compare row by row with IF and then count the flags. COUNTIFS does read numbers and can use many columns."
+    },
+    {
+      "id": "l4-boundary",
+      "type": "single-choice",
+      "correctOptionId": "no",
+      "rationale": "< means strictly below. 30 is equal to 30, so the test is false and the formula returns No. If you want to flag lines that have reached the reorder point, use <= instead."
+    }
+  ]
+}

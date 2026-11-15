@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-margin-109",
+  "items": [
+    {
+      "id": "i1-margin",
+      "type": "numeric",
+      "expected": 25,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.01
+      },
+      "rationale": "Profit is 800 - 600 = 200. Margin divides the profit by the price: 200 / 800 = 0.25, which is 25%."
+    },
+    {
+      "id": "i2-markup",
+      "type": "numeric",
+      "expected": 33.3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "Mark-up divides the profit by the cost: 200 / 600 = 0.3333, which is 33.3% to 1 decimal place."
+    },
+    {
+      "id": "i3-price",
+      "type": "numeric",
+      "expected": 600,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The mark-up is 50% of the cost, so the profit is 400 x 50% = 200 and the price is 400 + 200 = 600. This is the same as 400 x (1 + 50%)."
+    },
+    {
+      "id": "i4-difference",
+      "type": "single-choice",
+      "correctOptionId": "bigger-base",
+      "rationale": "Both use the same profit on top, but margin divides by the price and mark-up divides by the cost. Price = cost + profit, so the price is the bigger number and gives the smaller percentage. Tax plays no part."
+    }
+  ]
+}

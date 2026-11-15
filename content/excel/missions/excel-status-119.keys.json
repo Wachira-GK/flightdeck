@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-status-119",
+  "items": [
+    {
+      "id": "i1-order",
+      "type": "single-choice",
+      "correctOptionId": "zero-first",
+      "rationale": "IF stops at the first TRUE test. If B2<C2 came first, 0 would match it and show Low. Testing the special case 0 first keeps Out of stock reachable."
+    },
+    {
+      "id": "i2-count-ok",
+      "type": "numeric",
+      "expected": 2,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "10 and 40 are both inside the range because >= and <= include the limits. 0 and 5 are below the minimum and 45 is above the maximum. So 2 lines are OK."
+    },
+    {
+      "id": "i3-and-boundary",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "50>=10 is TRUE and 50<=50 is TRUE, so AND returns TRUE. AND returns TRUE or FALSE, not a label, so the word OK would need an IF around it."
+    },
+    {
+      "id": "i4-status",
+      "type": "single-choice",
+      "correctOptionId": "low",
+      "rationale": "8 is not 0, so the first test fails. 8 is below the minimum of 10, so AND is FALSE. The next test 8<10 is TRUE, so the label is Low."
+    }
+  ]
+}

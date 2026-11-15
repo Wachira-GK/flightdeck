@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-left-137",
+  "items": [
+    {
+      "id": "l1-left-two",
+      "type": "single-choice",
+      "correctOptionId": "bt",
+      "rationale": "The second argument is 2, so LEFT returns the first two characters, BT. BT- would need 3 characters and B would need 1."
+    },
+    {
+      "id": "l2-left-default",
+      "type": "single-choice",
+      "correctOptionId": "s",
+      "rationale": "When num_chars is left out, LEFT uses 1, so only the first character, S, is returned. It is not an error."
+    },
+    {
+      "id": "l3-left-arith",
+      "type": "numeric",
+      "expected": 25,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "LEFT(\"2499\",2) returns the text 24. In arithmetic Excel converts numeric-looking text to a number, so 24 + 1 = 25."
+    },
+    {
+      "id": "l4-left-long",
+      "type": "numeric",
+      "expected": 9,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Asking LEFT for 20 characters from a 9-character text returns the whole text, SD-120-38, and LEN of that is 9. LEFT never pads the result."
+    }
+  ]
+}

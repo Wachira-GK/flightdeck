@@ -12,8 +12,8 @@ const post = (slug: string, body: string, type = "application/json") =>
 const RATIONALES = [sumKeys, ifKeys, lookupKeys].flatMap((k) => k.items.map((i) => i.rationale));
 
 describe("Excel assessment handler", () => {
-  it("serves exactly the three Excel missions", () => {
-    expect(EXCEL_ASSESSMENT_SLUGS).toEqual(["excel-sum-101", "excel-if-102", "excel-lookup-103"]);
+  it("serves at least the three founding Excel missions", () => {
+    expect(EXCEL_ASSESSMENT_SLUGS).toEqual(expect.arrayContaining(["excel-sum-101", "excel-if-102", "excel-lookup-103"]));
   });
 
   it("grades a passing EX-101 attempt and reveals explanations", async () => {

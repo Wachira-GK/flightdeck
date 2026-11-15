@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "sku-key-build",
+  "version": 1,
+  "title": "Standard SKU key and duplicate check",
+  "objective": "Build a standard SKU key such as SNE-450-42 from a category name, a style number and a size, then flag duplicate keys.",
+  "instructions": "The standard SKU key is: the first three letters of the category in capitals, a hyphen, the style number padded to three digits with leading zeros, a hyphen and the size (for example SNE-450-42, or SAN-045-38 for style 45). In D2:D7, build the key from columns A, B and C. Clean the category with TRIM first, use LEFT for the three letters and UPPER for capitals, and pad the style number with RIGHT(\"000\"&B2,3). In E2:E7, show Duplicate when the same key appears more than once in D2:D7 and Unique when it does not, using IF and COUNTIF. Fix the key range with $ signs.",
+  "grid": {
+    "rows": 7,
+    "cols": 5
+  },
+  "starter": {
+    "A1": "Category (as typed)",
+    "B1": "Style no.",
+    "C1": "Size",
+    "D1": "SKU key",
+    "E1": "Duplicate check",
+    "A2": "Sneaker",
+    "B2": "450",
+    "C2": "42",
+    "A3": " sandal",
+    "B3": "45",
+    "C3": "38",
+    "A4": "BOOT ",
+    "B4": "330",
+    "C4": "41",
+    "A5": "sneaker",
+    "B5": "450",
+    "C5": "42",
+    "A6": "Slipper",
+    "B6": "7",
+    "C6": "39",
+    "A7": "School shoe",
+    "B7": "210",
+    "C7": "44"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7"
+  ],
+  "allowedFunctions": [
+    "TRIM",
+    "UPPER",
+    "LEFT",
+    "RIGHT",
+    "IF",
+    "COUNTIF"
+  ],
+  "hints": [
+    "Build the key in parts and join them with &. Part 1: UPPER(LEFT(TRIM(A2),3)). Part 2: RIGHT(\"000\"&B2,3). Part 3: C2. Put \"-\" between them.",
+    "To pad the style number, join 000 in front and keep the last three characters: RIGHT(\"000\"&B2,3) turns 45 into 045 and 450 into 450 (the zeros in front are cut off).",
+    "COUNTIF(range, value) counts how many cells in the range equal the value. Each key counts itself once, so a key that is unique has a count of 1. Test for more than one: =IF(COUNTIF($D$2:$D$7,D2)>1,\"Duplicate\",\"Unique\")."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

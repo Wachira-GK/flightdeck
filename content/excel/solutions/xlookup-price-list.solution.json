@@ -1,0 +1,8 @@
+{
+    "cells":  {
+                  "C3":  "=XLOOKUP(B3,$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+                  "C2":  "=XLOOKUP(B2,$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+                  "C5":  "=XLOOKUP(B5,$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+                  "C4":  "=XLOOKUP(B4,$E$2:$E$6,$G$2:$G$6,\"Not listed\")"
+              }
+}

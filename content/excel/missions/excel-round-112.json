@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-round-112",
+  "trackId": "excel",
+  "code": "EX-112",
+  "title": "Rounding prices with ROUND",
+  "summary": "Round converted prices to 2 decimals, whole shillings, tens and hundreds, and see that ROUND changes the stored value.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "round-price-list",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Head office sends a new price list after a currency conversion. The raw prices have many decimal places, such as KES 1,249.456. Nobody can charge that at the till."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your job is to round each price in a sensible way: 2 decimals for invoices, whole shillings for shelf tickets and tens for quick budget checks. The ROUND function does this and keeps the sheet correct when prices change."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use ROUND with positive, zero and negative digits.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=ROUND(number, digits)",
+          "text": "ROUND rounds a number to the number of digits you choose. Digits counts decimal places to the right of the point."
+        },
+        {
+          "type": "table",
+          "caption": "ROUND(1249.456, digits)",
+          "columns": [
+            "Digits",
+            "What it keeps",
+            "Result"
+          ],
+          "rows": [
+            [
+              "2",
+              "2 decimal places",
+              "1249.46"
+            ],
+            [
+              "0",
+              "a whole number",
+              "1249"
+            ],
+            [
+              "-1",
+              "the nearest 10",
+              "1250"
+            ],
+            [
+              "-2",
+              "the nearest 100",
+              "1200"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A negative digits value moves to the left of the decimal point. -1 rounds to tens and -2 rounds to hundreds."
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(B2,0)",
+          "text": "Rounds the raw price in B2 to a whole number. Point at the cell instead of typing the price, so the result follows the data."
+        },
+        {
+          "type": "paragraph",
+          "text": "ROUND changes the value itself. It is not only a change in how the number looks. Example: three lines each cost KES 12.6. The raw total is 37.8. If each price is first rounded with ROUND to 13, the total of the rounded prices is 39."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: halves round away from zero. ROUND(7.5,0) is 8 and ROUND(-7.5,0) is -8. This is the same as Excel's ROUND."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on ROUND. Type numbers without commas or currency, for example 2400."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-negative-digits",
+            "i2-what-negative-does",
+            "i3-sum-rounded",
+            "i4-half"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "ROUND(number, digits) needs both arguments.",
+            "Positive digits keep decimals, 0 gives a whole number, negative digits round to tens, hundreds and so on.",
+            "ROUND changes the stored value, so totals of rounded cells use the rounded numbers.",
+            "Halves round away from zero."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: pricing with ROUND, rounding a discounted price to the nearest KES 10 and finishing with a charm price."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-negative-digits",
+        "type": "numeric",
+        "prompt": "What does =ROUND(2374.25,-2) return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "i2-what-negative-does",
+        "type": "single-choice",
+        "prompt": "What does a negative digits argument, such as the -1 in =ROUND(B2,-1), do?",
+        "options": [
+          {
+            "id": "left",
+            "label": "It rounds to tens, hundreds and so on, to the left of the decimal point"
+          },
+          {
+            "id": "choice-b",
+            "label": "It keeps extra decimal places"
+          },
+          {
+            "id": "sign",
+            "label": "It turns the answer negative"
+          },
+          {
+            "id": "error",
+            "label": "It causes an error"
+          }
+        ]
+      },
+      {
+        "id": "i3-sum-rounded",
+        "type": "numeric",
+        "prompt": "B2, B3 and B4 each hold 10.4. C2, C3 and C4 each hold =ROUND(B2,0), =ROUND(B3,0) and =ROUND(B4,0). What does =SUM(C2:C4) return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "i4-half",
+        "type": "single-choice",
+        "prompt": "What does =ROUND(2.5,0) return?",
+        "options": [
+          {
+            "id": "three",
+            "label": "3"
+          },
+          {
+            "id": "two",
+            "label": "2"
+          },
+          {
+            "id": "two-five",
+            "label": "2.5"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "B2": "=TRIM(A2)",
+    "C2": "=XLOOKUP(B2,$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+    "B3": "=TRIM(A3)",
+    "C3": "=XLOOKUP(B3,$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+    "B4": "=TRIM(A4)",
+    "C4": "=XLOOKUP(B4,$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+    "B5": "=TRIM(A5)",
+    "C5": "=XLOOKUP(B5,$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+    "B6": "=TRIM(A6)",
+    "C6": "=XLOOKUP(B6,$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+    "B7": "=TRIM(A7)",
+    "C7": "=XLOOKUP(B7,$G$2:$G$7,$H$2:$H$7,\"Not found\")"
+  }
+}

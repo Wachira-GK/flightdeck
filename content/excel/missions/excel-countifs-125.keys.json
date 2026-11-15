@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-countifs-125",
+  "items": [
+    {
+      "id": "l1-band",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The stock values from 10 up to (not including) 20 are 14, 10, 19 and 10, which makes 4 lines."
+    },
+    {
+      "id": "l2-region-and-stock",
+      "type": "numeric",
+      "expected": 3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Nairobi rows have 8, 14, 22 and 10 pairs. Of these, 14, 22 and 10 are at least 10, so the count is 3."
+    },
+    {
+      "id": "l3-band-edges",
+      "type": "single-choice",
+      "correctOptionId": "both",
+      "rationale": "<=20 includes 20, and >=20 also includes 20, so the line falls in both bands and the totals double count it. Using < for the upper limit (\"<20\") fixes the overlap."
+    },
+    {
+      "id": "l4-same-column-twice",
+      "type": "single-choice",
+      "correctOptionId": "zero",
+      "rationale": "COUNTIFS counts rows where all conditions are true (AND). A single cell cannot hold two different regions, so nothing matches. To count two regions you would add two separate COUNTIF results."
+    }
+  ]
+}

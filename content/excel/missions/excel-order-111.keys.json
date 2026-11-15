@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-order-111",
+  "items": [
+    {
+      "id": "i1-precedence",
+      "type": "numeric",
+      "expected": 28,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The power comes first: 3^2 = 9. Then multiplication: 2*9 = 18. Last comes addition: 10 + 18 = 28."
+    },
+    {
+      "id": "i2-minus-power",
+      "type": "single-choice",
+      "correctOptionId": "nine",
+      "rationale": "Excel applies the minus sign before the power, so it works out (-3)^2 = 9. To get -9, write =-(3^2), with brackets."
+    },
+    {
+      "id": "i3-percent",
+      "type": "numeric",
+      "expected": 100.1,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.001
+      },
+      "rationale": "10% is just 0.1, and it is worked out before the addition, so the result is 100 + 0.1 = 100.1. To add 10% of 100, you would write =100*(1+10%), which is 110."
+    },
+    {
+      "id": "i4-loaded-cost",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "The brackets force 1+E2 first, so the cost is multiplied by (1 + duty). =C2*1+E2+D2/B2 adds the duty rate itself to the cost. The other two put the freight inside the duty calculation, which gives a wrong total."
+    }
+  ]
+}

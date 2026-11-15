@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "sumif-region-totals",
+  "version": 1,
+  "title": "Sales totals by region",
+  "objective": "Total sales for one region from a sales list with SUMIF and a criteria cell, then check the overall total.",
+  "instructions": "The sales list is in A1:C11. In F2:F4, use SUMIF to total the Sales (K) for the region named in E2:E4. Fix both ranges with $ signs and point the criteria at the region cell (E2), so the same formula works on every row. In F5, add the three region totals with SUM.",
+  "grid": {
+    "rows": 11,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Region",
+    "C1": "Sales (K)",
+    "E1": "Region",
+    "F1": "Sales (K)",
+    "E2": "Nairobi",
+    "E3": "Mombasa",
+    "E4": "Kisumu",
+    "E5": "All regions",
+    "A2": "Westlands",
+    "B2": "Nairobi",
+    "C2": "120",
+    "A3": "Nyali",
+    "B3": "Mombasa",
+    "C3": "85",
+    "A4": "Kondele",
+    "B4": "Kisumu",
+    "C4": "64",
+    "A5": "Karen",
+    "B5": "Nairobi",
+    "C5": "150",
+    "A6": "Bamburi",
+    "B6": "Mombasa",
+    "C6": "92",
+    "A7": "Eastleigh",
+    "B7": "Nairobi",
+    "C7": "98",
+    "A8": "Milimani",
+    "B8": "Kisumu",
+    "C8": "71",
+    "A9": "Likoni",
+    "B9": "mombasa",
+    "C9": "110",
+    "A10": "Kibuye",
+    "B10": "Kisumu",
+    "C10": "58",
+    "A11": "Kilimani",
+    "B11": "Nairobi",
+    "C11": "135"
+  },
+  "editableCells": [
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "allowedFunctions": [
+    "SUMIF",
+    "SUM"
+  ],
+  "hints": [
+    "SUMIF has three parts: =SUMIF(where to look, what to match, what to add up).",
+    "Look in the Region column (B2:B11), match the region in E2, and add the Sales column (C2:C11). Add $ signs so those two ranges stay fixed when you copy the formula down.",
+    "For F5, use =SUM(F2:F4) to add the three totals. The region names may be in lower case in the list; SUMIF ignores case."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

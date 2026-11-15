@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-reorder-qty-147",
+  "items": [
+    {
+      "id": "i1-shortfall",
+      "type": "numeric",
+      "expected": 60,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Pairs needed are 8 x 20 = 160. Take away 70 on hand and 30 on order: 160 - 70 - 30 = 60."
+    },
+    {
+      "id": "i2-floor",
+      "type": "numeric",
+      "expected": 0,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "6 x 15 = 90, and 90 - 100 = -10. MAX(0,-10) returns the larger value, which is 0, so there is nothing to reorder."
+    },
+    {
+      "id": "i3-why-max",
+      "type": "single-choice",
+      "correctOptionId": "negative",
+      "rationale": "When stock plus on-order stock is above the need, the sum is negative. MAX(0, ...) returns the bigger of 0 and the shortfall, so the order is never below zero. It does not round or change the size of a positive order."
+    },
+    {
+      "id": "i4-on-order",
+      "type": "single-choice",
+      "correctOptionId": "no-double-order",
+      "rationale": "Pairs on order will join the stock when they arrive, so they count towards the target cover. Leaving them out would double-order and inflate stock."
+    }
+  ]
+}

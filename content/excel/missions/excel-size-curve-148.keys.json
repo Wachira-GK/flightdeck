@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-size-curve-148",
+  "items": [
+    {
+      "id": "i1-share",
+      "type": "numeric",
+      "expected": 24.8,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "62 / 250 = 0.248, and multiplying by 100 gives 24.8%."
+    },
+    {
+      "id": "i2-share-other",
+      "type": "numeric",
+      "expected": 22.5,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "90 / 400 = 0.225, and times 100 is 22.5. It already has one decimal place, so ROUND leaves it as 22.5."
+    },
+    {
+      "id": "i3-absolute",
+      "type": "single-choice",
+      "correctOptionId": "locks",
+      "rationale": "A dollar sign locks the row or column. With $B$9 both are locked, so copying the formula down still divides by the total in B9. Without the dollars the reference would move to B10, B11 and so on."
+    },
+    {
+      "id": "i4-tie",
+      "type": "single-choice",
+      "correctOptionId": "first",
+      "rationale": "XLOOKUP searches from the top and returns the first match it finds, so the higher row (size 41) wins. It does not return an error and it only returns one result."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "D2": "=IFERROR(ROUND(B2/C2,1),\"No sales\")",
+    "E2": "=IF(D2=\"No sales\",\"Check\",IF(D2<$G$2,\"Low\",IF(D2>$G$3,\"Overstock\",\"OK\")))",
+    "D3": "=IFERROR(ROUND(B3/C3,1),\"No sales\")",
+    "E3": "=IF(D3=\"No sales\",\"Check\",IF(D3<$G$2,\"Low\",IF(D3>$G$3,\"Overstock\",\"OK\")))",
+    "D4": "=IFERROR(ROUND(B4/C4,1),\"No sales\")",
+    "E4": "=IF(D4=\"No sales\",\"Check\",IF(D4<$G$2,\"Low\",IF(D4>$G$3,\"Overstock\",\"OK\")))",
+    "D5": "=IFERROR(ROUND(B5/C5,1),\"No sales\")",
+    "E5": "=IF(D5=\"No sales\",\"Check\",IF(D5<$G$2,\"Low\",IF(D5>$G$3,\"Overstock\",\"OK\")))",
+    "D6": "=IFERROR(ROUND(B6/C6,1),\"No sales\")",
+    "E6": "=IF(D6=\"No sales\",\"Check\",IF(D6<$G$2,\"Low\",IF(D6>$G$3,\"Overstock\",\"OK\")))",
+    "D7": "=IFERROR(ROUND(B7/C7,1),\"No sales\")",
+    "E7": "=IF(D7=\"No sales\",\"Check\",IF(D7<$G$2,\"Low\",IF(D7>$G$3,\"Overstock\",\"OK\")))"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "budget-actual-scorecard",
+  "version": 1,
+  "title": "Budget vs actual scorecard",
+  "objective": "Calculate variance and variance %, flag stores outside tolerance and count the misses.",
+  "instructions": "B holds each store's budget and C its actual sales, both in K. In D2:D6 calculate the variance (actual minus budget). In E2:E6 calculate the variance % (variance divided by budget, times 100) rounded to 1 decimal place with ROUND. In F2:F6 use ABS to show \"Miss\" when the variance % is more than the tolerance in I2 away from zero in either direction, otherwise \"On track\". In I3 use COUNTIF to count the stores flagged Miss.",
+  "grid": {
+    "rows": 6,
+    "cols": 9
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Budget (K)",
+    "C1": "Actual (K)",
+    "D1": "Variance (K)",
+    "E1": "Variance (%)",
+    "F1": "Flag",
+    "H2": "Tolerance (%)",
+    "H3": "Stores that missed",
+    "I2": "5",
+    "A2": "Nairobi",
+    "B2": "1200",
+    "C2": "1290",
+    "A3": "Mombasa",
+    "B3": "800",
+    "C3": "780",
+    "A4": "Kisumu",
+    "B4": "650",
+    "C4": "590",
+    "A5": "Nakuru",
+    "B5": "500",
+    "C5": "520",
+    "A6": "Eldoret",
+    "B6": "420",
+    "C6": "399"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "I3"
+  ],
+  "allowedFunctions": [
+    "ROUND",
+    "ABS",
+    "IF",
+    "COUNTIF"
+  ],
+  "hints": [
+    "Variance is =C2-B2. Variance % is =ROUND(D2/B2*100,1).",
+    "ABS(E2) gives the size of the gap whichever way it goes. Compare it with $I$2 inside IF.",
+    "COUNTIF takes a range and a condition: the flags in F2:F6 and the text \"Miss\"."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

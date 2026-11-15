@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "sell-through-slow-sellers",
+  "version": 1,
+  "title": "Sell-through % and slow-seller flags",
+  "objective": "Calculate sell-through % safely and flag slow sellers.",
+  "instructions": "Columns B and C hold pairs sold and pairs on hand for six styles. In D2:D7 calculate the sell-through %: sold divided by (sold plus on hand), multiplied by 100, rounded to 1 decimal place with ROUND. If a style has no stock at all, use IFERROR to show 0 instead of an error. In E2:E7 show \"Slow\" when the sell-through is below the limit in G2, otherwise \"OK\".",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Style",
+    "B1": "Sold",
+    "C1": "On hand",
+    "D1": "Sell-through (%)",
+    "E1": "Status",
+    "F2": "Slow-seller limit (%)",
+    "G2": "40",
+    "A2": "Canvas sneaker",
+    "B2": "180",
+    "C2": "120",
+    "A3": "Ladies sandal",
+    "B3": "45",
+    "C3": "155",
+    "A4": "School shoe",
+    "B4": "70",
+    "C4": "130",
+    "A5": "Ankle boot",
+    "B5": "33",
+    "C5": "67",
+    "A6": "Slipper",
+    "B6": "0",
+    "C6": "0",
+    "A7": "Gumboot",
+    "B7": "85",
+    "C7": "65"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7"
+  ],
+  "allowedFunctions": [
+    "IFERROR",
+    "ROUND",
+    "IF"
+  ],
+  "hints": [
+    "Start with the plain formula: =B2/(B2+C2)*100. Then wrap it in ROUND(...,1).",
+    "Wrap the whole thing in IFERROR(...,0) so a style with no stock shows 0.",
+    "For the flag use =IF(D2<$G$2,\"Slow\",\"OK\") and copy it down. The $ signs keep the limit cell fixed."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

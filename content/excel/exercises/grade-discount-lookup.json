@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "id": "grade-discount-lookup",
+  "version": 1,
+  "title": "Discount by customer grade",
+  "objective": "Look up each customer's discount rate by grade, then work out the discount and the net order.",
+  "instructions": "In D2:D6 use XLOOKUP to find the grade in column B in the discount table H1:I5 and return the discount rate. If a grade is not in the table, return 0. Fix the table ranges with $ signs. In E2:E6 work out the discount in K (order value times the rate). In F2:F6 work out the net order in K (order value minus the discount).",
+  "grid": {
+    "rows": 6,
+    "cols": 9
+  },
+  "starter": {
+    "A1": "Customer",
+    "B1": "Grade",
+    "C1": "Order value (K)",
+    "D1": "Discount rate",
+    "E1": "Discount (K)",
+    "F1": "Net order (K)",
+    "A2": "Kisumu Shoe Mart",
+    "B2": "A",
+    "C2": "800",
+    "A3": "Eldoret Footwear",
+    "B3": "B",
+    "C3": "650",
+    "A4": "Mombasa Sandals",
+    "B4": "C",
+    "C4": "420",
+    "A5": "Nakuru Kicks",
+    "B5": "b",
+    "C5": "300",
+    "A6": "Nairobi Walkers",
+    "B6": "E",
+    "C6": "500",
+    "H1": "Grade",
+    "I1": "Discount rate",
+    "H2": "A",
+    "I2": "0.1",
+    "H3": "B",
+    "I3": "0.07",
+    "H4": "C",
+    "I4": "0.04",
+    "H5": "D",
+    "I5": "0"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "allowedFunctions": [
+    "XLOOKUP"
+  ],
+  "hints": [
+    "The grade in B2 is the key. The grade labels are in H2:H5 and the rates are in I2:I5.",
+    "Use $ signs on the table ranges. =XLOOKUP(B2,$H$2:$H$5,$I$2:$I$5, ...) with a fourth argument.",
+    "The fourth argument is used for a grade that is not in the table. Use the number 0 so that the next formulas can still calculate.",
+    "E2 is the order value in C2 times the rate in D2. F2 is the order value minus the discount in E2."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

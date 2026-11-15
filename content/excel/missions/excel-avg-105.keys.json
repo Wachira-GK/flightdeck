@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-avg-105",
+  "items": [
+    {
+      "id": "i1-average",
+      "type": "numeric",
+      "expected": 125,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The total is 110 + 150 + 95 + 145 = 500, and 500 divided by 4 weeks is 125."
+    },
+    {
+      "id": "i2-empty-cell",
+      "type": "single-choice",
+      "correctOptionId": "two-hundred",
+      "rationale": "AVERAGE skips empty cells, so it uses only the three numbers: (200 + 100 + 300) / 3 = 200. The answer 150 would appear only if the empty cell held a typed 0 (600 / 4)."
+    },
+    {
+      "id": "i3-spread",
+      "type": "numeric",
+      "expected": 125,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "MAX is 310 and MIN is 185, so the gap is 310 - 185 = 125."
+    },
+    {
+      "id": "i4-extremes",
+      "type": "single-choice",
+      "correctOptionId": "pulled-up",
+      "rationale": "The total is 800 and 800 / 4 = 200, so AVERAGE is correct, but three of the four weeks were only 100. MAX and MIN reveal that unevenness; AVERAGE never ignores the largest number."
+    }
+  ]
+}

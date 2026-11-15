@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "markup-vs-margin",
+  "version": 1,
+  "title": "Mark-up and margin on four shoe lines",
+  "objective": "Calculate mark-up (profit / cost) and margin (profit / price), and test the margin against a target with IF.",
+  "instructions": "Profit is price less cost. In D2:D5, work out the mark-up: profit divided by cost. In E2:E5, work out the margin: profit divided by price. Answers are decimals (0.07 means 7%). In F2:F5, show On target when the margin is at or above the target margin in G2, otherwise show Below target. Refer to G2 with $G$2 instead of typing the target.",
+  "grid": {
+    "rows": 5,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Item",
+    "B1": "Cost (KES)",
+    "C1": "Price (KES)",
+    "D1": "Mark-up",
+    "E1": "Margin",
+    "F1": "Check",
+    "G1": "Target margin",
+    "G2": "0.3",
+    "A2": "Sneakers",
+    "B2": "1200",
+    "C2": "2000",
+    "A3": "Sandals",
+    "B3": "700",
+    "C3": "1000",
+    "A4": "Boots",
+    "B4": "2000",
+    "C4": "3500",
+    "A5": "School shoes",
+    "B5": "800",
+    "C5": "1000"
+  },
+  "editableCells": [
+    "D2",
+    "E2",
+    "F2",
+    "D3",
+    "E3",
+    "F3",
+    "D4",
+    "E4",
+    "F4",
+    "D5",
+    "E5",
+    "F5"
+  ],
+  "allowedFunctions": [
+    "IF"
+  ],
+  "hints": [
+    "Profit is price minus cost, so use brackets: =(C2-B2)/B2 for mark-up. The only thing that changes for margin is the number you divide by.",
+    "Margin divides the profit by the selling price: =(C2-B2)/C2.",
+    "For the check, compare the margin with the target: =IF(E2>=$G$2,\"On target\",\"Below target\"). >= means at or above."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

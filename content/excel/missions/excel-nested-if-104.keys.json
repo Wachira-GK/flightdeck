@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-nested-if-104",
+  "items": [
+    {
+      "id": "i1-commission-amount",
+      "type": "numeric",
+      "expected": 2560,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "64,000 has reached the 50,000 tier but not the 100,000 tier, so the rate is 4%. The commission is 64,000 x 4% = 2,560."
+    },
+    {
+      "id": "i2-boundary",
+      "type": "single-choice",
+      "correctOptionId": "four",
+      "rationale": "50,000 >= 100,000 is FALSE, but 50,000 >= 50,000 is TRUE because >= includes the boundary itself, so the rep gets the middle rate of 4%."
+    },
+    {
+      "id": "i3-order",
+      "type": "single-choice",
+      "correctOptionId": "first-true",
+      "rationale": "A nested IF returns the result of the first test that is TRUE. Every rep has sales >= 0, so a test on the lowest tier would always be TRUE first and nobody would reach the higher tiers."
+    },
+    {
+      "id": "i4-count-ifs",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Each IF separates one tier from the tiers below it, and the last tier is simply what remains, so 5 tiers need 5 - 1 = 4 IF functions."
+    }
+  ]
+}

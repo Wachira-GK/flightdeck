@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-or-116",
+  "items": [
+    {
+      "id": "i1-or-result",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "1>2 is FALSE but 3>2 is TRUE. OR needs only one TRUE test, so the result is TRUE."
+    },
+    {
+      "id": "i2-count-included",
+      "type": "numeric",
+      "expected": 2,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Store 1 is included because the region is Nairobi. Store 2 is included because 520 is above 500. Store 3 has exactly 500, which is not above 500, and it is not in Nairobi. Store 4 fails both tests. So 2 stores are included."
+    },
+    {
+      "id": "i3-choose",
+      "type": "single-choice",
+      "correctOptionId": "or",
+      "rationale": "The rule flags a store with either problem, so one TRUE test is enough: that is OR. AND would flag only stores with both problems and would miss many. NOT and SUM do not combine two tests this way."
+    },
+    {
+      "id": "i4-syntax",
+      "type": "single-choice",
+      "correctOptionId": "ok",
+      "rationale": "OR is a function with its tests inside brackets, and text such as \"Nairobi\" needs double quotes. The word OR cannot sit between tests, Nairobi without quotes is read as a name, and a single test leaves out the region rule."
+    }
+  ]
+}

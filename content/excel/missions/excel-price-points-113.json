@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-price-points-113",
+  "trackId": "excel",
+  "code": "EX-113",
+  "title": "Discounts, price points and charm prices",
+  "summary": "Turn a discounted price into a clean shelf price with ROUND(x,-1) and a charm price that ends in 9.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "discount-price-points",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Mombasa store runs a seasonal discount. A discount such as 15% leaves odd prices like KES 1,614.15. A shelf ticket needs a clean price."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your job is to apply the discount, round the result to the nearest KES 10 with ROUND, and then subtract 1 to make a charm price such as KES 1,609. Charm pricing is a common retail habit, not a rule."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build a price from discount, ROUND(x,-1) and a charm step.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=B2*(1-$B$7)",
+          "text": "The discounted price is the list price times one minus the discount. The dollar signs lock B7, so the formula can be copied down and still points at the discount cell."
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(D2,-1)",
+          "text": "Rounds the discounted price to the nearest KES 10. A digits value of -1 means tens."
+        },
+        {
+          "type": "formula",
+          "formula": "=E2-1",
+          "text": "Subtracts 1 from the rounded price, so the price ends in 9."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example: list price KES 1,500 with 12% off",
+          "columns": [
+            "Step",
+            "Formula idea",
+            "Result"
+          ],
+          "rows": [
+            [
+              "Discounted price",
+              "1500*(1-12%)",
+              "1320"
+            ],
+            [
+              "Nearest KES 10",
+              "ROUND(1320,-1)",
+              "1320"
+            ],
+            [
+              "Charm price",
+              "1320-1",
+              "1319"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: round first, then subtract 1. If you subtract first, ROUND can lift the price straight back to a number ending in 0."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: a price exactly halfway between two tens rounds up. ROUND(1325,-1) is 1330."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on discounted price points. Type numbers without commas or currency, for example 1609."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-charm-formula",
+            "i2-charm-numeric",
+            "i3-full-chain",
+            "i4-discount-cell"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Discounted price = list price times (1 minus the discount), with the discount cell locked as $B$7.",
+            "ROUND(x,-1) rounds to the nearest KES 10.",
+            "Charm price: round first, then subtract 1.",
+            "Keep the discount in one input cell so one change updates every price."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: variance with ABS, to compare actual sales with plan."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-charm-formula",
+        "type": "single-choice",
+        "prompt": "D2 holds a discounted price. Which formula gives a charm price that ends in 9, for example 1609?",
+        "options": [
+          {
+            "id": "round-then-minus",
+            "label": "=ROUND(D2,-1)-1"
+          },
+          {
+            "id": "minus-then-round",
+            "label": "=ROUND(D2-1,-1)"
+          },
+          {
+            "id": "round-then-plus",
+            "label": "=ROUND(D2,-1)+1"
+          },
+          {
+            "id": "round-whole",
+            "label": "=ROUND(D2,0)-1"
+          }
+        ]
+      },
+      {
+        "id": "i2-charm-numeric",
+        "type": "numeric",
+        "prompt": "A discounted price in D2 is KES 2,287. What does =ROUND(D2,-1)-1 return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i3-full-chain",
+        "type": "numeric",
+        "prompt": "A pair of shoes has a list price of KES 1,850 in B2. With a 10% discount, what does =ROUND(B2*(1-10%),-1)-1 return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i4-discount-cell",
+        "type": "single-choice",
+        "prompt": "Your D2:F5 formulas all point at the discount in $B$7. The discount in B7 changes from 15% to 20%. What happens?",
+        "options": [
+          {
+            "id": "all-update",
+            "label": "Every discounted, rounded and charm price recalculates"
+          },
+          {
+            "id": "only-d",
+            "label": "Only the discounted prices in column D change"
+          },
+          {
+            "id": "nothing",
+            "label": "Nothing changes until the formulas are retyped"
+          },
+          {
+            "id": "error",
+            "label": "The sheet shows #REF!"
+          }
+        ]
+      }
+    ]
+  }
+}

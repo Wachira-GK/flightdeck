@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "clean-lookup-messy-codes",
+  "version": 1,
+  "title": "Clean codes inside XLOOKUP",
+  "objective": "Combine TRIM and UPPER inside XLOOKUP so that messy codes match a clean price list.",
+  "instructions": "Order codes in column A were typed with stray spaces and mixed case. In B2:B7, build the clean code with TRIM and UPPER together (one formula, TRIM inside UPPER). In C2:C7, look up the price in the clean price list in E1:G6 with one XLOOKUP formula that cleans the code inside it with UPPER and TRIM, and show the text \"Not listed\" when the code is not on the list. Fix the price list with $ signs.",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Code (as typed)",
+    "B1": "Clean code",
+    "C1": "Unit price (KES)",
+    "E1": "Code",
+    "F1": "Product",
+    "G1": "Price (KES)",
+    "A2": " sn-450",
+    "A3": "SD-120 ",
+    "A4": "bt-330",
+    "A5": "SL-075",
+    "A6": "gb-610",
+    "A7": "ss-210  ",
+    "E2": "SS-210",
+    "F2": "School shoe",
+    "G2": "2499",
+    "E3": "SN-450",
+    "F3": "Canvas sneaker",
+    "G3": "1999",
+    "E4": "SD-120",
+    "F4": "Ladies sandal",
+    "G4": "899",
+    "E5": "BT-330",
+    "F5": "Ankle boot",
+    "G5": "4599",
+    "E6": "SL-075",
+    "F6": "Slipper",
+    "G6": "499"
+  },
+  "editableCells": [
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7"
+  ],
+  "allowedFunctions": [
+    "XLOOKUP",
+    "TRIM",
+    "UPPER"
+  ],
+  "hints": [
+    "Functions can sit inside other functions. Excel works from the inside out, so UPPER(TRIM(A2)) removes the extra spaces first and then changes the letters to capitals.",
+    "Use the same cleaning as the first argument of XLOOKUP: =XLOOKUP(UPPER(TRIM(A2)),$E$2:$E$6,$G$2:$G$6,\"Not listed\").",
+    "A code that is genuinely not on the list, like GB-610, still ends as Not listed. Cleaning cannot create a price that does not exist."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

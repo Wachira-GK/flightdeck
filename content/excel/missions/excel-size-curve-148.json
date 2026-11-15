@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-size-curve-148",
+  "trackId": "excel",
+  "code": "EX-148",
+  "title": "Size-curve share: which size carries the sales?",
+  "summary": "Turn pairs sold per size into a share of the total, then find the size that sells most and how big its share is.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "size-curve-share",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Before the next buy, the merchandiser wants to know the size curve: out of every 100 pairs sold, how many are size 40, how many are size 41, and so on. A buy that matches the curve avoids stuck sizes and missed sales."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will total the pairs, work out each size's share of that total and find the size that carries the most."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build a size curve with absolute references and find the top size with MAX and XLOOKUP.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUM(B2:B8)",
+          "text": "SUM adds the pairs sold for all sizes. Put it in the Total row."
+        },
+        {
+          "type": "formula",
+          "formula": "=B2/$B$9*100",
+          "text": "Share of one size = its pairs divided by the total, times 100. The dollar signs in $B$9 lock the total cell, so it does not move when you copy the formula down."
+        },
+        {
+          "type": "table",
+          "caption": "What copying does to a reference",
+          "columns": [
+            "Formula in C2",
+            "Copied to C3 becomes",
+            "Result"
+          ],
+          "rows": [
+            [
+              "=B2/$B$9",
+              "=B3/$B$9",
+              "Correct: the total stays locked"
+            ],
+            [
+              "=B2/B9",
+              "=B3/B10",
+              "Wrong: it points at an empty cell and fails"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(B2/$B$9*100,1)",
+          "text": "ROUND(x,1) keeps one decimal place, so 12.3 instead of 12.300000."
+        },
+        {
+          "type": "formula",
+          "formula": "=MAX(B2:B8)",
+          "text": "MAX returns the biggest number in the range: the most pairs sold in any one size."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(F2,B2:B8,A2:A8)",
+          "text": "XLOOKUP finds F2 in the pairs column and returns the size from the same row. That tells you which size sells most. If two sizes tie, XLOOKUP returns the first one in the list."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: shares of all sizes should add up to about 100%. If they do not, check that the total covers every size."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on size-curve shares. Type numbers without the % sign, for example 12.3."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-share",
+            "i2-share-other",
+            "i3-absolute",
+            "i4-tie"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "SUM gives the total, and share = part / total x 100.",
+            "$B$9 locks the total, so copied formulas keep dividing by it.",
+            "MAX finds the biggest value, and XLOOKUP can fetch the size that belongs to it.",
+            "ROUND(x,1) keeps one decimal place for shares."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: a budget versus actual scorecard."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-share",
+        "type": "numeric",
+        "prompt": "Size 41 sold 62 pairs out of 250 pairs in total. What is its share of the total, as a %?",
+        "answerHint": "Number, 1 decimal place, without the % sign"
+      },
+      {
+        "id": "i2-share-other",
+        "type": "numeric",
+        "prompt": "A size sold 90 pairs out of 400 in total. What does =ROUND(90/400*100,1) return?",
+        "answerHint": "Number, 1 decimal place"
+      },
+      {
+        "id": "i3-absolute",
+        "type": "single-choice",
+        "prompt": "In C2 you write =B2/$B$9*100 and copy it down to C8. What does the $ in $B$9 do?",
+        "options": [
+          {
+            "id": "locks",
+            "label": "It keeps every row pointing at the same total cell"
+          },
+          {
+            "id": "dollars",
+            "label": "It formats the answer as dollars"
+          },
+          {
+            "id": "multiplies",
+            "label": "It multiplies the answer by 9"
+          },
+          {
+            "id": "nothing",
+            "label": "Nothing, it is only decoration"
+          }
+        ]
+      },
+      {
+        "id": "i4-tie",
+        "type": "single-choice",
+        "prompt": "Sizes 41 and 42 both sold 62 pairs, and 62 is the maximum. What does =XLOOKUP(MAX(B2:B8),B2:B8,A2:A8) return, when size 41 is above size 42 in the list?",
+        "options": [
+          {
+            "id": "first",
+            "label": "41, because XLOOKUP returns the first match"
+          },
+          {
+            "id": "last",
+            "label": "42, because XLOOKUP returns the last match"
+          },
+          {
+            "id": "both",
+            "label": "Both sizes together"
+          },
+          {
+            "id": "error",
+            "label": "An error, because of the tie"
+          }
+        ]
+      }
+    ]
+  }
+}

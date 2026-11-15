@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "store-code-case",
+  "version": 1,
+  "title": "Store codes with UPPER and LOWER",
+  "objective": "Use UPPER and LOWER to put codes into one standard case, then look up each store's region.",
+  "instructions": "Store codes in column A were typed in mixed case. In B2:B6, show each code in capitals with UPPER. In C2:C6, show each code in lower case with LOWER. In D2:D6, look up the standard code from column B in the store list in F1:G6 with XLOOKUP and show the text \"Unknown\" when the code is not in the list. Fix the store list with $ signs.",
+  "grid": {
+    "rows": 6,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Store code (as typed)",
+    "B1": "Standard code",
+    "C1": "Lower-case key",
+    "D1": "Region",
+    "F1": "Code",
+    "G1": "Region",
+    "A2": "nbo-01",
+    "A3": "Msa-02",
+    "A4": "KSM-03",
+    "A5": "nku-04",
+    "A6": "Eld-05",
+    "F2": "NBO-01",
+    "G2": "Nairobi",
+    "F3": "MSA-02",
+    "G3": "Mombasa",
+    "F4": "KSM-03",
+    "G4": "Kisumu",
+    "F5": "NKU-04",
+    "G5": "Nakuru",
+    "F6": "ELD-05",
+    "G6": "Eldoret"
+  },
+  "editableCells": [
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6"
+  ],
+  "allowedFunctions": [
+    "UPPER",
+    "LOWER",
+    "XLOOKUP"
+  ],
+  "hints": [
+    "UPPER(text) turns every letter into a capital and LOWER(text) into a small letter. Digits and hyphens do not change. =UPPER(A2) gives NBO-01 for nbo-01.",
+    "Use UPPER in column B and LOWER in column C, both pointing at the original code in column A.",
+    "For the region, look up the standard code in B2: =XLOOKUP(B2,$F$2:$F$6,$G$2:$G$6,\"Unknown\"). Fix the list ranges with $ signs."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

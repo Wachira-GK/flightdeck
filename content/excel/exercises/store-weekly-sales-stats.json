@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "store-weekly-sales-stats",
+  "version": 1,
+  "title": "Four weeks of store sales: average, best and weakest",
+  "objective": "Use AVERAGE, MAX and MIN to summarise a row of weekly sales.",
+  "instructions": "For each store (rows 2 to 5), the four weekly sales figures are in columns B to E, in KES thousands (K). In column F, work out the average weekly sales. In column G, find the best week. In column H, find the weakest week. Each formula should read the four weeks in its own row, for example B2:E2.",
+  "grid": {
+    "rows": 5,
+    "cols": 8
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Week 1 (K)",
+    "C1": "Week 2 (K)",
+    "D1": "Week 3 (K)",
+    "E1": "Week 4 (K)",
+    "F1": "Average (K)",
+    "G1": "Best week (K)",
+    "H1": "Weakest week (K)",
+    "A2": "Nairobi",
+    "B2": "420",
+    "C2": "385",
+    "D2": "450",
+    "E2": "395",
+    "A3": "Mombasa",
+    "B3": "310",
+    "C3": "295",
+    "D3": "340",
+    "E3": "275",
+    "A4": "Kisumu",
+    "B4": "180",
+    "C4": "210",
+    "D4": "165",
+    "E4": "195",
+    "A5": "Eldoret",
+    "B5": "240",
+    "C5": "260",
+    "D5": "255",
+    "E5": "225"
+  },
+  "editableCells": [
+    "F2",
+    "G2",
+    "H2",
+    "F3",
+    "G3",
+    "H3",
+    "F4",
+    "G4",
+    "H4",
+    "F5",
+    "G5",
+    "H5"
+  ],
+  "allowedFunctions": [
+    "AVERAGE",
+    "MAX",
+    "MIN"
+  ],
+  "hints": [
+    "A range like B2:E2 means every cell from B2 to E2. Put it inside the function: =AVERAGE(B2:E2).",
+    "MAX returns the largest number in the range and MIN returns the smallest: =MAX(B2:E2) and =MIN(B2:E2).",
+    "Write the formulas for row 2, then change the row number for each of the other stores (row 3 uses B3:E3, and so on)."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

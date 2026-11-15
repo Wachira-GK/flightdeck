@@ -26,8 +26,8 @@ const numericKey = (slug: string, id: string): number => {
 };
 
 describe("Excel missions", () => {
-  it("lists the three missions", () => {
-    expect(EXCEL_MISSION_SLUGS).toEqual(Object.keys(EXPECTED_META));
+  it("lists at least the three founding missions", () => {
+    expect(EXCEL_MISSION_SLUGS).toEqual(expect.arrayContaining(Object.keys(EXPECTED_META)));
   });
 
   it.each(Object.entries(EXPECTED_META))("%s is valid and consistent with its keys", (slug, meta) => {

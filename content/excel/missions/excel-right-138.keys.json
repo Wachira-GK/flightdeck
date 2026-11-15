@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-right-138",
+  "items": [
+    {
+      "id": "l1-right-times-two",
+      "type": "numeric",
+      "expected": 84,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "RIGHT returns the text 42. In arithmetic Excel converts numeric-looking text, so 42 x 2 = 84."
+    },
+    {
+      "id": "l2-text-vs-number",
+      "type": "single-choice",
+      "correctOptionId": "choice-b",
+      "rationale": "A comparison does not convert text to a number, so the text 42 and the number 42 are different and the result is FALSE. It is not an error, which is why the problem is easy to miss."
+    },
+    {
+      "id": "l3-lookup-text",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "RIGHT returns the text 42, XLOOKUP does not match text against numbers, and there is no fourth argument, so the result is #N/A. Multiplying by 1 first would fix it."
+    },
+    {
+      "id": "l4-right-three",
+      "type": "numeric",
+      "expected": -38,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Three characters from the end are -38, including the hyphen. Excel converts the text -38 to the number -38, and -38 x 1 = -38. Always count the characters you really want."
+    }
+  ]
+}

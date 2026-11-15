@@ -13,14 +13,12 @@
  * shows "coming later" tracks from config. See docs/data/CATALOGUE-SEEDING.md.
  */
 import config from "../../../packages/database/seeds/catalogue.config.json";
-import excelIf102 from "../../../content/excel/missions/excel-if-102.json";
-import excelLookup103 from "../../../content/excel/missions/excel-lookup-103.json";
-import excelSum101 from "../../../content/excel/missions/excel-sum-101.json";
+import { MISSION_DEFINITIONS } from "../components/excel/registry.generated";
 import descriptiveStats101 from "../../../content/math/missions/descriptive-stats-101.json";
 
 /** Learner-safe mission files per content directory (keys are never imported). */
 const MISSION_FILES: Record<string, unknown[]> = {
-  excel: [excelSum101, excelIf102, excelLookup103],
+  excel: Object.values(MISSION_DEFINITIONS),
   math: [descriptiveStats101],
 };
 

@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-grade-lookup-135",
+  "trackId": "excel",
+  "code": "EX-135",
+  "title": "Grade tiers with exact-match lookup",
+  "summary": "Turn a customer grade label into a discount rate with XLOOKUP, and see why exact match needs labels rather than number bands.",
+  "estimatedMinutes": 18,
+  "passMark": 0.75,
+  "exerciseId": "grade-discount-lookup",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A wholesale team gives trade customers a discount based on their grade: A, B, C or D. The discount table lists each grade once with its rate. Each order line carries the customer's grade, and you need the discount in K and the net order value."
+        },
+        {
+          "type": "paragraph",
+          "text": "This works well with XLOOKUP because a grade is a label that appears exactly in the table. Customers are often graded from a score, such as 0 to 100. A score cannot be looked up directly. You will see why, and what to do about it."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use a label column (grades A to D) as the key of an exact-match XLOOKUP, and explain why number bands do not work for exact match.",
+            "Time: about 18 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Discount table in H1:I5 (rates are decimals: 0.1 means 10%)",
+          "columns": [
+            "Row",
+            "H: Grade",
+            "I: Discount rate"
+          ],
+          "rows": [
+            [
+              "2",
+              "A",
+              "0.1"
+            ],
+            [
+              "3",
+              "B",
+              "0.07"
+            ],
+            [
+              "4",
+              "C",
+              "0.04"
+            ],
+            [
+              "5",
+              "D",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(B2,$H$2:$H$5,$I$2:$I$5,0)",
+          "text": "Look for the grade in B2 in the grade column and return its rate. The fourth argument 0 means: if the grade is not in the table, use a rate of 0, so the discount calculation still works. Case does not matter, so b finds B."
+        },
+        {
+          "type": "paragraph",
+          "text": "For a grade B order of 600K, the rate is 0.07, the discount is 600 x 0.07 = 42K and the net order is 600 - 42 = 558K."
+        },
+        {
+          "type": "paragraph",
+          "text": "Why labels? XLOOKUP in this course matches exactly. Suppose a score table lists only the starting score of each band."
+        },
+        {
+          "type": "table",
+          "caption": "Score bands (a table that does NOT work with exact match)",
+          "columns": [
+            "Score band starts at",
+            "Grade"
+          ],
+          "rows": [
+            [
+              "0",
+              "D"
+            ],
+            [
+              "50",
+              "C"
+            ],
+            [
+              "70",
+              "B"
+            ],
+            [
+              "85",
+              "A"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A score of 73 is not in the list: it falls inside the band that starts at 70. An exact-match XLOOKUP of 73 gives #N/A. Only a score of exactly 0, 50, 70 or 85 would be found."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(S2>=85,\"A\",IF(S2>=70,\"B\",IF(S2>=50,\"C\",\"D\")))",
+          "text": "The fix is a two-step approach. First turn the score in S2 into a grade label with a nested IF, as in the earlier IF missions. Then look the grade label up in the discount table with an exact-match XLOOKUP."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Exact match needs the key to appear in the table exactly. Use a label column such as the grade, not number bands.",
+            "Give the fourth argument a number such as 0 when the result is used in arithmetic. A text message would cause #VALUE! in the next formula.",
+            "Keep the grade labels spelled the same in the order sheet and in the table."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the discount table and the score bands from Training. Give percentages as plain numbers, for example 4 for 4%."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "g1-grade-c",
+            "g2-exact-score",
+            "g3-label-fix",
+            "g4-net"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exact-match XLOOKUP needs the key to appear exactly in the table.",
+            "Use a label column such as A, B, C, D as the key, not number bands.",
+            "For scores, turn the score into a label with IF first, then look up the label.",
+            "Give the fourth argument a number like 0 when the result feeds arithmetic."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Labels make lookups exact and reliable, so build a label first and look it up second."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "g1-grade-c",
+        "type": "numeric",
+        "prompt": "What discount percentage does =XLOOKUP(\"C\",$H$2:$H$5,$I$2:$I$5,0) give? Answer as a percentage, for example 4 for 4%.",
+        "answerHint": "Percentage number"
+      },
+      {
+        "id": "g2-exact-score",
+        "type": "single-choice",
+        "prompt": "A score table lists only the band starts 0, 50, 70 and 85. What does an exact-match XLOOKUP of the score 73 in that list give?",
+        "options": [
+          {
+            "id": "b",
+            "label": "The grade for the band 70 to 84"
+          },
+          {
+            "id": "na",
+            "label": "#N/A, because 73 is not exactly in the list"
+          },
+          {
+            "id": "c",
+            "label": "The grade of the nearest score, 70"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          }
+        ]
+      },
+      {
+        "id": "g3-label-fix",
+        "type": "single-choice",
+        "prompt": "What is the best way to give each customer a discount from a score between 0 and 100 using exact-match XLOOKUP?",
+        "options": [
+          {
+            "id": "type",
+            "label": "Use an IF formula to turn each score into a grade label, then look up the grade in the discount table"
+          },
+          {
+            "id": "round",
+            "label": "Look up the score directly and hope it matches"
+          },
+          {
+            "id": "bigger",
+            "label": "Add every score from 0 to 100 as a number to the discount table by hand"
+          },
+          {
+            "id": "case",
+            "label": "Change the score to upper case"
+          }
+        ]
+      },
+      {
+        "id": "g4-net",
+        "type": "numeric",
+        "prompt": "A grade B order is worth 600K. Using the discount table, what is the net order after the discount, in K?",
+        "answerHint": "Number in K"
+      }
+    ]
+  }
+}

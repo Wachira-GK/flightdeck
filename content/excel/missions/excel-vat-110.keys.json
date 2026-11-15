@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-vat-110",
+  "items": [
+    {
+      "id": "i1-input-cell",
+      "type": "single-choice",
+      "correctOptionId": "change-b1",
+      "rationale": "Every formula points at B1, so changing the one input cell updates all of them. Typing the rate into formulas would mean finding and editing each one, and Excel never updates a rate by itself."
+    },
+    {
+      "id": "i2-remove-vat",
+      "type": "numeric",
+      "expected": 2000,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The price including VAT is the net price x 1.16, so divide by 1.16: 2,320 / 1.16 = 2,000. Subtracting 16% of 2,320 would give 1,948.80, which is wrong."
+    },
+    {
+      "id": "i3-discount-formula",
+      "type": "single-choice",
+      "correctOptionId": "times-90",
+      "rationale": "A 10% discount leaves 90% of the price, so multiply by (1 - 10%). =D2-10% subtracts only 0.1 from the price, =D2*10% returns the discount amount rather than the new price, and dividing by 0.9 would increase the price."
+    },
+    {
+      "id": "i4-combined",
+      "type": "numeric",
+      "expected": 986,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "VAT makes the price 1,000 x 1.16 = 1,160. A 15% discount leaves 85%, so 1,160 x 0.85 = 986."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "stock-cover-weeks-status",
+  "version": 1,
+  "title": "Stock cover and status labels",
+  "objective": "Calculate stock cover in weeks and label each style against two limits.",
+  "instructions": "For six styles, B holds pairs on hand and C holds average weekly sales. In D2:D7 calculate cover in weeks (on hand divided by weekly sales) rounded to 1 decimal place with ROUND. If weekly sales are 0, use IFERROR to show the text No sales. In E2:E7 show \"Check\" when D says No sales, \"Low\" when cover is below the limit in G2, \"Overstock\" when cover is above the limit in G3, otherwise \"OK\".",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Style",
+    "B1": "On hand",
+    "C1": "Avg weekly sales",
+    "D1": "Cover (weeks)",
+    "E1": "Status",
+    "F2": "Low if under (weeks)",
+    "G2": "4",
+    "F3": "Overstock if over (weeks)",
+    "G3": "12",
+    "A2": "Canvas sneaker",
+    "B2": "120",
+    "C2": "40",
+    "A3": "Ladies sandal",
+    "B3": "300",
+    "C3": "25",
+    "A4": "School shoe",
+    "B4": "150",
+    "C4": "30",
+    "A5": "Ankle boot",
+    "B5": "210",
+    "C5": "12",
+    "A6": "Slipper",
+    "B6": "80",
+    "C6": "0",
+    "A7": "Gumboot",
+    "B7": "100",
+    "C7": "35"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7"
+  ],
+  "allowedFunctions": [
+    "IFERROR",
+    "ROUND",
+    "IF"
+  ],
+  "hints": [
+    "Cover is on hand divided by weekly sales: =B2/C2. Wrap it in ROUND(...,1).",
+    "Put the whole thing inside IFERROR(...,\"No sales\") to catch the zero-sales row.",
+    "For the label nest two or three IFs, for example =IF(D2=\"No sales\",\"Check\",IF(D2<$G$2,\"Low\",IF(...)))."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

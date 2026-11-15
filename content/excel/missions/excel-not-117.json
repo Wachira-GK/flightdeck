@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-not-117",
+  "trackId": "excel",
+  "code": "EX-117",
+  "title": "NOT and the clearance decision",
+  "summary": "Use NOT to flip a test, then combine AND, OR and NOT in one IF to decide which lines go on clearance.",
+  "estimatedMinutes": 20,
+  "passMark": 0.75,
+  "exerciseId": "clearance-rule",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "End of season. The buyer wants a clearance list built from a rule, not from memory. A line goes on clearance when it is not a core line, it is either old or slow, and it has not already been marked down."
+        },
+        {
+          "type": "paragraph",
+          "text": "This rule needs three tools together: NOT to exclude lines, OR for \"old or slow\" and AND to require every part. IF then writes Clearance or Keep."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: combine NOT, AND and OR inside IF.",
+            "Time: about 20 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=NOT(logical)",
+          "text": "NOT flips a result. NOT(TRUE) is FALSE and NOT(FALSE) is TRUE."
+        },
+        {
+          "type": "formula",
+          "formula": "=NOT(D2=\"Core\")",
+          "text": "TRUE for every line that is not a Core line. It gives the same answer as D2<>\"Core\"."
+        },
+        {
+          "type": "paragraph",
+          "text": "When one rule has several parts, write it in plain words first. Then turn each part into a test and join the tests."
+        },
+        {
+          "type": "table",
+          "caption": "Plain words to formula parts",
+          "columns": [
+            "Business words",
+            "Formula part"
+          ],
+          "rows": [
+            [
+              "not a Core line",
+              "NOT(D2=\"Core\")"
+            ],
+            [
+              "old (weeks at or above the limit) or slow (sell-through below the floor)",
+              "OR(B2>=$B$9,C2<$B$10)"
+            ],
+            [
+              "all parts must be true",
+              "AND( part1, part2, part3 )"
+            ],
+            [
+              "write the decision",
+              "IF( AND(...), \"Clearance\", \"Keep\" )"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example: a seasonal line has been in store 14 weeks with 40% sell-through, not marked down. Not Core is TRUE. 14 weeks is at or above a 12-week limit, so the OR is TRUE even though 40% is above a 30% floor. Not yet marked down is TRUE. All three parts are TRUE, so the line goes on Clearance."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: put OR inside AND. If you put the three parts side by side without AND, Excel cannot tell that all of them must be true."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on NOT and combined rules. Type numbers without commas, for example 2."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-not-result",
+            "i2-same-as-not",
+            "i3-count-clearance",
+            "i4-exclude-marked-down"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "NOT flips TRUE and FALSE; NOT(x=y) is the same as x<>y.",
+            "Write the rule in plain words first, then turn each part into a test.",
+            "AND needs every part, OR needs one, and OR can sit inside AND.",
+            "Test the boundaries: >= includes the limit, < excludes it."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: IFERROR, to clean up #DIV/0! errors with readable fallbacks."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-not-result",
+        "type": "single-choice",
+        "prompt": "What does =NOT(5>3) return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "FALSE"
+          },
+          {
+            "id": "choice-b",
+            "label": "TRUE"
+          },
+          {
+            "id": "five",
+            "label": "5"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "i2-same-as-not",
+        "type": "single-choice",
+        "prompt": "Which formula gives the same answer as =NOT(D2=\"Core\")?",
+        "options": [
+          {
+            "id": "not-equal",
+            "label": "=D2<>\"Core\""
+          },
+          {
+            "id": "equal-not-core",
+            "label": "=D2=\"Not Core\""
+          },
+          {
+            "id": "greater",
+            "label": "=D2>\"Core\""
+          },
+          {
+            "id": "minus",
+            "label": "=-D2=\"Core\""
+          }
+        ]
+      },
+      {
+        "id": "i3-count-clearance",
+        "type": "numeric",
+        "prompt": "Rule: Clearance when the range is not Core AND (weeks in store is at least 12 OR sell-through is below 30%) AND the line is not yet marked down. Line 1: Seasonal, 13 weeks, 40%, not marked down. Line 2: Core, 30 weeks, 5%, not marked down. Line 3: Seasonal, 6 weeks, 29%, already marked down. Line 4: Seasonal, 3 weeks, 29%, not marked down. How many lines go on clearance?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i4-exclude-marked-down",
+        "type": "single-choice",
+        "prompt": "Which test, placed inside AND, keeps a line out of clearance when E2 says \"Yes\" (already marked down)?",
+        "options": [
+          {
+            "id": "not-yes",
+            "label": "NOT(E2=\"Yes\")"
+          },
+          {
+            "id": "is-yes",
+            "label": "E2=\"Yes\""
+          },
+          {
+            "id": "or-yes",
+            "label": "OR(E2,\"Yes\")"
+          },
+          {
+            "id": "not-no",
+            "label": "NOT(E2=\"No\")"
+          }
+        ]
+      }
+    ]
+  }
+}

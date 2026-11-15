@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-reorder-qty-147",
+  "trackId": "excel",
+  "code": "EX-147",
+  "title": "How many pairs to reorder?",
+  "summary": "Work out the order quantity that tops each style up to its target cover, without ever ordering a negative number.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "reorder-quantity-floor",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The buyer wants a reorder list by noon. For each style the rule is simple: stock plus pairs already on order should cover the next 6 weeks of sales. If it already does, order nothing."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will write one formula that works out the shortfall and never returns a negative order."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate a reorder quantity and floor it at zero with MAX.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=target weeks x weekly sales - on hand - on order",
+          "text": "The stock you need over the target period, minus what you already hold, minus what is already on its way. The answer is the shortfall."
+        },
+        {
+          "type": "formula",
+          "formula": "=$G$2*B2-C2-D2",
+          "text": "G2 holds the target cover in weeks. The dollar signs lock G2, so the same target is used on every row when you copy the formula down."
+        },
+        {
+          "type": "paragraph",
+          "text": "Problem: a style that is already overstocked gives a negative number, and you cannot order minus 50 pairs. You need the answer floored at zero."
+        },
+        {
+          "type": "formula",
+          "formula": "=MAX(0,$G$2*B2-C2-D2)",
+          "text": "MAX returns the larger of its values. MAX(0, shortfall) gives the shortfall when it is positive and 0 when it is negative."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF($G$2*B2-C2-D2<0,0,$G$2*B2-C2-D2)",
+          "text": "IF can do the same job, but you have to write the sum twice. MAX is shorter and easier to check."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example: target 6 weeks",
+          "columns": [
+            "Weekly sales",
+            "On hand",
+            "On order",
+            "Need",
+            "Reorder"
+          ],
+          "rows": [
+            [
+              "40",
+              "120",
+              "60",
+              "240 - 120 - 60 = 60",
+              "60"
+            ],
+            [
+              "25",
+              "200",
+              "0",
+              "150 - 200 = -50",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: always subtract pairs on order. If you ignore them you order the same stock twice."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on reorder quantities. Type numbers without commas, for example 60."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-shortfall",
+            "i2-floor",
+            "i3-why-max",
+            "i4-on-order"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Reorder = target weeks x weekly sales - on hand - on order.",
+            "Keep the target weeks in one cell and lock it with $ signs.",
+            "MAX(0, x) floors a result at zero, so you never order a negative quantity.",
+            "Always count pairs already on order."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: size-curve share, to see which sizes carry the sales."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-shortfall",
+        "type": "numeric",
+        "prompt": "A style sells 20 pairs a week. The target is 8 weeks of cover, with 70 pairs on hand and 30 on order. How many pairs should you reorder?",
+        "answerHint": "Whole number of pairs"
+      },
+      {
+        "id": "i2-floor",
+        "type": "numeric",
+        "prompt": "A style sells 15 pairs a week. The target is 6 weeks, with 100 pairs on hand and none on order. What does =MAX(0,6*15-100-0) return?",
+        "answerHint": "Whole number of pairs"
+      },
+      {
+        "id": "i3-why-max",
+        "type": "single-choice",
+        "prompt": "Why wrap the shortfall in MAX(0, ...)?",
+        "options": [
+          {
+            "id": "negative",
+            "label": "A style that is already overstocked gives a negative number, and MAX turns that into 0 pairs"
+          },
+          {
+            "id": "round",
+            "label": "It rounds the order up to a whole case"
+          },
+          {
+            "id": "double",
+            "label": "It doubles the quantity for safety"
+          },
+          {
+            "id": "text",
+            "label": "It changes the number into text"
+          }
+        ]
+      },
+      {
+        "id": "i4-on-order",
+        "type": "single-choice",
+        "prompt": "Why subtract the pairs already on order as well as the pairs on hand?",
+        "options": [
+          {
+            "id": "no-double-order",
+            "label": "Stock on its way will arrive soon, so ordering for it again would buy the same pairs twice"
+          },
+          {
+            "id": "cheaper",
+            "label": "Pairs on order are cheaper"
+          },
+          {
+            "id": "optional",
+            "label": "It is optional, because on-order pairs never arrive"
+          },
+          {
+            "id": "sold",
+            "label": "Pairs on order have already been sold"
+          }
+        ]
+      }
+    ]
+  }
+}

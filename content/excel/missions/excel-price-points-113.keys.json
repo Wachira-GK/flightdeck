@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-price-points-113",
+  "items": [
+    {
+      "id": "i1-charm-formula",
+      "type": "single-choice",
+      "correctOptionId": "round-then-minus",
+      "rationale": "ROUND(D2,-1) gives a price ending in 0 and subtracting 1 makes it end in 9. Subtracting first and then rounding ends in 0 again. Adding 1 ends in 1. ROUND with 0 digits keeps odd units, so the price does not end in 9."
+    },
+    {
+      "id": "i2-charm-numeric",
+      "type": "numeric",
+      "expected": 2289,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "2,287 rounds to the nearest 10 as 2,290. Subtracting 1 gives 2,289."
+    },
+    {
+      "id": "i3-full-chain",
+      "type": "numeric",
+      "expected": 1669,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "1,850 times 0.9 is 1,665. A value exactly halfway between 1,660 and 1,670 rounds up to 1,670, and subtracting 1 gives 1,669."
+    },
+    {
+      "id": "i4-discount-cell",
+      "type": "single-choice",
+      "correctOptionId": "all-update",
+      "rationale": "Column E uses column D and column F uses column E, so a change in B7 flows through the whole chain. This is why the discount sits in one input cell."
+    }
+  ]
+}

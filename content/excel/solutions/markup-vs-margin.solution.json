@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "D2": "=(C2-B2)/B2",
+    "E2": "=(C2-B2)/C2",
+    "F2": "=IF(E2>=$G$2,\"On target\",\"Below target\")",
+    "D3": "=(C3-B3)/B3",
+    "E3": "=(C3-B3)/C3",
+    "F3": "=IF(E3>=$G$2,\"On target\",\"Below target\")",
+    "D4": "=(C4-B4)/B4",
+    "E4": "=(C4-B4)/C4",
+    "F4": "=IF(E4>=$G$2,\"On target\",\"Below target\")",
+    "D5": "=(C5-B5)/B5",
+    "E5": "=(C5-B5)/C5",
+    "F5": "=IF(E5>=$G$2,\"On target\",\"Below target\")"
+  }
+}

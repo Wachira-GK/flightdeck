@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-trim-140",
+  "items": [
+    {
+      "id": "l1-trim-length",
+      "type": "numeric",
+      "expected": 11,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "TRIM removes the leading and trailing spaces and reduces the three spaces between the words to one, leaving Kisumu town, which has 6 + 1 + 4 = 11 characters."
+    },
+    {
+      "id": "l2-space-compare",
+      "type": "single-choice",
+      "correctOptionId": "choice-b",
+      "rationale": "The trailing space is a real character, so the cell holds 8 characters and the text is different from the 7-character Nairobi. Excel ignores case but not spaces."
+    },
+    {
+      "id": "l3-inner-spaces",
+      "type": "single-choice",
+      "correctOptionId": "single",
+      "rationale": "TRIM keeps one space between words and removes the extra ones. It does not remove every space, and it does not give an error."
+    },
+    {
+      "id": "l4-spaces-removed",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The typed text has 2 + 7 + 2 = 11 characters and the trimmed text has 7, so the difference, the number of spaces TRIM removed, is 4."
+    }
+  ]
+}

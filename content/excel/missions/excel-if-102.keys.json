@@ -18,7 +18,10 @@
       "id": "i3-commission",
       "type": "numeric",
       "expected": 360,
-      "tolerance": { "kind": "absolute", "value": 0 },
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
       "rationale": "7,200 >= 5,000 is TRUE, so the result is 7,200 x 5% = 360."
     },
     {

@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "E2": "=IF(OR(B2=\"Nairobi\",C2>$B$9),\"Include\",\"Skip\")",
+    "E3": "=IF(OR(B3=\"Nairobi\",C3>$B$9),\"Include\",\"Skip\")",
+    "E4": "=IF(OR(B4=\"Nairobi\",C4>$B$9),\"Include\",\"Skip\")",
+    "E5": "=IF(OR(B5=\"Nairobi\",C5>$B$9),\"Include\",\"Skip\")",
+    "E6": "=IF(OR(B6=\"Nairobi\",C6>$B$9),\"Include\",\"Skip\")",
+    "E7": "=IF(OR(B7=\"Nairobi\",C7>$B$9),\"Include\",\"Skip\")",
+    "F2": "=IF(OR(C2<$B$10,D2<$B$11),\"Support\",\"OK\")",
+    "F3": "=IF(OR(C3<$B$10,D3<$B$11),\"Support\",\"OK\")",
+    "F4": "=IF(OR(C4<$B$10,D4<$B$11),\"Support\",\"OK\")",
+    "F5": "=IF(OR(C5<$B$10,D5<$B$11),\"Support\",\"OK\")",
+    "F6": "=IF(OR(C6<$B$10,D6<$B$11),\"Support\",\"OK\")",
+    "F7": "=IF(OR(C7<$B$10,D7<$B$11),\"Support\",\"OK\")"
+  }
+}

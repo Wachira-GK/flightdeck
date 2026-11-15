@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sumif-120",
+  "items": [
+    {
+      "id": "l1-mombasa-total",
+      "type": "numeric",
+      "expected": 177,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Two Mombasa rows match: Nyali 85 and Bamburi 92. 85 + 92 = 177."
+    },
+    {
+      "id": "l2-lower-case",
+      "type": "numeric",
+      "expected": 270,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "SUMIF ignores upper and lower case, so \"nairobi\" matches Nairobi. The Nairobi rows are Westlands 120 and Karen 150, which add to 270."
+    },
+    {
+      "id": "l3-arguments",
+      "type": "single-choice",
+      "correctOptionId": "numbers-to-add",
+      "rationale": "The first range (B2:B7) is where SUMIF looks for the criteria. The third argument (C2:C7) is the sum range, which holds the numbers added for each matching row."
+    },
+    {
+      "id": "l4-cell-criteria",
+      "type": "single-choice",
+      "correctOptionId": "copy-down",
+      "rationale": "A cell reference changes as the formula is copied (E2 becomes E3, E4), so one formula serves every region. It does not change speed, it does not make matching case sensitive, and wildcards are not supported in this course."
+    }
+  ]
+}

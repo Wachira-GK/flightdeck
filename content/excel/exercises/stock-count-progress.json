@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "stock-count-progress",
+  "version": 1,
+  "title": "Stock count progress with COUNT",
+  "objective": "Use COUNT to count the cells that hold numbers, and use the result in a calculation.",
+  "instructions": "A stock count is in progress. Column A numbers the 10 lines in the list. Column C holds the pairs counted so far: some lines hold text such as n/a or TBC, and some are still empty. Fill F2:F5. F2: how many lines are in the list (count the numbers in A2:A11). F3: how many lines have a number in C2:C11. F4: how many lines are still to be counted (list less counted). F5: the average pairs per counted line, worked out as the total pairs divided by the number of counted lines.",
+  "grid": {
+    "rows": 11,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Line no.",
+    "B1": "Style",
+    "C1": "Pairs counted",
+    "E1": "Measure",
+    "F1": "Result",
+    "E2": "Lines in the list",
+    "E3": "Lines counted",
+    "E4": "Lines still to count",
+    "E5": "Average pairs per counted line",
+    "A2": "1",
+    "B2": "SH-101",
+    "C2": "24",
+    "A3": "2",
+    "B3": "SH-102",
+    "C3": "0",
+    "A4": "3",
+    "B4": "SH-103",
+    "C4": "n/a",
+    "A5": "4",
+    "B5": "SH-104",
+    "C5": "15",
+    "A6": "5",
+    "B6": "SH-105",
+    "A7": "6",
+    "B7": "SH-106",
+    "C7": "40",
+    "A8": "7",
+    "B8": "SH-107",
+    "C8": "TBC",
+    "A9": "8",
+    "B9": "SH-108",
+    "C9": "8",
+    "A10": "9",
+    "B10": "SH-109",
+    "A11": "10",
+    "B11": "SH-110",
+    "C11": "33"
+  },
+  "editableCells": [
+    "F2",
+    "F3",
+    "F4",
+    "F5"
+  ],
+  "allowedFunctions": [
+    "COUNT",
+    "SUM",
+    "AVERAGE"
+  ],
+  "hints": [
+    "COUNT counts only the cells that contain numbers. Text and empty cells are ignored: =COUNT(C2:C11).",
+    "F4 is a subtraction using the two cells above it: =F2-F3.",
+    "For F5, divide a total by a count: =SUM(C2:C11)/F3. A zero counts as a counted line because 0 is a number."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

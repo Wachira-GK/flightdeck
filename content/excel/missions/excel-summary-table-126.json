@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-summary-table-126",
+  "trackId": "excel",
+  "code": "EX-126",
+  "title": "Build a summary table with SUMIF",
+  "summary": "Build a category summary table from one SUMIF formula with absolute references, then prove it with a grand-total cross-check.",
+  "estimatedMinutes": 20,
+  "passMark": 0.75,
+  "exerciseId": "summary-table-sumif-check",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Managers read summaries, not lists. A category summary shows sales per category in a few lines. The skill is writing one SUMIF formula that you copy down the whole table."
+        },
+        {
+          "type": "paragraph",
+          "text": "A summary can hide mistakes: a category spelt differently in the list falls out of every row of the table and the total quietly shrinks. A cross-check against the total of the original list catches that."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build a category summary with one copied SUMIF formula and a cross-check.",
+            "Time: about 20 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUMIF($A$2:$A$7,E2,$B$2:$B$7)",
+          "text": "$A$2:$A$7 and $B$2:$B$7 have $ signs (absolute), so they stay put when the formula is copied down. E2 has no $ signs (relative), so it moves to E3, E4 and so on, picking up the next category."
+        },
+        {
+          "type": "table",
+          "caption": "Sales list in A1:B7 (K)",
+          "columns": [
+            "Row",
+            "A: Category",
+            "B: Sales (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "Sneakers",
+              "120"
+            ],
+            [
+              "3",
+              "Sandals",
+              "45"
+            ],
+            [
+              "4",
+              "Sneakers",
+              "95"
+            ],
+            [
+              "5",
+              "Boots",
+              "150"
+            ],
+            [
+              "6",
+              "Sandals",
+              "70"
+            ],
+            [
+              "7",
+              "Boots",
+              "110"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=SUM(F2:F4)",
+          "text": "Suppose the summary table lists Sneakers, Sandals and Boots in E2:E4, with their totals in F2:F4. Add them in F5 with SUM to get the total of the table."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(F5=SUM($B$2:$B$7),\"OK\",\"Check categories\")",
+          "text": "The cross-check: compare the table total (cell F5 here) with the total of the original list. If they differ, some lines were not caught by any category, for example because of a spelling mistake."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Write the first formula, check it, then copy it down. Do not retype it on every row.",
+            "Absolute ($B$2:$B$7) for the list, relative (E2) for the label that changes.",
+            "A cross-check turns a hidden error into a visible message.",
+            "If the check says there is a problem, look for a category spelt differently in the list (for example Boot instead of Boots) or a category missing from the table."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the sales list from Training (A1:B7). Type whole numbers, for example 115."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-sandals",
+            "l2-misspelt",
+            "l3-anchors",
+            "l4-why-check"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Write one SUMIF with absolute ranges and a relative label, then copy it down.",
+            "Add the table with SUM to get a table total.",
+            "Compare the table total with SUM of the original list to catch missed lines.",
+            "Spelling differences (Boot versus Boots) are a common reason for a mismatch."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A summary with a built-in check is one you can trust and send to your manager."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-sandals",
+        "type": "numeric",
+        "prompt": "What does =SUMIF($A$2:$A$7,\"Sandals\",$B$2:$B$7) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l2-misspelt",
+        "type": "numeric",
+        "prompt": "Suppose row 7 had been typed as \"Boot\" instead of \"Boots\" (its sales are 110K). By how many K would the summary table total be below the total of the whole list?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l3-anchors",
+        "type": "single-choice",
+        "prompt": "In =SUMIF($A$2:$A$7,E2,$B$2:$B$7), which part is meant to change when the formula is copied down?",
+        "options": [
+          {
+            "id": "e2",
+            "label": "E2, the category label"
+          },
+          {
+            "id": "a-range",
+            "label": "$A$2:$A$7, the category column"
+          },
+          {
+            "id": "b-range",
+            "label": "$B$2:$B$7, the sales column"
+          },
+          {
+            "id": "all",
+            "label": "All three, so every row is different"
+          }
+        ]
+      },
+      {
+        "id": "l4-why-check",
+        "type": "single-choice",
+        "prompt": "What problem does the cross-check (table total versus list total) protect against?",
+        "options": [
+          {
+            "id": "missed-lines",
+            "label": "Lines whose category does not match any row of the table, which would silently shrink the total"
+          },
+          {
+            "id": "slow",
+            "label": "A summary that calculates slowly"
+          },
+          {
+            "id": "rounding",
+            "label": "Rounding differences in the sales figures"
+          },
+          {
+            "id": "wrong-prices",
+            "label": "Wrong prices in the price list"
+          }
+        ]
+      }
+    ]
+  }
+}

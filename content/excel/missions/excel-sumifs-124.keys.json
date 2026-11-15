@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sumifs-124",
+  "items": [
+    {
+      "id": "l1-nairobi-sneakers",
+      "type": "numeric",
+      "expected": 215,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Rows 2 and 5 are both Nairobi and Sneakers: 120 + 95 = 215."
+    },
+    {
+      "id": "l2-no-match",
+      "type": "numeric",
+      "expected": 0,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Kisumu appears only with Sandals in this list, so no row meets both conditions. SUMIFS then returns 0, not an error."
+    },
+    {
+      "id": "l3-order",
+      "type": "single-choice",
+      "correctOptionId": "sum-range",
+      "rationale": "SUMIFS starts with sum_range, then lists criteria_range and criteria in pairs. SUMIF is different: its sum range is the optional last argument."
+    },
+    {
+      "id": "l4-and",
+      "type": "single-choice",
+      "correctOptionId": "and",
+      "rationale": "SUMIFS needs every condition to be true on the same row (AND). In the training table only row 3 is both Nairobi and Sandals, so the result is 45K, not the total of all Nairobi rows or of all Sandals rows."
+    }
+  ]
+}

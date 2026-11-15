@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-sumif-ops-123",
+  "trackId": "excel",
+  "code": "EX-123",
+  "title": "SUMIF with greater-than and less-than criteria",
+  "summary": "Total only the lines at or above a target (or below a limit) using comparison criteria and a target stored in a cell.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "sumif-target-thresholds",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The merchandising manager wants to know how much of the week's sales came from strong lines: those at or above a target of 100K. Weak lines under 60K need a separate look."
+        },
+        {
+          "type": "paragraph",
+          "text": "SUMIF can test numbers as well as words. You write the comparison in the criteria, for example \">=100\", and SUMIF adds only the rows that pass."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use >, >=, < and <= criteria in SUMIF, including a target held in a cell.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUMIF(range, \">=100\", [sum_range])",
+          "text": "Put the comparison inside double quotes. If you leave out sum_range, SUMIF adds the cells in range itself, which suits \"total of the big lines\"."
+        },
+        {
+          "type": "table",
+          "caption": "Line sales in C2:C7 (K)",
+          "columns": [
+            "Row",
+            "C: Sales (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "45"
+            ],
+            [
+              "3",
+              "80"
+            ],
+            [
+              "4",
+              "120"
+            ],
+            [
+              "5",
+              "60"
+            ],
+            [
+              "6",
+              "100"
+            ],
+            [
+              "7",
+              "150"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=SUMIF(C2:C7,\">120\")",
+          "text": "Only 150 is strictly above 120 (the 120 itself is not above 120), so the answer is 150K."
+        },
+        {
+          "type": "formula",
+          "formula": "=SUMIF(C2:C7,\">=\"&F1)",
+          "text": "Suppose the target sits in cell F1. To use it, join the operator and the cell with &. The criteria becomes the text \">=100\" when F1 holds 100. Writing \">=F1\" inside the quotes would not work, because Excel would look for the letters F1."
+        },
+        {
+          "type": "list",
+          "items": [
+            "The operators are > (greater than), >= (at least), < (less than) and <= (at most). > leaves out the exact value, >= includes it.",
+            "To add a different column, give sum_range: SUMIF(C2:C7,\">=100\",D2:D7) adds column D on the rows where column C is at least 100.",
+            "Comparison criteria only look at numbers. Text cells are never counted as bigger or smaller."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the sales in C2:C7 from Training (45, 80, 120, 60, 100, 150). Type whole numbers, for example 105."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-at-least-100",
+            "l2-below-80",
+            "l3-greater-than",
+            "l4-join-cell"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Comparison criteria such as \">=100\" and \"<60\" go in double quotes.",
+            "Join an operator to a cell with &, for example \">=\"&F1, to keep the target in one place.",
+            ">= includes the exact value and > leaves it out.",
+            "Give a sum_range to add a different column from the one you test."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Change the target in one cell and every total updates, so strong and weak lines can be reviewed in seconds."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-at-least-100",
+        "type": "numeric",
+        "prompt": "What does =SUMIF(C2:C7,\">=100\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l2-below-80",
+        "type": "numeric",
+        "prompt": "What does =SUMIF(C2:C7,\"<80\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l3-greater-than",
+        "type": "single-choice",
+        "prompt": "Compared with \">=100\", what does the criteria \">100\" do to the line that sells exactly 100K?",
+        "options": [
+          {
+            "id": "excluded",
+            "label": "It leaves that line out of the total"
+          },
+          {
+            "id": "included",
+            "label": "It still includes that line"
+          },
+          {
+            "id": "error",
+            "label": "It returns an error"
+          },
+          {
+            "id": "double",
+            "label": "It counts the line twice"
+          }
+        ]
+      },
+      {
+        "id": "l4-join-cell",
+        "type": "single-choice",
+        "prompt": "A target sits in F1. Which criteria uses it correctly?",
+        "options": [
+          {
+            "id": "amp",
+            "label": "\">=\"&F1"
+          },
+          {
+            "id": "inside",
+            "label": "\">=F1\""
+          },
+          {
+            "id": "plain",
+            "label": ">=F1"
+          },
+          {
+            "id": "plus",
+            "label": "\">=\" + F1 + \"\""
+          }
+        ]
+      }
+    ]
+  }
+}

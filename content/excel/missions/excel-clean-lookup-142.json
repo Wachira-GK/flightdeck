@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-clean-lookup-142",
+  "trackId": "excel",
+  "code": "EX-142",
+  "title": "Clean first, then look up",
+  "summary": "Put TRIM and UPPER inside XLOOKUP so messy typed codes still find their price in the clean list.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "clean-lookup-messy-codes",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A Nakuru store has typed its back-to-school order into a spreadsheet by hand. Some codes have a space at the front or the back, and some are in small letters. The price list at head office is clean and exact."
+        },
+        {
+          "type": "paragraph",
+          "text": "An exact-match lookup fails on a stray space, even when the code looks right. Instead of retyping every code, you can clean the code inside the lookup formula, so the order sheet stays as it was typed and still finds every price."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: nest TRIM and UPPER inside XLOOKUP to match messy codes.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(UPPER(TRIM(A2)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+          "text": "Excel evaluates from the inside out. TRIM(A2) removes extra spaces, UPPER changes the result to capitals, and XLOOKUP then looks that clean code up in the price list."
+        },
+        {
+          "type": "table",
+          "caption": "Clean price list in E1:G6 (KES)",
+          "columns": [
+            "Row",
+            "E: Code",
+            "F: Product",
+            "G: Price (KES)"
+          ],
+          "rows": [
+            [
+              "2",
+              "SS-210",
+              "School shoe",
+              "2499"
+            ],
+            [
+              "3",
+              "SN-450",
+              "Canvas sneaker",
+              "1999"
+            ],
+            [
+              "4",
+              "SD-120",
+              "Ladies sandal",
+              "899"
+            ],
+            [
+              "5",
+              "BT-330",
+              "Ankle boot",
+              "4599"
+            ],
+            [
+              "6",
+              "SL-075",
+              "Slipper",
+              "499"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "caption": "Cleaning in steps",
+          "columns": [
+            "Typed",
+            "After TRIM",
+            "After UPPER(TRIM(...))"
+          ],
+          "rows": [
+            [
+              "\"  sl-075 \"",
+              "\"sl-075\"",
+              "\"SL-075\""
+            ],
+            [
+              "\"sd-120 \"",
+              "\"sd-120\"",
+              "\"SD-120\""
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            "TRIM is the one that fixes the lookup. A space is a real character, so \"SD-120 \" (with a space) is not found, even though it looks right.",
+            "XLOOKUP already ignores upper and lower case, so UPPER is not needed for the lookup itself. We still use it to produce one standard code that is safe to export or join in other tools.",
+            "Clean once, in a helper column, if many formulas use the code. Cleaning inside every formula also works, but it repeats work.",
+            "The quotation marks in the table only show where the text starts and ends; they are not part of the text."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the price list from Training (E1:G6). Type numbers without commas or currency, for example 2499."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-order-of-work",
+            "l2-price-after-trim",
+            "l3-trailing-space",
+            "l4-upper-role"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Functions can be nested; Excel works from the inside out.",
+            "TRIM removes the stray spaces that break exact matches; UPPER gives one standard case.",
+            "Cleaning inside XLOOKUP leaves the typed data untouched.",
+            "A code that is not on the list still returns your fourth argument, such as \"Not listed\"."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Clean the key, then match: it is the habit that makes lookups trustworthy on real, messy data."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-order-of-work",
+        "type": "single-choice",
+        "prompt": "In =XLOOKUP(UPPER(TRIM(A2)),...), which function does Excel work out first?",
+        "options": [
+          {
+            "id": "trim",
+            "label": "TRIM, because it is the innermost"
+          },
+          {
+            "id": "upper",
+            "label": "UPPER, because it is written first"
+          },
+          {
+            "id": "xlookup",
+            "label": "XLOOKUP, because it is the outer function"
+          },
+          {
+            "id": "together",
+            "label": "All three at the same time"
+          }
+        ]
+      },
+      {
+        "id": "l2-price-after-trim",
+        "type": "numeric",
+        "prompt": "What does =XLOOKUP(UPPER(TRIM(\"  sl-075 \")),$E$2:$E$6,$G$2:$G$6) return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "l3-trailing-space",
+        "type": "single-choice",
+        "prompt": "Cell A3 holds SD-120 followed by one space. What does =XLOOKUP(A3,$E$2:$E$6,$G$2:$G$6) return, with no fourth argument and no cleaning?",
+        "options": [
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "price",
+            "label": "899, the price of SD-120"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "value",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l4-upper-role",
+        "type": "single-choice",
+        "prompt": "Which statement about UPPER in this lookup is true?",
+        "options": [
+          {
+            "id": "optional",
+            "label": "XLOOKUP ignores case, so UPPER is optional for finding the price, but it gives one standard code for reports and exports"
+          },
+          {
+            "id": "required",
+            "label": "UPPER is required, otherwise XLOOKUP cannot find lower-case codes"
+          },
+          {
+            "id": "spaces",
+            "label": "UPPER removes the stray spaces"
+          },
+          {
+            "id": "ignore",
+            "label": "XLOOKUP ignores spaces, so only UPPER is needed"
+          }
+        ]
+      }
+    ]
+  }
+}

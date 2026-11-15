@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sumif-ops-123",
+  "items": [
+    {
+      "id": "l1-at-least-100",
+      "type": "numeric",
+      "expected": 370,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The values 100 or more are 120, 100 and 150. >= includes 100 itself. 120 + 100 + 150 = 370."
+    },
+    {
+      "id": "l2-below-80",
+      "type": "numeric",
+      "expected": 105,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The values below 80 are 45 and 60 (80 itself is not below 80). 45 + 60 = 105."
+    },
+    {
+      "id": "l3-greater-than",
+      "type": "single-choice",
+      "correctOptionId": "excluded",
+      "rationale": "> means strictly greater than, so a value of exactly 100 does not qualify. >= means greater than or equal to, so 100 does qualify."
+    },
+    {
+      "id": "l4-join-cell",
+      "type": "single-choice",
+      "correctOptionId": "amp",
+      "rationale": "Join the operator text and the cell value with &, giving \">=100\" when F1 holds 100. Inside quotes, F1 is just the letters F and 1. Without quotes, >=F1 is not a valid criteria argument, and the + version tries to add text to a number, which gives #VALUE!."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-len-136",
+  "items": [
+    {
+      "id": "l1-count-slash",
+      "type": "numeric",
+      "expected": 11,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "LEN counts every character including both hyphens and the slash: SN (2) + hyphen (1) + 450 (3) + hyphen (1) + 42 (2) + slash (1) + B (1) = 11."
+    },
+    {
+      "id": "l2-short-code",
+      "type": "single-choice",
+      "correctOptionId": "check",
+      "rationale": "SN-45-42 has 8 characters, not 9, so the test LEN(A2)=9 is FALSE and IF returns the second result, Check. IF returns the text you give it, not the length."
+    },
+    {
+      "id": "l3-len-number",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "LEN turns the number into text exactly as shown, 1050, and counts its four characters."
+    },
+    {
+      "id": "l4-why-f1",
+      "type": "single-choice",
+      "correctOptionId": "one-place",
+      "rationale": "A number typed inside a formula is hard to find and must be edited in every row. A single input cell, fixed with $ signs, lets you change the rule once. LEN works with typed text too, it does not count faster, and the comparison stays a number."
+    }
+  ]
+}

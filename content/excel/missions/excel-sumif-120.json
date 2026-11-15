@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-sumif-120",
+  "trackId": "excel",
+  "code": "EX-120",
+  "title": "Totals by region with SUMIF",
+  "summary": "Add up sales for one region from a long sales list with SUMIF, then reuse the formula for every region.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "sumif-region-totals",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Every Monday the regional manager asks one question: how much did each region sell last week? Your sales list has one line per store, and the regions are mixed together."
+        },
+        {
+          "type": "paragraph",
+          "text": "You could filter the list and read the total off the screen, but that is slow and has to be repeated for every region. SUMIF adds only the lines that meet a condition, so one formula does the job and updates when the list changes."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: total the sales for one region with SUMIF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUMIF(range, criteria, [sum_range])",
+          "text": "Look down range for cells that match criteria. For each match, add the number on the same row of sum_range. range and sum_range must be the same size."
+        },
+        {
+          "type": "table",
+          "caption": "Sales list in A1:C7 (sales in KES thousands, K)",
+          "columns": [
+            "Row",
+            "A: Store",
+            "B: Region",
+            "C: Sales (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "Westlands",
+              "Nairobi",
+              "120"
+            ],
+            [
+              "3",
+              "Nyali",
+              "Mombasa",
+              "85"
+            ],
+            [
+              "4",
+              "Kondele",
+              "Kisumu",
+              "64"
+            ],
+            [
+              "5",
+              "Karen",
+              "Nairobi",
+              "150"
+            ],
+            [
+              "6",
+              "Bamburi",
+              "Mombasa",
+              "92"
+            ],
+            [
+              "7",
+              "Milimani",
+              "Kisumu",
+              "71"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=SUMIF(B2:B7,\"Kisumu\",C2:C7)",
+          "text": "Look in B2:B7 for the text Kisumu. Two rows match (rows 4 and 7), so Excel adds C4 and C7: 64 + 71 = 135K."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Text criteria go in double quotes, like \"Kisumu\". Upper and lower case do not matter, so \"kisumu\" finds Kisumu.",
+            "Instead of typing the region, you can point at a cell that holds it, for example =SUMIF(B2:B7,E2,C2:C7). Change E2 and the answer changes.",
+            "Put $ signs on the two ranges ($B$2:$B$7 and $C$2:$C$7) so they stay fixed when you copy the formula down to the next region.",
+            "In this simulator, * and ? are ordinary characters, not wildcards. Type the full region name."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the sales list from Training (A1:C7). Type numbers without commas, for example 177."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-mombasa-total",
+            "l2-lower-case",
+            "l3-arguments",
+            "l4-cell-criteria"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "SUMIF(range, criteria, sum_range) adds the numbers on rows where the range matches the criteria.",
+            "Point the criteria at a cell so one formula can be copied for every region.",
+            "Fix the ranges with $ signs; leave the criteria cell relative.",
+            "Text matching ignores case, and the sum range must be the same size as the range."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "You can now answer \"how much did each region sell?\" with one copied formula instead of filtering the list each week."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-mombasa-total",
+        "type": "numeric",
+        "prompt": "What does =SUMIF(B2:B7,\"Mombasa\",C2:C7) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l2-lower-case",
+        "type": "numeric",
+        "prompt": "What does =SUMIF(B2:B7,\"nairobi\",C2:C7) return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l3-arguments",
+        "type": "single-choice",
+        "prompt": "In =SUMIF(B2:B7,\"Kisumu\",C2:C7), what is the job of C2:C7?",
+        "options": [
+          {
+            "id": "where-to-look",
+            "label": "It is the list SUMIF searches for the word Kisumu"
+          },
+          {
+            "id": "numbers-to-add",
+            "label": "It holds the numbers that are added for the matching rows"
+          },
+          {
+            "id": "count-rows",
+            "label": "It counts how many rows match"
+          },
+          {
+            "id": "second-region",
+            "label": "It is a second region to include in the total"
+          }
+        ]
+      },
+      {
+        "id": "l4-cell-criteria",
+        "type": "single-choice",
+        "prompt": "Why is it useful to write =SUMIF($B$2:$B$7,E2,$C$2:$C$7) with the region in cell E2?",
+        "options": [
+          {
+            "id": "copy-down",
+            "label": "You can copy the formula down and E3, E4 give the other regions"
+          },
+          {
+            "id": "faster",
+            "label": "Excel calculates cell references faster than text"
+          },
+          {
+            "id": "case",
+            "label": "It makes the match case sensitive"
+          },
+          {
+            "id": "wildcards",
+            "label": "It lets you use * to match several regions"
+          }
+        ]
+      }
+    ]
+  }
+}

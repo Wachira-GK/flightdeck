@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "B6": "=XLOOKUP(B$5,$B$1:$G$1,$B$2:$G$2)",
+    "B7": "=XLOOKUP(B$5,$B$1:$G$1,$B$3:$G$3)",
+    "B8": "=B6-B7",
+    "B9": "=IF(B8>=0,\"On target\",\"Below target\")",
+    "C6": "=XLOOKUP(C$5,$B$1:$G$1,$B$2:$G$2)",
+    "C7": "=XLOOKUP(C$5,$B$1:$G$1,$B$3:$G$3)",
+    "C8": "=C6-C7",
+    "C9": "=IF(C8>=0,\"On target\",\"Below target\")",
+    "D6": "=XLOOKUP(D$5,$B$1:$G$1,$B$2:$G$2)",
+    "D7": "=XLOOKUP(D$5,$B$1:$G$1,$B$3:$G$3)",
+    "D8": "=D6-D7",
+    "D9": "=IF(D8>=0,\"On target\",\"Below target\")"
+  }
+}

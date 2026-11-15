@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-scorecard-150",
+  "items": [
+    {
+      "id": "i1-sumifs",
+      "type": "numeric",
+      "expected": 150,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Only rows 2 and 4 are Nairobi, so SUMIFS adds 100 + 50 = 150 and ignores the Mombasa row."
+    },
+    {
+      "id": "i2-countifs",
+      "type": "numeric",
+      "expected": 3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The weeks at or above 100 are 120, 100 and 130. The 100 counts because >= includes the boundary, so the answer is 3."
+    },
+    {
+      "id": "i3-xlookup",
+      "type": "single-choice",
+      "correctOptionId": "follows-table",
+      "rationale": "A looked-up target stays linked to the target table, so a corrected target flows through to achievement and rating automatically. Typed numbers are allowed in Excel but go out of date, and XLOOKUP neither rounds nor sorts."
+    },
+    {
+      "id": "i4-rating",
+      "type": "single-choice",
+      "correctOptionId": "watch",
+      "rationale": "AND needs both conditions, and 2 good weeks is below 3, so the first test is FALSE. The next test, 102 >= 90, is TRUE, so the rating is Watch."
+    }
+  ]
+}

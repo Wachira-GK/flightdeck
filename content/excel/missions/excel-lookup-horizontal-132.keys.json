@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-lookup-horizontal-132",
+  "items": [
+    {
+      "id": "h1-may-sales",
+      "type": "numeric",
+      "expected": 5100,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "May is in column F of the heading row, and the sales row holds 5,100 in column F."
+    },
+    {
+      "id": "h2-shape",
+      "type": "single-choice",
+      "correctOptionId": "value",
+      "rationale": "The lookup range is a row and the return range is a column. XLOOKUP needs both to have the same shape, so the formula gives #VALUE! even though both have 6 cells."
+    },
+    {
+      "id": "h3-april-variance",
+      "type": "numeric",
+      "expected": -200,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "April sales are 4,400 and the target is 4,600, so 4,400 - 4,600 = -200K, which is below target."
+    },
+    {
+      "id": "h4-mixed-ref",
+      "type": "single-choice",
+      "correctOptionId": "row",
+      "rationale": "In B$5 only the row is fixed. When the formula is copied across, the column letter moves, so C6 looks at C5 and D6 looks at D5, while the row stays at 5. A $ never means currency in a reference."
+    }
+  ]
+}

@@ -99,14 +99,17 @@ describe('SEED-T01..T10 catalogue seed', () => {
       expect(def, file).toBeDefined();
       const text = JSON.stringify(def);
       for (const k of ['expected', 'hiddenTests', 'requireFormula', 'requireFunctions', 'passThreshold']) expect(text).not.toContain(`"${k}"`);
+      // Computed answers must not be spelled out in the learner-facing words (title, objective, instructions, hints).
+      // Grid sizes and starter cells are structure, not prose, so small numbers there are not leaks.
+      const prose = JSON.stringify([def!.title, def!.objective, def!.instructions, def!.hints]);
       const key = readJson(join(excelDir, file.replace(/\.json$/, '.key.json')));
       const starter = (def!.starter ?? {}) as Row;
       for (const e of key.expected as { cell: string; value: unknown }[]) {
         expect(starter[e.cell] ?? '', `${file} ${e.cell} pre-filled`).toBe('');
-        // A lookup's answer is a copy of a starter data cell (e.g. a price), so only computed values must be absent.
+        // Identifiers such as cell references (A4, D2:D6) are not leaks, so a letter before the digits is ignored. A lookup's answer is a copy of a starter data cell (e.g. a price), so only computed values must be absent.
         const isStarterData = Object.values(starter).map(String).includes(String(e.value));
         if (typeof e.value === 'number' && !isStarterData) {
-          expect(new RegExp(`(?<![\\d.])${String(e.value).replace('.', '\\.')}(?![\\d.])`).test(text), `${file} leaks ${e.value}`).toBe(false);
+          expect(new RegExp(`(?<![\\w.$])${String(e.value).replace('.', '\\.')}(?![\\d.])`).test(prose), `${file} leaks ${e.value}`).toBe(false);
         }
       }
     }
@@ -122,9 +125,16 @@ describe('SEED-T01..T10 catalogue seed', () => {
     for (const f of missionFiles) {
       const keysFile = f.replace(/\.json$/, '.keys.json');
       if (!existsSync(keysFile)) continue;
+      // Scope: a mission's own public text (its question prompts/options and its step bodies). A number that merely
+      // appears in ANOTHER mission is a coincidence, not a leak.
+      const slug = String(readJson(f).slug);
+      const own = JSON.stringify([
+        await db.as(learner, `select i.prompt, i.options from public.assessment_items i join public.assessments a on a.id = i.assessment_id where a.slug = '${slug}-assessment'`),
+        await db.as(learner, `select s.body from public.mission_steps s join public.missions m on m.id = s.mission_id where m.slug = '${slug}'`),
+      ]);
       for (const item of readJson(keysFile).items as Row[]) {
-        // Non-integer answers (e.g. 105.2, 50.86) cannot occur in the raw data, so they must never appear publicly.
-        if (typeof item.expected === 'number' && !Number.isInteger(item.expected)) expect(pub).not.toContain(String(item.expected));
+        // Non-integer answers (e.g. 105.2, 50.86) cannot occur in the raw data, so they must never appear in the mission's own public text.
+        if (typeof item.expected === 'number' && !Number.isInteger(item.expected)) expect(own, `${slug}/${String(item.id)} answer ${item.expected} appears in public text`).not.toContain(String(item.expected));
       }
     }
     const keys = await db.as<Row>(service, 'select count(*)::int as n from app_private.assessment_item_keys k join public.assessment_items i on i.id = k.item_id');

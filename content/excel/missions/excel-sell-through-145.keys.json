@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sell-through-145",
+  "items": [
+    {
+      "id": "i1-basic",
+      "type": "numeric",
+      "expected": 30,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "Available pairs are 48 + 112 = 160, and 48 / 160 = 0.3, which is 30.0%."
+    },
+    {
+      "id": "i2-rounding",
+      "type": "numeric",
+      "expected": 33.3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "25 / 75 x 100 = 33.333..., and ROUND to 1 decimal place keeps one digit after the point, giving 33.3."
+    },
+    {
+      "id": "i3-iferror",
+      "type": "single-choice",
+      "correctOptionId": "new-line",
+      "rationale": "Dividing by zero returns #DIV/0!, which would spread into every cell that uses the result. IFERROR catches the error and returns the fallback you chose. It does not round and it does not change the speed."
+    },
+    {
+      "id": "i4-boundary",
+      "type": "single-choice",
+      "correctOptionId": "ok",
+      "rationale": "The test 40 < 40 is FALSE because < means strictly below, so IF returns the second value, OK."
+    }
+  ]
+}

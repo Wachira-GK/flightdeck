@@ -1,0 +1,14 @@
+{
+  "cells": {
+    "G2": "=IF(AND(B2<C2,D2<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+    "G3": "=IF(AND(B3<C3,D3<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+    "G4": "=IF(AND(B4<C4,D4<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+    "G5": "=IF(AND(B5<C5,D5<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+    "G6": "=IF(AND(B6<C6,D6<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+    "H2": "=IF(AND(E2>$B$8,F2>$B$9),\"Star\",\"Review\")",
+    "H3": "=IF(AND(E3>$B$8,F3>$B$9),\"Star\",\"Review\")",
+    "H4": "=IF(AND(E4>$B$8,F4>$B$9),\"Star\",\"Review\")",
+    "H5": "=IF(AND(E5>$B$8,F5>$B$9),\"Star\",\"Review\")",
+    "H6": "=IF(AND(E6>$B$8,F6>$B$9),\"Star\",\"Review\")"
+  }
+}

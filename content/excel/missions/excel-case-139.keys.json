@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-case-139",
+  "items": [
+    {
+      "id": "l1-upper-result",
+      "type": "single-choice",
+      "correctOptionId": "caps",
+      "rationale": "UPPER changes every letter to a capital and leaves the digit and hyphen alone, so Nbo-01 becomes NBO-01. LOWER would give nbo-01."
+    },
+    {
+      "id": "l2-compare-case",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "Excel's comparison operators ignore letter case, so the two texts are treated as equal and the result is TRUE. That is why case rarely breaks a lookup inside the sheet."
+    },
+    {
+      "id": "l3-upper-length",
+      "type": "numeric",
+      "expected": 7,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "UPPER only changes the letters to capitals. ELDORET still has the same 7 characters as Eldoret, and LEN counts 7."
+    },
+    {
+      "id": "l4-why-standard",
+      "type": "single-choice",
+      "correctOptionId": "other-tools",
+      "rationale": "Inside Excel, case does not matter, but data often travels to other tools that are case-sensitive, and a standard form avoids surprises there. The other options are false: Excel compares lower-case text perfectly well, UPPER does not shorten text, and XLOOKUP ignores case."
+    }
+  ]
+}

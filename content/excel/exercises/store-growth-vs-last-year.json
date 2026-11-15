@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "store-growth-vs-last-year",
+  "version": 1,
+  "title": "Growth versus last year with a zero guard",
+  "objective": "Calculate percentage change as (this year - last year) / last year, and guard against a last year of zero with IF.",
+  "instructions": "In D2:D6, work out each store's growth: this year less last year, divided by last year. The answer is a decimal, so 0.07 means 7% growth and -0.07 means a 7% fall. A store with no sales last year (last year is 0) cannot be divided by, so for that store show the text New instead. Use one formula that works for every row.",
+  "grid": {
+    "rows": 6,
+    "cols": 4
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Last year (K)",
+    "C1": "This year (K)",
+    "D1": "Growth",
+    "A2": "Nairobi",
+    "B2": "800",
+    "C2": "900",
+    "A3": "Mombasa",
+    "B3": "500",
+    "C3": "450",
+    "A4": "Kisumu",
+    "B4": "320",
+    "C4": "320",
+    "A5": "Nakuru",
+    "B5": "250",
+    "C5": "325",
+    "A6": "Eldoret (new store)",
+    "B6": "0",
+    "C6": "90"
+  },
+  "editableCells": [
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6"
+  ],
+  "allowedFunctions": [
+    "IF"
+  ],
+  "hints": [
+    "Growth is the change divided by last year: =(C2-B2)/B2. Put the subtraction in brackets so it happens first.",
+    "If B2 is 0, the division gives #DIV/0!. Test for it first: =IF(B2=0, \"New\", ...).",
+    "Put the growth calculation in the value_if_false part: =IF(B2=0,\"New\",(C2-B2)/B2). Then copy the same pattern to every row."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

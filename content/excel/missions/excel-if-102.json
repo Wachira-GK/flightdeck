@@ -43,14 +43,42 @@
         {
           "type": "table",
           "caption": "Comparison operators",
-          "columns": ["Operator", "Meaning", "Example"],
+          "columns": [
+            "Operator",
+            "Meaning",
+            "Example"
+          ],
           "rows": [
-            ["=", "equal to", "B2=C2"],
-            ["<>", "not equal to", "B2<>0"],
-            ["<", "less than", "B2<C2"],
-            ["<=", "at or below", "B2<=C2"],
-            [">", "more than", "B2>C2"],
-            [">=", "at or above", "B2>=50000"]
+            [
+              "=",
+              "equal to",
+              "B2=C2"
+            ],
+            [
+              "<>",
+              "not equal to",
+              "B2<>0"
+            ],
+            [
+              "<",
+              "less than",
+              "B2<C2"
+            ],
+            [
+              "<=",
+              "at or below",
+              "B2<=C2"
+            ],
+            [
+              ">",
+              "more than",
+              "B2>C2"
+            ],
+            [
+              ">=",
+              "at or above",
+              "B2>=50000"
+            ]
           ]
         },
         {
@@ -71,7 +99,14 @@
     {
       "id": "simulation",
       "title": "Simulation",
-      "blocks": [{ "type": "excel-grid" }, { "type": "exercise-hints" }]
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
     },
     {
       "id": "assessment",
@@ -81,7 +116,15 @@
           "type": "paragraph",
           "text": "Four questions on IF and thresholds. Type numbers without commas or currency, for example 360."
         },
-        { "type": "assessment-items", "itemIds": ["i1-boundary", "i2-bonus-formula", "i3-commission", "i4-threshold-cell"] }
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-boundary",
+            "i2-bonus-formula",
+            "i3-commission",
+            "i4-threshold-cell"
+          ]
+        }
       ]
     },
     {
@@ -111,10 +154,22 @@
         "type": "single-choice",
         "prompt": "Ankle boots: 30 pairs on hand (B4), reorder point 30 (C4). What does =IF(B4<=C4,\"Reorder\",\"OK\") show?",
         "options": [
-          { "id": "reorder", "label": "Reorder" },
-          { "id": "ok", "label": "OK" },
-          { "id": "false", "label": "FALSE" },
-          { "id": "error", "label": "#VALUE!" }
+          {
+            "id": "reorder",
+            "label": "Reorder"
+          },
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "choice-c",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
         ]
       },
       {
@@ -122,10 +177,22 @@
         "type": "single-choice",
         "prompt": "A store earns a \"Bonus\" when weekly sales in B2 are at least KES 50,000; otherwise the cell stays empty. Which formula is correct?",
         "options": [
-          { "id": "gt", "label": "=IF(B2>50000,\"Bonus\",\"\")" },
-          { "id": "gte", "label": "=IF(B2>=50000,\"Bonus\",\"\")" },
-          { "id": "no-quotes", "label": "=IF(B2>=50000,Bonus,\"\")" },
-          { "id": "lte", "label": "=IF(B2<=50000,\"Bonus\",\"\")" }
+          {
+            "id": "gt",
+            "label": "=IF(B2>50000,\"Bonus\",\"\")"
+          },
+          {
+            "id": "gte",
+            "label": "=IF(B2>=50000,\"Bonus\",\"\")"
+          },
+          {
+            "id": "no-quotes",
+            "label": "=IF(B2>=50000,Bonus,\"\")"
+          },
+          {
+            "id": "lte",
+            "label": "=IF(B2<=50000,\"Bonus\",\"\")"
+          }
         ]
       },
       {
@@ -139,10 +206,22 @@
         "type": "single-choice",
         "prompt": "Why write =IF(B2<=C2,\"Reorder\",\"OK\") instead of =IF(B2<=25,\"Reorder\",\"OK\") when C2 holds 25?",
         "options": [
-          { "id": "follows-data", "label": "The flag updates when the reorder point in C2 changes" },
-          { "id": "faster", "label": "It calculates faster" },
-          { "id": "required", "label": "IF cannot compare with a typed number" },
-          { "id": "no-difference", "label": "There is no difference" }
+          {
+            "id": "follows-data",
+            "label": "The flag updates when the reorder point in C2 changes"
+          },
+          {
+            "id": "faster",
+            "label": "It calculates faster"
+          },
+          {
+            "id": "required",
+            "label": "IF cannot compare with a typed number"
+          },
+          {
+            "id": "no-difference",
+            "label": "There is no difference"
+          }
         ]
       }
     ]

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-right-138",
+  "trackId": "excel",
+  "code": "EX-138",
+  "title": "Pull sizes with RIGHT",
+  "summary": "Extract the size from the end of an article code with RIGHT and learn why text sizes do not match number sizes.",
+  "estimatedMinutes": 14,
+  "passMark": 0.75,
+  "exerciseId": "size-suffix-right",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Eldoret store has asked how many pairs we still hold in each size of the articles it sells. The size is the last two digits of every article code, such as SN-450-42, and the stock list is organised by size number."
+        },
+        {
+          "type": "paragraph",
+          "text": "RIGHT takes characters from the end of a piece of text. There is one catch you must understand before you trust the result: RIGHT returns text, and a lookup will not match text against a number."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: extract a suffix with RIGHT and fix the text-versus-number trap.",
+            "Time: about 14 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=RIGHT(text, [num_chars])",
+          "text": "RIGHT returns num_chars characters from the end of the text. If you leave num_chars out, you get 1 character."
+        },
+        {
+          "type": "table",
+          "caption": "RIGHT on article codes",
+          "columns": [
+            "Code",
+            "RIGHT(code,2)",
+            "What type is the result?"
+          ],
+          "rows": [
+            [
+              "SN-450-42",
+              "42",
+              "Text"
+            ],
+            [
+              "SD-120-38",
+              "38",
+              "Text"
+            ],
+            [
+              "SL-075-39",
+              "39",
+              "Text"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=RIGHT(A2,2)*1",
+          "text": "Take the last two characters of A2 and multiply by 1. The arithmetic converts the text 42 into the number 42, which a lookup against a column of numbers can find."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Text is not a number: =\"42\"=42 is FALSE. The same is true for XLOOKUP, so XLOOKUP(RIGHT(A2,2), sizes, stock) gives #N/A when the size list holds real numbers.",
+            "In real Excel, text is usually left-aligned in a cell and numbers right-aligned, which is a quick visual clue.",
+            "Be careful with the number of characters: RIGHT(\"SD-120-38\",3) is -38, with the hyphen, and multiplying by 1 gives the negative number -38.",
+            "Tip: keep the text size and the number size in separate columns while you check the work."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces. A negative number starts with a minus sign, for example -5."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-right-times-two",
+            "l2-text-vs-number",
+            "l3-lookup-text",
+            "l4-right-three"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "RIGHT(text, n) returns the last n characters; n defaults to 1.",
+            "RIGHT always returns text, and text never matches a number in a comparison or lookup.",
+            "Multiply by 1 to turn numeric-looking text into a number before looking it up.",
+            "Count the characters you want carefully, because a hyphen is a character too."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Most failed lookups on codes come from text versus number, so check the type before you trust a result."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-right-times-two",
+        "type": "numeric",
+        "prompt": "What does =RIGHT(\"SN-450-42\",2)*2 return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l2-text-vs-number",
+        "type": "single-choice",
+        "prompt": "What does =(\"42\"=42) return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          }
+        ]
+      },
+      {
+        "id": "l3-lookup-text",
+        "type": "single-choice",
+        "prompt": "The size list in F2:F7 holds the numbers 38 to 43. What does =XLOOKUP(RIGHT(\"SN-450-42\",2),F2:F7,G2:G7) show?",
+        "options": [
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "pairs",
+            "label": "The pairs in stock for size 42"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "value",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l4-right-three",
+        "type": "numeric",
+        "prompt": "What does =RIGHT(\"SD-120-38\",3)*1 return?",
+        "answerHint": "Whole number; it may be negative"
+      }
+    ]
+  }
+}

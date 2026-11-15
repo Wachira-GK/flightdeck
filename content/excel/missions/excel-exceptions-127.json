@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-exceptions-127",
+  "trackId": "excel",
+  "code": "EX-127",
+  "title": "Exceptions report: lines below reorder point",
+  "summary": "Flag lines below their reorder point, then count them, work out their share and value with COUNTIF, COUNTIFS and SUMIFS.",
+  "estimatedMinutes": 20,
+  "passMark": 0.75,
+  "exerciseId": "exceptions-reorder-report",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Exception reports show only what needs action. For stock, the exception is a line whose pairs in stock have fallen below its reorder point: the level at which you should order more."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will flag each line, count the flagged lines, work out what share of all lines they are and add up the stock value at risk. That combines IF, COUNTIF, COUNTIFS and SUMIFS in one small report."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build an exceptions report with a flag column, counts, a percentage and a flagged-value total.",
+            "Time: about 20 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=IF(B2<C2,\"Yes\",\"No\")",
+          "text": "A helper column compares each line's stock with its own reorder point. COUNTIFS cannot compare two columns row by row, so we first turn the comparison into a Yes or No flag. \"<\" means strictly below: a line exactly on its reorder point is not flagged."
+        },
+        {
+          "type": "table",
+          "caption": "Stock lines in A1:E7 (value in K)",
+          "columns": [
+            "Row",
+            "A: Region",
+            "B: Pairs in stock",
+            "C: Reorder point",
+            "D: Value (K)",
+            "E: Below reorder?"
+          ],
+          "rows": [
+            [
+              "2",
+              "Nairobi",
+              "12",
+              "20",
+              "36",
+              "Yes"
+            ],
+            [
+              "3",
+              "Mombasa",
+              "30",
+              "30",
+              "90",
+              "No"
+            ],
+            [
+              "4",
+              "Kisumu",
+              "9",
+              "25",
+              "27",
+              "Yes"
+            ],
+            [
+              "5",
+              "Nairobi",
+              "45",
+              "30",
+              "135",
+              "No"
+            ],
+            [
+              "6",
+              "Mombasa",
+              "6",
+              "18",
+              "18",
+              "Yes"
+            ],
+            [
+              "7",
+              "Kisumu",
+              "10",
+              "12",
+              "30",
+              "Yes"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIF(E2:E7,\"Yes\")/COUNT(B2:B7)",
+          "text": "Count the flagged lines and divide by the number of lines. COUNT counts the numbers in B2:B7, which is the number of lines. The result is a decimal: 0.5 means 50%."
+        },
+        {
+          "type": "formula",
+          "formula": "=SUMIFS(D2:D7,E2:E7,\"Yes\",A2:A7,\"Nairobi\")",
+          "text": "Add the value (D) of lines that are flagged and in Nairobi: only row 2 qualifies, so the answer is 36K. Combine COUNTIFS and SUMIFS with the flag to answer questions such as \"how many Nairobi lines are below reorder point?\"."
+        },
+        {
+          "type": "list",
+          "items": [
+            "To show a share as a percentage, multiply the decimal by 100 (0.5 becomes 50). This simulator stores 4% as 0.04, and the checks accept the decimal.",
+            "Make the flag column a visible part of the report: managers can scan the Yes lines.",
+            "Use COUNT for the number of lines. It counts numbers only, so it ignores empty cells and text."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the stock lines from Training (A1:E7). Give percentages as a number with 1 decimal place (for example 33.3 for 33.3%), and values in K as whole numbers."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-share",
+            "l2-kisumu-value",
+            "l3-helper",
+            "l4-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Turn a row-by-row comparison into a Yes/No helper column with IF.",
+            "COUNTIF and COUNTIFS count the flagged lines; COUNT counts all lines.",
+            "Share = flagged lines divided by all lines.",
+            "SUMIFS adds the value of the flagged lines, optionally for one region."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "An exceptions report points the buyer straight at the lines that need action."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-share",
+        "type": "numeric",
+        "prompt": "What percentage of the six lines are below their reorder point? Give the number to 1 decimal place (for example 33.3).",
+        "answerHint": "Percentage to 1 decimal place"
+      },
+      {
+        "id": "l2-kisumu-value",
+        "type": "numeric",
+        "prompt": "What does =SUMIFS(D2:D7,E2:E7,\"Yes\",A2:A7,\"Kisumu\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "l3-helper",
+        "type": "single-choice",
+        "prompt": "Why do we add a Yes/No helper column instead of using COUNTIFS directly on the two columns?",
+        "options": [
+          {
+            "id": "row-compare",
+            "label": "COUNTIFS compares a column to a fixed value, not one column to another row by row"
+          },
+          {
+            "id": "slow",
+            "label": "COUNTIFS is too slow on stock data"
+          },
+          {
+            "id": "text",
+            "label": "COUNTIFS cannot read numbers"
+          },
+          {
+            "id": "one-column",
+            "label": "COUNTIFS only works on one column"
+          }
+        ]
+      },
+      {
+        "id": "l4-boundary",
+        "type": "single-choice",
+        "prompt": "Row 3 has 30 pairs in stock and a reorder point of 30. What does =IF(B3<C3,\"Yes\",\"No\") show for it?",
+        "options": [
+          {
+            "id": "no",
+            "label": "No, because 30 is not below 30"
+          },
+          {
+            "id": "choice-b",
+            "label": "Yes, because the stock has reached the reorder point"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "error",
+            "label": "An error"
+          }
+        ]
+      }
+    ]
+  }
+}

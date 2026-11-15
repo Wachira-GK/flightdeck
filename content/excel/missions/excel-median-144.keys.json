@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-median-144",
+  "items": [
+    {
+      "id": "i1-median-odd",
+      "type": "numeric",
+      "expected": 14,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Sorted, the values are 11, 12, 14, 15 and 90. With five values the median is the third one, which is 14, so the 90 does not move it."
+    },
+    {
+      "id": "i2-median-even",
+      "type": "numeric",
+      "expected": 125,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Sorted, the values are 100, 120, 130 and 900. With an even count the median is the mean of the two middle values: (120 + 130) / 2 = 125."
+    },
+    {
+      "id": "i3-which-figure",
+      "type": "single-choice",
+      "correctOptionId": "median",
+      "rationale": "The median looks at the middle week, so one unusual order barely moves it. The average counts the bulk order in full and overstates a normal week."
+    },
+    {
+      "id": "i4-outlier-grows",
+      "type": "single-choice",
+      "correctOptionId": "median-same",
+      "rationale": "The average adds every value, so a bigger outlier raises it. The median only depends on the middle values, and the biggest value is still the biggest after the change, so the median stays put."
+    }
+  ]
+}

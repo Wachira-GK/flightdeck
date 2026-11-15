@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-status-119",
+  "trackId": "excel",
+  "code": "EX-119",
+  "title": "Stock status labels with nested IF",
+  "summary": "Label every line Out of stock, Low, OK or Overstock with nested IF and AND, then turn the label into an action.",
+  "estimatedMinutes": 20,
+  "passMark": 0.8,
+  "exerciseId": "stock-status-labels",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The store managers do not want to read stock numbers. They want a label: Out of stock, Low, OK or Overstock. The label then drives the action: reorder, markdown or nothing."
+        },
+        {
+          "type": "paragraph",
+          "text": "Four possible answers need more than one IF. You will nest IF functions, use AND for the OK range, and use OR to group the labels that mean reorder."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build a four-way text label with nested IF and AND.",
+            "Time: about 20 minutes.",
+            "You pass the mission at 80% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=IF(test1, result1, IF(test2, result2, result3))",
+          "text": "A nested IF puts a second IF in the false branch. Excel checks the tests in order and stops at the first TRUE one."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(B2=0,\"Out of stock\",IF(AND(B2>=C2,B2<=D2),\"OK\",IF(B2<C2,\"Low\",\"Overstock\")))",
+          "text": "Out of stock if on hand is 0. Otherwise OK if between minimum and maximum. Otherwise Low if below the minimum. Anything left is Overstock."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example: minimum 20, maximum 60",
+          "columns": [
+            "On hand",
+            "Test that is TRUE",
+            "Label"
+          ],
+          "rows": [
+            [
+              "0",
+              "B2=0",
+              "Out of stock"
+            ],
+            [
+              "12",
+              "B2<C2",
+              "Low"
+            ],
+            [
+              "35",
+              "AND(B2>=C2,B2<=D2)",
+              "OK"
+            ],
+            [
+              "85",
+              "none of the above",
+              "Overstock"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Order matters. 0 is also below the minimum, so if the Low test came first, an empty shelf would show Low. Put the most specific test first."
+        },
+        {
+          "type": "paragraph",
+          "text": "Text results need double quotes, and the spelling must be the same everywhere. Out of stock and Out-of-stock are different labels."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: AND(B2>=C2,B2<=D2) includes both limits. A line at exactly the minimum or exactly the maximum is OK. Use OR when any of several labels should trigger the same action: OR(E2=\"Out of stock\",E2=\"Low\")."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on nested IF with text labels. Type numbers without commas, for example 2."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-order",
+            "i2-count-ok",
+            "i3-and-boundary",
+            "i4-status"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Nested IF puts one IF inside the false branch of another.",
+            "Excel stops at the first TRUE test, so put the special cases first.",
+            "AND(B2>=C2,B2<=D2) checks a range, limits included.",
+            "Spell text labels exactly the same everywhere they are used or compared."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "You have finished the rounding and logic group. Next in the curriculum are the conditional totals: SUMIF and COUNTIF."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-order",
+        "type": "single-choice",
+        "prompt": "Why does =IF(B2=0,\"Out of stock\",IF(B2<C2,\"Low\", ...)) test B2=0 before B2<C2?",
+        "options": [
+          {
+            "id": "zero-first",
+            "label": "Zero is also below the minimum, so the Low test would catch it first and hide Out of stock"
+          },
+          {
+            "id": "faster",
+            "label": "Excel calculates the first test faster"
+          },
+          {
+            "id": "alphabet",
+            "label": "Excel checks the labels in alphabetical order"
+          },
+          {
+            "id": "required",
+            "label": "IF cannot start with a less-than test"
+          }
+        ]
+      },
+      {
+        "id": "i2-count-ok",
+        "type": "numeric",
+        "prompt": "Minimum 10 and maximum 40 for every line. Stock on hand: 0, 10, 45, 5, 40. How many lines are labelled OK by AND(B2>=C2,B2<=D2)?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i3-and-boundary",
+        "type": "single-choice",
+        "prompt": "On hand (B2) is 50, minimum (C2) is 10 and maximum (D2) is 50. What does =AND(B2>=C2,B2<=D2) return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "fifty",
+            "label": "50"
+          }
+        ]
+      },
+      {
+        "id": "i4-status",
+        "type": "single-choice",
+        "prompt": "Stock on hand is 8, minimum 10 and maximum 50. Which label does =IF(B2=0,\"Out of stock\",IF(AND(B2>=C2,B2<=D2),\"OK\",IF(B2<C2,\"Low\",\"Overstock\"))) show?",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low"
+          },
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "out",
+            "label": "Out of stock"
+          },
+          {
+            "id": "over",
+            "label": "Overstock"
+          }
+        ]
+      }
+    ]
+  }
+}

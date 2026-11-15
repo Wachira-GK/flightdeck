@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-countif-121",
+  "items": [
+    {
+      "id": "l1-open-count",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Westlands, Karen, Bamburi and Kondele say Open, so the count is 4."
+    },
+    {
+      "id": "l2-not-open",
+      "type": "numeric",
+      "expected": 3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "\"<>Open\" counts every cell that is not Open: two Closed and one Renovation, which is 3. It is also the 7 rows minus the 4 Open rows."
+    },
+    {
+      "id": "l3-no-match",
+      "type": "single-choice",
+      "correctOptionId": "zero",
+      "rationale": "COUNTIF counts matches. With no matches the count is 0. #N/A belongs to XLOOKUP when nothing is found."
+    },
+    {
+      "id": "l4-which-function",
+      "type": "single-choice",
+      "correctOptionId": "countif",
+      "rationale": "COUNTIF returns how many rows match. SUMIF adds the values of the matching rows (how much), AVERAGE does not filter, and IF tests a single cell."
+    }
+  ]
+}

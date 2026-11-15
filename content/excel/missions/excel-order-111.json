@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-order-111",
+  "trackId": "excel",
+  "code": "EX-111",
+  "title": "Order of operations",
+  "summary": "Predict what Excel calculates first, and use brackets to make a loaded-cost formula do what you mean.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "loaded-cost-per-pair",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The buying team asks for the loaded cost of each shoe line: what a pair really costs once duty and freight are added to the supplier's unit cost. The formula has several steps, and Excel will not do them in the order you read them."
+        },
+        {
+          "type": "paragraph",
+          "text": "Excel follows a fixed order of operations. If you do not know it, a formula can return a clean-looking wrong number with no error. All costs, duty rates and quantities are fictional examples."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: predict Excel's order of operations and use brackets to control it.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Order of operations, first to last",
+          "columns": [
+            "Order",
+            "Operation",
+            "Example"
+          ],
+          "rows": [
+            [
+              "1",
+              "Brackets",
+              "(1+E2)"
+            ],
+            [
+              "2",
+              "Minus sign in front of a number (-)",
+              "-2"
+            ],
+            [
+              "3",
+              "Percent (%)",
+              "10%"
+            ],
+            [
+              "4",
+              "Power (^)",
+              "3^2"
+            ],
+            [
+              "5",
+              "Multiply and divide (*, /), left to right",
+              "B2*C2/D2"
+            ],
+            [
+              "6",
+              "Add and subtract (+, -), left to right",
+              "B2+C2-D2"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. =10+2*3 gives 16, not 36, because multiplication comes before addition: 2*3 = 6, then 10 + 6. To add first, use brackets: =(10+2)*3 gives 36."
+        },
+        {
+          "type": "paragraph",
+          "text": "The loaded cost per pair is the unit cost with duty added, plus freight spread over the pairs: =C2*(1+E2)+D2/B2. The brackets make 1+E2 happen first. Without them, =C2*1+E2+D2/B2 adds the duty rate (a tiny number such as 0.25) to the cost, instead of working out 25% of it."
+        },
+        {
+          "type": "paragraph",
+          "text": "Brackets matter for averages too. =B2+B3/2 divides only B3 by 2 and then adds B2. To average two cells, write =(B2+B3)/2."
+        },
+        {
+          "type": "paragraph",
+          "text": "Two traps. First, a minus sign in front of a number is applied before ^, so =-2^2 gives 4, not -4 as in school maths. Write =-(2^2) to get -4. Second, ^ is worked out left to right, so =2^3^2 gives 64, which is (2^3)^2, not 2^9."
+        },
+        {
+          "type": "paragraph",
+          "text": "A third trap: % is just 'divide by 100' and it applies to the number next to it. =50+10% gives 50.1, not 55, because 10% is only 0.1. To add 10%, write =50*(1+10%), which gives 55."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: when in doubt, add brackets. Extra brackets cost nothing and make the formula easier for the next person to read."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on order of operations. Type numbers without commas."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-precedence",
+            "i2-minus-power",
+            "i3-percent",
+            "i4-loaded-cost"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Excel works in this order: brackets, minus sign, %, ^, then * and /, then + and -.",
+            "=10+2*3 is 16; use brackets, =(10+2)*3, to get 36.",
+            "=-2^2 is 4 and =50+10% is 50.1. Use =-(2^2) and =50*(1+10%) for what you mean.",
+            "When in doubt, add brackets: they never cost anything and make formulas easier to read."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: ROUND, ABS and AND/OR, to tidy results and combine tests."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-precedence",
+        "type": "numeric",
+        "prompt": "What does =10+2*3^2 return?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i2-minus-power",
+        "type": "single-choice",
+        "prompt": "What does =-3^2 return in Excel?",
+        "options": [
+          {
+            "id": "nine",
+            "label": "9"
+          },
+          {
+            "id": "minus-nine",
+            "label": "-9"
+          },
+          {
+            "id": "minus-six",
+            "label": "-6"
+          },
+          {
+            "id": "error",
+            "label": "#NUM!"
+          }
+        ]
+      },
+      {
+        "id": "i3-percent",
+        "type": "numeric",
+        "prompt": "What does =100+10% return? Type the number exactly, including the decimal.",
+        "answerHint": "A number with a decimal point"
+      },
+      {
+        "id": "i4-loaded-cost",
+        "type": "single-choice",
+        "prompt": "C2 is the unit cost, E2 the duty rate, D2 the freight for the whole order and B2 the number of pairs. Which formula gives the unit cost plus duty, plus freight per pair?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "=C2*(1+E2)+D2/B2"
+          },
+          {
+            "id": "no-brackets",
+            "label": "=C2*1+E2+D2/B2"
+          },
+          {
+            "id": "all-in-brackets",
+            "label": "=C2*(1+E2+D2)/B2"
+          },
+          {
+            "id": "freight-times-duty",
+            "label": "=C2*1+E2*D2/B2"
+          }
+        ]
+      }
+    ]
+  }
+}

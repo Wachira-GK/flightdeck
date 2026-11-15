@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "loaded-cost-per-pair",
+  "version": 1,
+  "title": "Loaded cost per pair: brackets matter",
+  "objective": "Build a multi-step formula where brackets and the order of operations decide the answer.",
+  "instructions": "Each line shows the number of pairs ordered, the unit cost, the freight for the whole order and an example duty rate (0.25 means 25%). In F2:F5, work out the loaded cost per pair: the unit cost plus duty on the unit cost, plus the freight per pair (whole-order freight divided by the number of pairs). In G2:G5, work out the freight per pair as a share of the loaded cost per pair (a decimal, so 0.1 means 10%). Use brackets where they are needed.",
+  "grid": {
+    "rows": 5,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Item",
+    "B1": "Pairs",
+    "C1": "Unit cost (KES)",
+    "D1": "Freight, whole order (KES)",
+    "E1": "Duty rate (example)",
+    "F1": "Loaded cost per pair (KES)",
+    "G1": "Freight share of loaded cost",
+    "A2": "Sneakers",
+    "B2": "200",
+    "C2": "1500",
+    "D2": "40000",
+    "E2": "0.25",
+    "A3": "Sandals",
+    "B3": "400",
+    "C3": "600",
+    "D3": "60000",
+    "E3": "0.25",
+    "A4": "Boots",
+    "B4": "100",
+    "C4": "3200",
+    "D4": "30000",
+    "E4": "0.2",
+    "A5": "School shoes",
+    "B5": "250",
+    "C5": "900",
+    "D5": "25000",
+    "E5": "0.1"
+  },
+  "editableCells": [
+    "F2",
+    "G2",
+    "F3",
+    "G3",
+    "F4",
+    "G4",
+    "F5",
+    "G5"
+  ],
+  "allowedFunctions": [],
+  "hints": [
+    "Unit cost plus duty is C2*(1+E2). The brackets make Excel add 1 and the rate before multiplying.",
+    "Freight per pair is D2/B2, so the loaded cost is =C2*(1+E2)+D2/B2. Multiplication and division are done before addition.",
+    "For G, divide the freight per pair by the loaded cost already in F2: =D2/B2/F2. Excel works left to right through / and *, so you do not need brackets here."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

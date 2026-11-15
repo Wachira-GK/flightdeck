@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "horizontal-month-lookup",
+  "version": 1,
+  "title": "Report any month from a row layout",
+  "objective": "Look up sales and target for three report months across a row, then calculate variance and status.",
+  "instructions": "The report months are in B5:D5. In B6:D6 use XLOOKUP to find each month in the headings B1:G1 and return the sales from B2:G2. In B7:D7 return the target from B3:G3. In B8:D8 work out variance as sales minus target. In B9:D9 use IF to show the text \"On target\" when the variance is zero or more, otherwise \"Below target\". Use mixed references so the same formula works when copied across.",
+  "grid": {
+    "rows": 9,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Month",
+    "B1": "Jan",
+    "C1": "Feb",
+    "D1": "Mar",
+    "E1": "Apr",
+    "F1": "May",
+    "G1": "Jun",
+    "A2": "Sales (K)",
+    "B2": "4200",
+    "C2": "3900",
+    "D2": "4650",
+    "E2": "4400",
+    "F2": "5100",
+    "G2": "4800",
+    "A3": "Target (K)",
+    "B3": "4500",
+    "C3": "4000",
+    "D3": "4500",
+    "E3": "4600",
+    "F3": "5000",
+    "G3": "5000",
+    "A5": "Report month",
+    "B5": "Mar",
+    "C5": "jun",
+    "D5": "feb",
+    "A6": "Sales (K)",
+    "A7": "Target (K)",
+    "A8": "Variance (K)",
+    "A9": "Status"
+  },
+  "editableCells": [
+    "B6",
+    "B7",
+    "B8",
+    "B9",
+    "C6",
+    "C7",
+    "C8",
+    "C9",
+    "D6",
+    "D7",
+    "D8",
+    "D9"
+  ],
+  "allowedFunctions": [
+    "XLOOKUP",
+    "IF"
+  ],
+  "hints": [
+    "The months are across row 1, so the lookup range is B1:G1 and the return range is a row too: B2:G2 for sales and B3:G3 for target.",
+    "For B6 start with =XLOOKUP(B5,$B$1:$G$1,$B$2:$G$2). Only the month cell should move when you copy across.",
+    "Use B$5 (with the $ before the 5) so the month always comes from row 5. Use $ signs on the whole table ranges.",
+    "Variance is B6-B7. For the status, test the variance: =IF(B8>=0,\"On target\",\"Below target\")."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

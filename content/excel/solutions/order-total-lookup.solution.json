@@ -1,0 +1,10 @@
+{
+  "cells": {
+    "D2": "=XLOOKUP(B2,$F$2:$F$7,$H$2:$H$7)*C2",
+    "D3": "=XLOOKUP(B3,$F$2:$F$7,$H$2:$H$7)*C3",
+    "D4": "=XLOOKUP(B4,$F$2:$F$7,$H$2:$H$7)*C4",
+    "D5": "=XLOOKUP(B5,$F$2:$F$7,$H$2:$H$7)*C5",
+    "D6": "=XLOOKUP(B6,$F$2:$F$7,$H$2:$H$7)*C6",
+    "D7": "=SUM(D2:D6)"
+  }
+}

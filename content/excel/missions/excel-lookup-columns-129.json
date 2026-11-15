@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-columns-129",
+  "trackId": "excel",
+  "code": "EX-129",
+  "title": "Choose the return column",
+  "summary": "Use one product code to return price, cost or supplier by changing only the return range.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "return-column-picker",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The buying team keeps one product list with the retail price, the cost and the supplier for every code. A store manager sends a short order by code. For each line you need the price, the cost and the supplier name."
+        },
+        {
+          "type": "paragraph",
+          "text": "You do not need three different lookups. The key and the lookup range stay the same. Only the return range changes, and it must be the same size as the lookup range."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: return different columns of a product list with the same lookup key, keeping lookup and return ranges the same size.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])",
+          "text": "lookup_array is where the key is searched. return_array is the column you want back. They must both be a single column (or a single row) with the same number of cells."
+        },
+        {
+          "type": "table",
+          "caption": "Product list in G1:K6",
+          "columns": [
+            "Row",
+            "G: Code",
+            "H: Product",
+            "I: Retail price",
+            "J: Cost",
+            "K: Supplier"
+          ],
+          "rows": [
+            [
+              "2",
+              "SS-210",
+              "School shoe",
+              "2,499",
+              "1,350",
+              "Thika Footwear"
+            ],
+            [
+              "3",
+              "SN-450",
+              "Canvas sneaker",
+              "1,999",
+              "1,100",
+              "Nairobi Canvas Co"
+            ],
+            [
+              "4",
+              "SD-120",
+              "Ladies sandal",
+              "899",
+              "430",
+              "Mombasa Leather"
+            ],
+            [
+              "5",
+              "BT-330",
+              "Ankle boot",
+              "4,599",
+              "2,600",
+              "Nakuru Tanners"
+            ],
+            [
+              "6",
+              "SL-075",
+              "Slipper",
+              "499",
+              "220",
+              "Eldoret Textiles"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"SD-120\",$G$2:$G$6,$I$2:$I$6)",
+          "text": "The key SD-120 is in row 4. The return range $I$2:$I$6 is the Retail price column, so the result is 899."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"SD-120\",$G$2:$G$6,$K$2:$K$6)",
+          "text": "Same key and same lookup range, but the return range is now the Supplier column, so the result is the text Mombasa Leather. XLOOKUP can return text as well as numbers."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Lookup range and return range must have the same shape. $G$2:$G$6 has 5 cells, so $I$2:$I$6 works but $I$2:$I$5 (4 cells) gives #VALUE!.",
+            "When you copy a formula across to the next column, the return range must change but the lookup range must not. Write the formulas for each column separately, or check every range after copying.",
+            "Never use the whole table (G2:K6) as the return range. Pick one column only."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: line up the column letter in the return range with the column header you want. If you want Cost, the return range must be the column headed Cost."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the product list from Training (G1:K6). Type numbers without commas."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "c1-cost",
+            "c2-mismatch",
+            "c3-supplier-range",
+            "c4-margin"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "One key can return any column: change only the return range.",
+            "Lookup range and return range must be a single column (or row) of the same size.",
+            "XLOOKUP can return text, such as a supplier, as well as numbers.",
+            "Check each copied formula: the return range must point at the column you want."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Keep one product list and let every report pull its price, cost or supplier from it."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "c1-cost",
+        "type": "numeric",
+        "prompt": "What does =XLOOKUP(\"BT-330\",$G$2:$G$6,$J$2:$J$6) return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "c2-mismatch",
+        "type": "single-choice",
+        "prompt": "What does =XLOOKUP(\"SN-450\",$G$2:$G$6,$I$2:$I$5) return?",
+        "options": [
+          {
+            "id": "value",
+            "label": "#VALUE!, because the lookup range has 5 cells and the return range has 4"
+          },
+          {
+            "id": "price",
+            "label": "The price of SN-450, because the key is found"
+          },
+          {
+            "id": "na",
+            "label": "#N/A, because the code is missing"
+          },
+          {
+            "id": "blank",
+            "label": "An empty cell"
+          }
+        ]
+      },
+      {
+        "id": "c3-supplier-range",
+        "type": "single-choice",
+        "prompt": "Which return range gives the supplier name in the product list?",
+        "options": [
+          {
+            "id": "j",
+            "label": "$J$2:$J$6"
+          },
+          {
+            "id": "i",
+            "label": "$I$2:$I$6"
+          },
+          {
+            "id": "k",
+            "label": "$K$2:$K$6"
+          },
+          {
+            "id": "gk",
+            "label": "$G$2:$K$6"
+          }
+        ]
+      },
+      {
+        "id": "c4-margin",
+        "type": "numeric",
+        "prompt": "Retail price minus cost for SL-075 is the profit per pair. Look up both from the list and give the profit in KES.",
+        "answerHint": "Whole number, in KES"
+      }
+    ]
+  }
+}

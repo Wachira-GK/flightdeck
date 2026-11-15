@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-growth-108",
+  "items": [
+    {
+      "id": "i1-growth",
+      "type": "numeric",
+      "expected": 25,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.01
+      },
+      "rationale": "Growth = (600 - 480) / 480 = 120 / 480 = 0.25, which is 25%."
+    },
+    {
+      "id": "i2-decline",
+      "type": "numeric",
+      "expected": -25,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.01
+      },
+      "rationale": "Change = (150 - 200) / 200 = -50 / 200 = -0.25, which is a fall of 25%."
+    },
+    {
+      "id": "i3-base",
+      "type": "single-choice",
+      "correctOptionId": "base",
+      "rationale": "Percentage change compares the change with the starting value. Dividing the 120 increase by this year's 600 would give 20% instead of 25%, so the choice does change the answer."
+    },
+    {
+      "id": "i4-guard",
+      "type": "single-choice",
+      "correctOptionId": "choice-a",
+      "rationale": "The guard must test the cell you divide by, B6. In the swapped version the division runs exactly when B6 is 0, which gives #DIV/0!. Testing C6 does not protect against a zero in B6, and dividing by C6 uses the wrong base."
+    }
+  ]
+}

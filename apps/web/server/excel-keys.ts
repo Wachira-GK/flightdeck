@@ -2,19 +2,12 @@
 // or from anything under components/. `server-only` is not installed (no new dependencies), so the
 // guards are: (1) server/excel-check.test.ts fails if any "use client" file or components/** imports
 // from server/; (2) scripts/check-key-leak.mjs fails if key markers reach .next/static after a build.
+// The key table is generated from content/excel/exercises/*.key.json (scripts/gen-excel-registry.mjs).
 import type { ExerciseDefinition, ExerciseKey } from "@flightdeck/excel-engine";
 import { getExcelExercise } from "@/components/excel/exercises";
-import commissionTierIfChainKey from "../../../content/excel/exercises/commission-tier-if-chain.key.json";
-import ifBusinessThresholdsKey from "../../../content/excel/exercises/if-business-thresholds.key.json";
-import sumRelativeRefsKey from "../../../content/excel/exercises/sum-relative-refs.key.json";
-import xlookupPriceListKey from "../../../content/excel/exercises/xlookup-price-list.key.json";
+import { EXERCISE_KEYS } from "./excel-registry.generated";
 
-const KEYS: Record<string, ExerciseKey> = {
-  "sum-relative-refs": sumRelativeRefsKey as unknown as ExerciseKey,
-  "if-business-thresholds": ifBusinessThresholdsKey as unknown as ExerciseKey,
-  "commission-tier-if-chain": commissionTierIfChainKey as unknown as ExerciseKey,
-  "xlookup-price-list": xlookupPriceListKey as unknown as ExerciseKey,
-};
+const KEYS: Record<string, ExerciseKey> = EXERCISE_KEYS;
 
 export interface GradableExercise {
   exercise: ExerciseDefinition;

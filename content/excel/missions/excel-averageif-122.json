@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-averageif-122",
+  "trackId": "excel",
+  "code": "EX-122",
+  "title": "Average per store with AVERAGEIF",
+  "summary": "Find the average sales per store for one region with AVERAGEIF and compare it with the company average.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "averageif-region-average",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A regional total can mislead. Nairobi may sell more than Kisumu simply because it has more stores. To compare fairly you need the average sales per store in each region."
+        },
+        {
+          "type": "paragraph",
+          "text": "AVERAGEIF works like SUMIF, but it returns the average of the matching rows instead of the total."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate the average of one group with AVERAGEIF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=AVERAGEIF(range, criteria, [average_range])",
+          "text": "Look down range for cells that match criteria, then average the numbers on the same rows of average_range. The two ranges must be the same size."
+        },
+        {
+          "type": "table",
+          "caption": "Sales list in A1:C7 (sales in K)",
+          "columns": [
+            "Row",
+            "A: Store",
+            "B: Region",
+            "C: Sales (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "Westlands",
+              "Nairobi",
+              "120"
+            ],
+            [
+              "3",
+              "Nyali",
+              "Mombasa",
+              "85"
+            ],
+            [
+              "4",
+              "Karen",
+              "Nairobi",
+              "150"
+            ],
+            [
+              "5",
+              "Bamburi",
+              "Mombasa",
+              "92"
+            ],
+            [
+              "6",
+              "Kondele",
+              "Kisumu",
+              "64"
+            ],
+            [
+              "7",
+              "Kilimani",
+              "Nairobi",
+              "90"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=AVERAGEIF(B2:B7,\"Kisumu\",C2:C7)",
+          "text": "Only one Kisumu store matches (Kondele, 64), so the average is 64K. An average of one number is that number."
+        },
+        {
+          "type": "list",
+          "items": [
+            "AVERAGEIF is the matching total divided by the matching count: the same as SUMIF divided by COUNTIF.",
+            "If no row matches, there is nothing to average and Excel shows #DIV/0!.",
+            "Compare with AVERAGE(C2:C7), which averages every row whatever the region.",
+            "Use $ signs on the ranges and a cell for the criteria so the formula can be copied down."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the sales list from Training (A1:C7). Round answers to 1 decimal place, for example 12.3."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-nairobi-average",
+            "l2-mombasa-average",
+            "l3-no-match",
+            "l4-same-as"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "AVERAGEIF(range, criteria, average_range) averages only the matching rows.",
+            "It equals the matching total divided by the matching count.",
+            "No matching row gives #DIV/0!.",
+            "Compare a region average with the all-store average to see who is above or below."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Averages per store let you compare regions of different sizes fairly."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-nairobi-average",
+        "type": "numeric",
+        "prompt": "What does =AVERAGEIF(B2:B7,\"Nairobi\",C2:C7) return, in K?",
+        "answerHint": "To 1 decimal place, in K"
+      },
+      {
+        "id": "l2-mombasa-average",
+        "type": "numeric",
+        "prompt": "What does =AVERAGEIF(B2:B7,\"Mombasa\",C2:C7) return, in K?",
+        "answerHint": "To 1 decimal place, in K"
+      },
+      {
+        "id": "l3-no-match",
+        "type": "single-choice",
+        "prompt": "What does =AVERAGEIF(B2:B7,\"Eldoret\",C2:C7) show when there is no Eldoret store in the list?",
+        "options": [
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "div0",
+            "label": "#DIV/0!"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "all",
+            "label": "The average of all stores"
+          }
+        ]
+      },
+      {
+        "id": "l4-same-as",
+        "type": "single-choice",
+        "prompt": "Which formula gives the same answer as =AVERAGEIF(B2:B7,\"Nairobi\",C2:C7)?",
+        "options": [
+          {
+            "id": "sumif-countif",
+            "label": "SUMIF(B2:B7,\"Nairobi\",C2:C7)/COUNTIF(B2:B7,\"Nairobi\")"
+          },
+          {
+            "id": "sumif-count",
+            "label": "SUMIF(B2:B7,\"Nairobi\",C2:C7)/COUNT(C2:C7)"
+          },
+          {
+            "id": "average-all",
+            "label": "AVERAGE(C2:C7)"
+          },
+          {
+            "id": "countif-sales",
+            "label": "SUMIF(B2:B7,\"Nairobi\",C2:C7)/COUNTIF(C2:C7,\"Nairobi\")"
+          }
+        ]
+      }
+    ]
+  }
+}

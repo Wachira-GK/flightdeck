@@ -1,0 +1,19 @@
+{
+  "cells": {
+    "B2": "=RIGHT(A2,2)",
+    "C2": "=B2*1",
+    "D2": "=XLOOKUP(C2,$F$2:$F$7,$G$2:$G$7,\"No stock\")",
+    "B3": "=RIGHT(A3,2)",
+    "C3": "=B3*1",
+    "D3": "=XLOOKUP(C3,$F$2:$F$7,$G$2:$G$7,\"No stock\")",
+    "B4": "=RIGHT(A4,2)",
+    "C4": "=B4*1",
+    "D4": "=XLOOKUP(C4,$F$2:$F$7,$G$2:$G$7,\"No stock\")",
+    "B5": "=RIGHT(A5,2)",
+    "C5": "=B5*1",
+    "D5": "=XLOOKUP(C5,$F$2:$F$7,$G$2:$G$7,\"No stock\")",
+    "B6": "=RIGHT(A6,2)",
+    "C6": "=B6*1",
+    "D6": "=XLOOKUP(C6,$F$2:$F$7,$G$2:$G$7,\"No stock\")"
+  }
+}

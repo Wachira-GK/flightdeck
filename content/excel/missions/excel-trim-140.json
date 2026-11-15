@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-trim-140",
+  "trackId": "excel",
+  "code": "EX-140",
+  "title": "Remove stray spaces with TRIM",
+  "summary": "Clean extra spaces from region names with TRIM so that comparisons and lookups find their match.",
+  "estimatedMinutes": 12,
+  "passMark": 0.75,
+  "exerciseId": "trim-before-match",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The regional sales targets are kept in a clean list: Nairobi, Mombasa, Kisumu and so on. The weekly sales files, however, come from several people, and some region names carry a stray space at the end, or two spaces in the middle."
+        },
+        {
+          "type": "paragraph",
+          "text": "You cannot see a trailing space, but Excel treats it as a real character, so \"Nairobi \" is not the same as \"Nairobi\" and a lookup fails. TRIM is the tool that removes these invisible spaces."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: remove stray spaces with TRIM before matching text.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=TRIM(text)",
+          "text": "TRIM removes all spaces from the start and end of the text, and replaces each run of spaces between words with a single space."
+        },
+        {
+          "type": "table",
+          "caption": "What TRIM does",
+          "columns": [
+            "Typed text",
+            "Characters typed",
+            "TRIM result",
+            "Characters after TRIM"
+          ],
+          "rows": [
+            [
+              "\"Nairobi \"",
+              "8",
+              "\"Nairobi\"",
+              "7"
+            ],
+            [
+              "\" Mombasa\"",
+              "8",
+              "\"Mombasa\"",
+              "7"
+            ],
+            [
+              "\"Nairobi  CBD\"",
+              "12",
+              "\"Nairobi CBD\"",
+              "11"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(TRIM(A2),$G$2:$G$7,$H$2:$H$7,\"Not found\")",
+          "text": "Clean the name first, then look it up. The quotation marks in the table above only show where the text starts and ends; they are not part of the text."
+        },
+        {
+          "type": "list",
+          "items": [
+            "A space is a character: =(\"Nairobi \"=\"Nairobi\") is FALSE, and an exact-match XLOOKUP will not find it.",
+            "Use LEN to find invisible spaces: if a name looks like 7 letters but LEN says 8, there is a stray space.",
+            "TRIM changes only ordinary spaces. Spaces that come from some web pages and systems (non-breaking spaces) can survive TRIM.",
+            "Tip: do the cleaning in a helper column and match on the clean column, so the original data is never overwritten."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces, for example 12."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-trim-length",
+            "l2-space-compare",
+            "l3-inner-spaces",
+            "l4-spaces-removed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "TRIM(text) removes leading and trailing spaces and reduces inner runs of spaces to one.",
+            "A stray space makes two names different: \"Nairobi \" does not equal \"Nairobi\".",
+            "LEN reveals hidden spaces: compare LEN(A2) with LEN(TRIM(A2)).",
+            "Look up the clean column, not the raw one."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Most \"the lookup does not work\" problems are invisible spaces, so TRIM first and match second."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-trim-length",
+        "type": "numeric",
+        "prompt": "What does =LEN(TRIM(\"  Kisumu   town \")) return? (The text has two spaces at the start, three between the words and one at the end.)",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l2-space-compare",
+        "type": "single-choice",
+        "prompt": "Cell A2 holds the text Nairobi followed by one space. What does =(A2=\"Nairobi\") return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          }
+        ]
+      },
+      {
+        "id": "l3-inner-spaces",
+        "type": "single-choice",
+        "prompt": "What does =TRIM(\"Port   Reitz\") return, if there are three spaces between Port and Reitz?",
+        "options": [
+          {
+            "id": "single",
+            "label": "Port Reitz (one space between the words)"
+          },
+          {
+            "id": "none",
+            "label": "PortReitz (all spaces removed)"
+          },
+          {
+            "id": "same",
+            "label": "Port   Reitz (unchanged)"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l4-spaces-removed",
+        "type": "numeric",
+        "prompt": "What does =LEN(\"  Eldoret  \")-LEN(TRIM(\"  Eldoret  \")) return? (The text has two spaces before and two spaces after the word.)",
+        "answerHint": "Whole number"
+      }
+    ]
+  }
+}

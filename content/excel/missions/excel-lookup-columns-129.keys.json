@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-lookup-columns-129",
+  "items": [
+    {
+      "id": "c1-cost",
+      "type": "numeric",
+      "expected": 2600,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The key BT-330 is in row 5 and column J holds the cost, 2,600, on that row."
+    },
+    {
+      "id": "c2-mismatch",
+      "type": "single-choice",
+      "correctOptionId": "value",
+      "rationale": "XLOOKUP needs the lookup range and the return range to be the same size. Here one has 5 cells and the other 4, so the formula gives #VALUE! even though the code exists."
+    },
+    {
+      "id": "c3-supplier-range",
+      "type": "single-choice",
+      "correctOptionId": "k",
+      "rationale": "Supplier is column K. Column J is the cost and column I is the retail price. The range $G$2:$K$6 covers five columns, so it is not a single column and cannot be the return range."
+    },
+    {
+      "id": "c4-margin",
+      "type": "numeric",
+      "expected": 279,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "SL-075 sells at 499 and costs 220, so the profit per pair is 499 - 220 = 279 KES."
+    }
+  ]
+}

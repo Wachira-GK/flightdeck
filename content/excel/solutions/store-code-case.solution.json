@@ -1,0 +1,19 @@
+{
+  "cells": {
+    "B2": "=UPPER(A2)",
+    "C2": "=LOWER(A2)",
+    "D2": "=XLOOKUP(B2,$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+    "B3": "=UPPER(A3)",
+    "C3": "=LOWER(A3)",
+    "D3": "=XLOOKUP(B3,$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+    "B4": "=UPPER(A4)",
+    "C4": "=LOWER(A4)",
+    "D4": "=XLOOKUP(B4,$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+    "B5": "=UPPER(A5)",
+    "C5": "=LOWER(A5)",
+    "D5": "=XLOOKUP(B5,$F$2:$F$6,$G$2:$G$6,\"Unknown\")",
+    "B6": "=UPPER(A6)",
+    "C6": "=LOWER(A6)",
+    "D6": "=XLOOKUP(B6,$F$2:$F$6,$G$2:$G$6,\"Unknown\")"
+  }
+}

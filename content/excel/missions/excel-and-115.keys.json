@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-and-115",
+  "items": [
+    {
+      "id": "i1-and-result",
+      "type": "single-choice",
+      "correctOptionId": "choice-b",
+      "rationale": "5>3 is TRUE but 2>4 is FALSE. AND needs every test to be TRUE, so the result is FALSE."
+    },
+    {
+      "id": "i2-count-reorders",
+      "type": "numeric",
+      "expected": 1,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Only line A passes both tests: 12<20 and it is Active. Line B is at the reorder point, not below it. Line C is below its reorder point but is Discontinued. So 1 line needs a reorder."
+    },
+    {
+      "id": "i3-star-formula",
+      "type": "single-choice",
+      "correctOptionId": "and-ok",
+      "rationale": "AND is a function: its tests go inside brackets, separated by commas. F2 on its own is not a test. The word AND cannot sit between tests, and a single test ignores the sell-through rule."
+    },
+    {
+      "id": "i4-boundary",
+      "type": "single-choice",
+      "correctOptionId": "review",
+      "rationale": "40% > 40% is FALSE because > means strictly above. AND is then FALSE and IF returns Review. Use >= if a line that meets the target should count."
+    }
+  ]
+}

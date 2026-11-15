@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "sku-length-check-len",
+  "version": 1,
+  "title": "SKU length check with LEN",
+  "objective": "Count the characters in each SKU code with LEN, then use IF with LEN to flag codes that are not the standard length.",
+  "instructions": "The standard SKU length is in F1. In B2:B7, show the length of each SKU code in column A. In C2:C7, show OK when the length equals the standard length in F1 and Check when it does not. Do the check in one formula that uses IF and LEN together, and fix F1 with $ signs so the formula can be copied down.",
+  "grid": {
+    "rows": 7,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "SKU code",
+    "B1": "Length",
+    "C1": "Check",
+    "E1": "Standard length",
+    "F1": "9",
+    "A2": "SN-450-42",
+    "A3": "SD-120-38",
+    "A4": "BT-33-40",
+    "A5": "SS-210-411",
+    "A6": "SL-075-4",
+    "A7": "CV-880-43"
+  },
+  "editableCells": [
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7"
+  ],
+  "allowedFunctions": [
+    "LEN",
+    "IF"
+  ],
+  "hints": [
+    "LEN counts every character in a cell: letters, digits, hyphens and spaces. =LEN(A2) gives the length of the code in A2.",
+    "For the check, compare the length with the standard length: IF(LEN(A2)=$F$1, \"OK\", \"Check\"). The text results go in double quotes.",
+    "Use $F$1 (with both $ signs) so every row compares with the same standard length when you copy the formula down. Then change F1 to see the flags update."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

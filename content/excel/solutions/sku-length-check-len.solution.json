@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "B2": "=LEN(A2)",
+    "C2": "=IF(LEN(A2)=$F$1,\"OK\",\"Check\")",
+    "B3": "=LEN(A3)",
+    "C3": "=IF(LEN(A3)=$F$1,\"OK\",\"Check\")",
+    "B4": "=LEN(A4)",
+    "C4": "=IF(LEN(A4)=$F$1,\"OK\",\"Check\")",
+    "B5": "=LEN(A5)",
+    "C5": "=IF(LEN(A5)=$F$1,\"OK\",\"Check\")",
+    "B6": "=LEN(A6)",
+    "C6": "=IF(LEN(A6)=$F$1,\"OK\",\"Check\")",
+    "B7": "=LEN(A7)",
+    "C7": "=IF(LEN(A7)=$F$1,\"OK\",\"Check\")"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-round-112",
+  "items": [
+    {
+      "id": "i1-negative-digits",
+      "type": "numeric",
+      "expected": 2400,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "A digits value of -2 rounds to the nearest 100. 2,374.25 is closer to 2,400 than to 2,300, so the result is 2400."
+    },
+    {
+      "id": "i2-what-negative-does",
+      "type": "single-choice",
+      "correctOptionId": "left",
+      "rationale": "Negative digits count places to the left of the decimal point: -1 is tens, -2 is hundreds. It does not change the sign and it is not an error."
+    },
+    {
+      "id": "i3-sum-rounded",
+      "type": "numeric",
+      "expected": 30,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Each ROUND returns 10, and ROUND stores the new value. The sum of the three rounded cells is 30, not the raw 31.2."
+    },
+    {
+      "id": "i4-half",
+      "type": "single-choice",
+      "correctOptionId": "three",
+      "rationale": "ROUND sends a value that is exactly halfway away from zero, so 2.5 becomes 3. Banker's rounding to 2 is not used."
+    }
+  ]
+}

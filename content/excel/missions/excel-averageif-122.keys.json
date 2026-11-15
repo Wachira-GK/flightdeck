@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-averageif-122",
+  "items": [
+    {
+      "id": "l1-nairobi-average",
+      "type": "numeric",
+      "expected": 120,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "Nairobi rows are 120, 150 and 90. They add to 360, and 360 divided by 3 stores is 120."
+    },
+    {
+      "id": "l2-mombasa-average",
+      "type": "numeric",
+      "expected": 88.5,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "Mombasa rows are 85 and 92. They add to 177, and 177 divided by 2 stores is 88.5."
+    },
+    {
+      "id": "l3-no-match",
+      "type": "single-choice",
+      "correctOptionId": "div0",
+      "rationale": "No matching rows means there is nothing to average, so AVERAGEIF shows #DIV/0!, just like dividing by zero. It does not return 0 and it does not fall back to all stores. #N/A belongs to XLOOKUP."
+    },
+    {
+      "id": "l4-same-as",
+      "type": "single-choice",
+      "correctOptionId": "sumif-countif",
+      "rationale": "The Nairobi total divided by the number of Nairobi rows is the Nairobi average. Dividing by COUNT(C2:C7) uses all six stores, AVERAGE(C2:C7) averages every region, and COUNTIF on the sales column looks for the word Nairobi among numbers, finds none and gives #DIV/0!."
+    }
+  ]
+}

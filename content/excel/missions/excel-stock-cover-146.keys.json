@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-stock-cover-146",
+  "items": [
+    {
+      "id": "i1-cover",
+      "type": "numeric",
+      "expected": 8,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Stock cover is on hand divided by weekly sales: 240 / 30 = 8 weeks."
+    },
+    {
+      "id": "i2-cover-rounded",
+      "type": "numeric",
+      "expected": 2.4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "95 / 40 = 2.375, and rounding to 1 decimal place gives 2.4."
+    },
+    {
+      "id": "i3-iferror-text",
+      "type": "single-choice",
+      "correctOptionId": "zero",
+      "rationale": "A style with zero weekly sales cannot be divided into stock, so the plain formula returns #DIV/0!. IFERROR replaces that error with a message. ROUND does the rounding, not IFERROR."
+    },
+    {
+      "id": "i4-double-sales",
+      "type": "single-choice",
+      "correctOptionId": "halves",
+      "rationale": "Cover is stock divided by weekly sales. Doubling the sales (the bottom number) halves the answer, so the same stock lasts half as long."
+    }
+  ]
+}

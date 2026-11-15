@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-sku-key-143",
+  "items": [
+    {
+      "id": "l1-pad-result",
+      "type": "single-choice",
+      "correctOptionId": "pad",
+      "rationale": "The & operator makes the text 00045, and RIGHT keeps its last three characters, 045. The key still has three digits for the style number."
+    },
+    {
+      "id": "l2-why-pad",
+      "type": "single-choice",
+      "correctOptionId": "fixed-width",
+      "rationale": "Padding gives every style number the same width, so keys are all the same length and sort correctly. It does not change the value of the number, does not make keys unique, and RIGHT works on numbers by treating them as text."
+    },
+    {
+      "id": "l3-countif-keys",
+      "type": "numeric",
+      "expected": 3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The key SNE-450-42 appears in rows 2, 4 and 6 of the list, so COUNTIF counts 3 cells."
+    },
+    {
+      "id": "l4-greater-than-one",
+      "type": "single-choice",
+      "correctOptionId": "self",
+      "rationale": "The range includes the key being tested, so the count is at least 1 for every row. Testing >0 would flag every row as a duplicate. COUNTIF does not start at zero and the range holds no blank cell."
+    }
+  ]
+}

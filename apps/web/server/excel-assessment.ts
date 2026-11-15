@@ -2,22 +2,19 @@
 // POST /api/missions/[slug]/assessment for Excel missions. Never import this module from a client
 // component or from anything under components/ (server/excel-check.test.ts enforces that, and
 // scripts/check-key-leak.mjs fails the build if rationale text reaches .next/static).
-import excelIf102 from "../../../content/excel/missions/excel-if-102.json";
-import excelIf102Keys from "../../../content/excel/missions/excel-if-102.keys.json";
-import excelLookup103 from "../../../content/excel/missions/excel-lookup-103.json";
-import excelLookup103Keys from "../../../content/excel/missions/excel-lookup-103.keys.json";
-import excelSum101 from "../../../content/excel/missions/excel-sum-101.json";
-import excelSum101Keys from "../../../content/excel/missions/excel-sum-101.keys.json";
 import type { ExcelMission, ExcelMissionKeys } from "../components/excel/missions";
+import { MISSION_DEFINITIONS } from "../components/excel/registry.generated";
 import { gradeExcelAssessment } from "./excel-assessment-grader";
+import { MISSION_KEYS } from "./excel-registry.generated";
 import { parseAnswersRequest, type HandlerResponse } from "./math-assessment";
 
-const MISSIONS: Record<string, { mission: ExcelMission; keys: ExcelMissionKeys }> = {
-  "excel-sum-101": { mission: excelSum101 as unknown as ExcelMission, keys: excelSum101Keys as unknown as ExcelMissionKeys },
-  "excel-if-102": { mission: excelIf102 as unknown as ExcelMission, keys: excelIf102Keys as unknown as ExcelMissionKeys },
-  "excel-lookup-103": { mission: excelLookup103 as unknown as ExcelMission, keys: excelLookup103Keys as unknown as ExcelMissionKeys },
-};
-
+// Built from the generated tables (scripts/gen-excel-registry.mjs): a mission is gradable when it has both
+// its learner-safe definition and its server-only keys.
+const MISSIONS: Record<string, { mission: ExcelMission; keys: ExcelMissionKeys }> = Object.fromEntries(
+  Object.keys(MISSION_KEYS)
+    .filter((slug) => Object.hasOwn(MISSION_DEFINITIONS, slug))
+    .map((slug) => [slug, { mission: MISSION_DEFINITIONS[slug]!, keys: MISSION_KEYS[slug]! }]),
+);
 export const EXCEL_ASSESSMENT_SLUGS = Object.keys(MISSIONS);
 
 export function hasExcelAssessment(slug: string): boolean {

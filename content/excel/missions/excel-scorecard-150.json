@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-scorecard-150",
+  "trackId": "excel",
+  "code": "EX-150",
+  "title": "Capstone: the store scorecard",
+  "summary": "Build a one-row-per-store scorecard from a weekly sales log, combining SUMIFS, COUNTIFS, XLOOKUP, ROUND and IF into a final rating.",
+  "estimatedMinutes": 20,
+  "passMark": 0.75,
+  "exerciseId": "store-scorecard-capstone",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The area manager wants one row per store: total sales, how many weeks were good, the store's target, achievement against target and a single rating she can read at a glance."
+        },
+        {
+          "type": "paragraph",
+          "text": "All the facts are already on the sheet, in a weekly log and a target table. Your job is to pull them together with the skills you have built so far."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: combine SUMIFS, COUNTIFS, XLOOKUP, ROUND, AND and IF into one scorecard with a final rating.",
+            "Time: about 20 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=SUMIFS(sum_range, criteria_range, criteria)",
+          "text": "SUMIFS adds the numbers in the first range for the rows where the criteria range matches. =SUMIFS($C$2:$C$13,$A$2:$A$13,H2) totals the sales of the store named in H2."
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIFS(criteria_range1, criteria1, criteria_range2, criteria2)",
+          "text": "COUNTIFS counts the rows where every condition is true. =COUNTIFS($A$2:$A$13,H2,$C$2:$C$13,\">=\"&$I$7) counts this store's weeks at or above the good-week level in I7. The & joins the text >= to the number in I7."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(H2,$E$2:$E$4,$F$2:$F$4)",
+          "text": "XLOOKUP finds the store name in the target table and returns its target. It follows the name, not the row position."
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(I2/K2*100,1)",
+          "text": "Achievement % = total sales divided by target, times 100, rounded to 1 decimal place."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(AND(L2>=$I$9,J2>=$I$8),\"Star\",IF(L2>=$I$10,\"Watch\",\"Action\"))",
+          "text": "AND is TRUE only when both conditions are true. A store is a Star when achievement and good weeks both reach their levels. Otherwise it is Watch if achievement is at least the watch level, and Action if not."
+        },
+        {
+          "type": "table",
+          "caption": "Rating rules used in this mission",
+          "columns": [
+            "Rating",
+            "Rule"
+          ],
+          "rows": [
+            [
+              "Star",
+              "Achievement at or above the Star level AND enough good weeks"
+            ],
+            [
+              "Watch",
+              "Not a Star, but achievement at or above the Watch level"
+            ],
+            [
+              "Action",
+              "Everything else"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: lock the log and table ranges with $ signs so every row of the scorecard reads the same data. Keep the rules in cells I7:I10 so the area manager can change them without touching a formula."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on the scorecard. Type numbers without commas, for example 150."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-sumifs",
+            "i2-countifs",
+            "i3-xlookup",
+            "i4-rating"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "SUMIFS adds numbers for rows that match, and COUNTIFS counts rows that match all conditions.",
+            "\">=\"&cell builds a condition from a rule stored in a cell.",
+            "XLOOKUP pulls a value from a table by name, and ROUND tidies the percentage.",
+            "AND inside IF lets a rating depend on more than one condition."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Well done: you can now build a working store scorecard. Revisit any mission to sharpen a skill."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-sumifs",
+        "type": "numeric",
+        "prompt": "Cells A2:A4 hold Nairobi, Mombasa, Nairobi and C2:C4 hold 100, 80, 50 (sales in K). What does =SUMIFS(C2:C4,A2:A4,\"Nairobi\") return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i2-countifs",
+        "type": "numeric",
+        "prompt": "A store's four weekly sales in K are 120, 95, 100 and 130. How many weeks does =COUNTIFS(C2:C5,\">=\"&100) count?",
+        "answerHint": "Whole number of weeks"
+      },
+      {
+        "id": "i3-xlookup",
+        "type": "single-choice",
+        "prompt": "Why fetch each store's target with XLOOKUP instead of typing the target into the scorecard?",
+        "options": [
+          {
+            "id": "follows-table",
+            "label": "The target comes from the table by store name, so one change in the table updates the scorecard"
+          },
+          {
+            "id": "faster",
+            "label": "Typed numbers are not allowed in Excel"
+          },
+          {
+            "id": "rounds",
+            "label": "XLOOKUP rounds the target to 1 decimal place"
+          },
+          {
+            "id": "sorts",
+            "label": "XLOOKUP sorts the stores from best to worst"
+          }
+        ]
+      },
+      {
+        "id": "i4-rating",
+        "type": "single-choice",
+        "prompt": "Rules: Star needs achievement at or above 100% AND at least 3 good weeks; otherwise Watch if achievement is at least 90%; otherwise Action. A store has achievement 102% and 2 good weeks. What rating does =IF(AND(L2>=100,J2>=3),\"Star\",IF(L2>=90,\"Watch\",\"Action\")) give?",
+        "options": [
+          {
+            "id": "star",
+            "label": "Star"
+          },
+          {
+            "id": "watch",
+            "label": "Watch"
+          },
+          {
+            "id": "action",
+            "label": "Action"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      }
+    ]
+  }
+}

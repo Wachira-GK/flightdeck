@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-two-step-133",
+  "trackId": "excel",
+  "code": "EX-133",
+  "title": "Two-step lookup: store, region, target",
+  "summary": "Look up a store's region, then use that region to look up a target, with a helper column linking the two lookups.",
+  "estimatedMinutes": 18,
+  "passMark": 0.75,
+  "exerciseId": "two-step-region-target",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Regional targets are set per region, but sales reports arrive per store. The store list tells you each store's region. The target list gives each region's target. There is no single table that links a store straight to a target."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will do it in two steps. First look up the store's region. Then use that region as the key to look up the target. The region column in between is called a helper column."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: chain two XLOOKUPs using a helper column, so the result of the first lookup becomes the key of the second.",
+            "Time: about 18 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Store list in G1:H9",
+          "columns": [
+            "Row",
+            "G: Store",
+            "H: Region"
+          ],
+          "rows": [
+            [
+              "2",
+              "Westlands",
+              "Nairobi"
+            ],
+            [
+              "3",
+              "Nyali",
+              "Mombasa"
+            ],
+            [
+              "4",
+              "Milimani",
+              "Kisumu"
+            ],
+            [
+              "5",
+              "Nakuru Town",
+              "Nakuru"
+            ],
+            [
+              "6",
+              "Eldoret Town",
+              "Eldoret"
+            ],
+            [
+              "7",
+              "Thika Road",
+              "Nairobi"
+            ],
+            [
+              "8",
+              "Bamburi",
+              "Mombasa"
+            ],
+            [
+              "9",
+              "Kondele",
+              "Kisumu"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "caption": "Region targets in J1:K6 (K = KES thousands)",
+          "columns": [
+            "Row",
+            "J: Region",
+            "K: Target (K)"
+          ],
+          "rows": [
+            [
+              "2",
+              "Nairobi",
+              "3,000"
+            ],
+            [
+              "3",
+              "Mombasa",
+              "2,500"
+            ],
+            [
+              "4",
+              "Kisumu",
+              "1,800"
+            ],
+            [
+              "5",
+              "Nakuru",
+              "1,600"
+            ],
+            [
+              "6",
+              "Eldoret",
+              "1,400"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(A2,$G$2:$G$9,$H$2:$H$9)",
+          "text": "Step 1: the store name in A2 is the key. The Store column G is searched and the Region column H is returned. For Nyali the result is Mombasa."
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(B2,$J$2:$J$6,$K$2:$K$6)",
+          "text": "Step 2: the helper cell B2 now holds the region and is the key for the second lookup. The Region column J is searched and the Target column K is returned. For Mombasa the target is 2,500K."
+        },
+        {
+          "type": "list",
+          "items": [
+            "The helper column keeps each step simple and visible. If a target looks wrong you can see at once whether the region or the target lookup is at fault.",
+            "The second lookup uses the region from the first as its key, so the first formula must be right before the second can be right.",
+            "If a region name differs in the two tables, for example Nairobi in one and Nairobi West in the other, the second lookup gives #N/A. Region names must be spelled the same in both tables."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: you could nest the first lookup inside the second to avoid the helper column, but the formula becomes hard to read and to check. A helper column is the clearer choice."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the store list and the region target table from Training. Type numbers without commas. A negative number needs a minus sign."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "t1-two-steps",
+            "t2-helper",
+            "t3-gap",
+            "t4-typo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Two-step lookup: the first XLOOKUP returns a key, and the second XLOOKUP uses it.",
+            "A helper column makes each step visible and easy to check.",
+            "The linking key (here the region) must be spelled the same in both tables.",
+            "If the second lookup fails, check the first one."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Chaining two simple lookups through a helper column connects tables that share only one common key."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "t1-two-steps",
+        "type": "numeric",
+        "prompt": "What is the region target, in K, for the store Kondele? Look up its region first, then the target for that region.",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "t2-helper",
+        "type": "single-choice",
+        "prompt": "Why is the region kept in a helper column (column B) instead of looking up the target straight from the store?",
+        "options": [
+          {
+            "id": "nolink",
+            "label": "Because no table links a store directly to a target, so the region is the link between the two tables"
+          },
+          {
+            "id": "rules",
+            "label": "Because XLOOKUP can only be used once per row"
+          },
+          {
+            "id": "format",
+            "label": "Because the region must be formatted as text"
+          },
+          {
+            "id": "fast",
+            "label": "Because it makes the sheet print faster"
+          }
+        ]
+      },
+      {
+        "id": "t3-gap",
+        "type": "numeric",
+        "prompt": "Bamburi store sold 2,700K. Work out its sales minus the region target, in K, using the tables from Training. Use a minus sign if negative.",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "t4-typo",
+        "type": "single-choice",
+        "prompt": "The region table has the spelling Kisum instead of Kisumu in J4, but the store list is correct. A Kisumu store is looked up. What happens in the two columns?",
+        "options": [
+          {
+            "id": "both",
+            "label": "Both lookups give #N/A"
+          },
+          {
+            "id": "second",
+            "label": "The region lookup works, but the target lookup gives #N/A"
+          },
+          {
+            "id": "first",
+            "label": "The region lookup gives #N/A, but the target lookup works"
+          },
+          {
+            "id": "fine",
+            "label": "Both work, because XLOOKUP ignores spelling"
+          }
+        ]
+      }
+    ]
+  }
+}

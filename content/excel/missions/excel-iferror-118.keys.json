@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-iferror-118",
+  "items": [
+    {
+      "id": "i1-fallback",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "10/0 is a divide-by-zero error, so IFERROR returns its second argument, the text n/a."
+    },
+    {
+      "id": "i2-sell-through",
+      "type": "numeric",
+      "expected": 0.75,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.001
+      },
+      "rationale": "180 divided by 240 is 0.75. The division works, so there is no error and IFERROR returns the first argument: 0.75."
+    },
+    {
+      "id": "i3-no-error",
+      "type": "numeric",
+      "expected": 30,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "120/4 is 30 with no error, so IFERROR returns 30. The fallback is used only when the first argument is an error."
+    },
+    {
+      "id": "i4-good-fallback",
+      "type": "single-choice",
+      "correctOptionId": "text",
+      "rationale": "A clear message tells the reader that the figure cannot be calculated. 0 looks like a real 0% sell-through, an empty text hides the problem, and 1 invents a result that is false."
+    }
+  ]
+}

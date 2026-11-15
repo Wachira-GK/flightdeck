@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-or-116",
+  "trackId": "excel",
+  "code": "EX-116",
+  "title": "OR: either condition is enough",
+  "summary": "Use OR inside IF to include Nairobi stores or big sellers in a report, and to flag stores that need support for low sales or low sell-through.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "region-or-bonus",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The weekly regional report is long. The regional manager wants every Nairobi store in it, plus any other store with big sales. A second list shows stores that need help: low sales, or low sell-through, or both."
+        },
+        {
+          "type": "paragraph",
+          "text": "Both rules say \"either\". The OR function is TRUE when at least one condition is true, and IF turns that into a label."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use OR with IF when one condition is enough.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=OR(condition1, condition2, ...)",
+          "text": "OR returns TRUE when at least one condition is TRUE. It is FALSE only when every condition is FALSE."
+        },
+        {
+          "type": "table",
+          "caption": "OR with two conditions",
+          "columns": [
+            "Condition 1",
+            "Condition 2",
+            "OR result"
+          ],
+          "rows": [
+            [
+              "TRUE",
+              "TRUE",
+              "TRUE"
+            ],
+            [
+              "TRUE",
+              "FALSE",
+              "TRUE"
+            ],
+            [
+              "FALSE",
+              "TRUE",
+              "TRUE"
+            ],
+            [
+              "FALSE",
+              "FALSE",
+              "FALSE"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(OR(B2=\"Nairobi\",C2>$B$9),\"Include\",\"Skip\")",
+          "text": "Include the store when the region in B2 is Nairobi, or sales in C2 are above the threshold in B9. Text inside a test needs double quotes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example: a Mombasa store with 620K sales and a threshold of 500K. The region test is FALSE but 620>500 is TRUE, so OR is TRUE and the store is included. A Mombasa store with 400K fails both tests and is skipped."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: AND is strict (all tests must pass) and OR is generous (one test is enough). Read the business rule for the words \"and\" and \"or\" before you choose."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: text comparisons ignore upper and lower case, so \"nairobi\" matches \"Nairobi\"."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on OR. Type numbers without commas, for example 2."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-or-result",
+            "i2-count-included",
+            "i3-choose",
+            "i4-syntax"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "OR is TRUE when at least one condition is TRUE.",
+            "AND needs all conditions, OR needs one. Match the word in the business rule.",
+            "Text in a test needs double quotes, and case is ignored.",
+            "Keep thresholds in input cells and lock them with dollar signs."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: NOT, and a clearance rule that combines AND, OR and NOT."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-or-result",
+        "type": "single-choice",
+        "prompt": "What does =OR(1>2,3>2) return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "three",
+            "label": "3"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "i2-count-included",
+        "type": "numeric",
+        "prompt": "Rule: include a store when the region is Nairobi OR weekly sales are above 500K. Store 1: Nairobi, 300K. Store 2: Mombasa, 520K. Store 3: Kisumu, 500K. Store 4: Nakuru, 100K. How many stores are included?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i3-choose",
+        "type": "single-choice",
+        "prompt": "You want to flag stores that have low sales or low sell-through, or both. Which function belongs inside IF?",
+        "options": [
+          {
+            "id": "or",
+            "label": "OR, because one low measure is enough"
+          },
+          {
+            "id": "and",
+            "label": "AND, because both measures must be low"
+          },
+          {
+            "id": "not",
+            "label": "NOT, because we are flagging bad stores"
+          },
+          {
+            "id": "sum",
+            "label": "SUM, because two measures are added"
+          }
+        ]
+      },
+      {
+        "id": "i4-syntax",
+        "type": "single-choice",
+        "prompt": "Which formula correctly shows Include for Nairobi stores or sales above 500K, where region is in B2 and sales in C2?",
+        "options": [
+          {
+            "id": "ok",
+            "label": "=IF(OR(B2=\"Nairobi\",C2>500),\"Include\",\"Skip\")"
+          },
+          {
+            "id": "word",
+            "label": "=IF(B2=\"Nairobi\" OR C2>500,\"Include\",\"Skip\")"
+          },
+          {
+            "id": "no-quotes",
+            "label": "=IF(OR(B2=Nairobi,C2>500),\"Include\",\"Skip\")"
+          },
+          {
+            "id": "single",
+            "label": "=IF(OR(C2>500),\"Include\",\"Skip\")"
+          }
+        ]
+      }
+    ]
+  }
+}

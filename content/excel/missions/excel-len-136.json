@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-len-136",
+  "trackId": "excel",
+  "code": "EX-136",
+  "title": "Spot wrong-length codes with LEN",
+  "summary": "Count the characters in SKU codes with LEN and flag any code that is the wrong length with IF.",
+  "estimatedMinutes": 12,
+  "passMark": 0.75,
+  "exerciseId": "sku-length-check-len",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Nairobi warehouse has sent a stock file with SKU codes for the new season. Our SKU standard is nine characters, for example SN-450-42: two letters, a hyphen, three digits, a hyphen and a two-digit size."
+        },
+        {
+          "type": "paragraph",
+          "text": "A code with a missing or extra character will not match anything in the price list or the stock system. Before the file is loaded, you need a quick way to find the odd ones out. LEN counts characters, and IF turns the count into a clear flag."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: measure text with LEN and flag wrong-length codes with IF.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=LEN(text)",
+          "text": "LEN returns the number of characters in the text. Letters, digits, hyphens and spaces all count as one character each."
+        },
+        {
+          "type": "table",
+          "caption": "What LEN returns for some codes",
+          "columns": [
+            "Cell text",
+            "LEN result"
+          ],
+          "rows": [
+            [
+              "SN-450-42",
+              "9"
+            ],
+            [
+              "BT-33-40",
+              "8"
+            ],
+            [
+              "SS-210-411",
+              "10"
+            ],
+            [
+              "SL 075 42",
+              "9"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(LEN(A2)=9,\"OK\",\"Check\")",
+          "text": "Count the characters in A2. If the count equals 9 show OK, otherwise show Check. In your sheet the 9 sits in a cell (F1) so you can change the standard without editing every formula."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Spaces count. A code typed as \"SL 075 42\" has two spaces inside it, so LEN counts 9 even though it does not look like a hyphen code. You will meet spaces again in the TRIM mission.",
+            "LEN also works on numbers: it counts the characters as shown, so LEN(1050) is 4.",
+            "Tip: a code like 00123 typed as a number loses its leading zeros and becomes 123, so LEN gives 3. To keep leading zeros, type the code as text, for example with a leading apostrophe: '00123.",
+            "A length check only tells you something is wrong. It does not say what. Use it to find rows to inspect."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces, for example 12."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-count-slash",
+            "l2-short-code",
+            "l3-len-number",
+            "l4-why-f1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "LEN(text) counts characters, including hyphens and spaces.",
+            "IF(LEN(A2)=n, \"OK\", \"Check\") flags codes that are not exactly n characters long.",
+            "Keep the standard length in an input cell and fix it with $ signs.",
+            "LEN counts numbers as shown; leading zeros are lost unless the value is typed as text."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A length check is the cheapest data-quality test you can run: it catches typos before they reach the price list."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-count-slash",
+        "type": "numeric",
+        "prompt": "What does =LEN(\"SN-450-42/B\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l2-short-code",
+        "type": "single-choice",
+        "prompt": "Cell A2 holds SN-45-42. What does =IF(LEN(A2)=9,\"OK\",\"Check\") show?",
+        "options": [
+          {
+            "id": "ok",
+            "label": "OK"
+          },
+          {
+            "id": "check",
+            "label": "Check"
+          },
+          {
+            "id": "eight",
+            "label": "8"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l3-len-number",
+        "type": "numeric",
+        "prompt": "What does =LEN(1050) return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "l4-why-f1",
+        "type": "single-choice",
+        "prompt": "Why does the check formula point at $F$1 instead of typing 9 inside it?",
+        "options": [
+          {
+            "id": "one-place",
+            "label": "So the standard length can be changed in one cell and every check updates"
+          },
+          {
+            "id": "len-needs",
+            "label": "Because LEN will not work without a cell reference"
+          },
+          {
+            "id": "faster",
+            "label": "Because it makes LEN count faster"
+          },
+          {
+            "id": "text",
+            "label": "Because it turns the length into text"
+          }
+        ]
+      }
+    ]
+  }
+}

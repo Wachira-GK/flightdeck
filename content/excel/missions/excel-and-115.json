@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-and-115",
+  "trackId": "excel",
+  "code": "EX-115",
+  "title": "AND: several conditions at once",
+  "summary": "Use AND inside IF to reorder only active lines that are low, and to spot lines that beat both margin and sell-through targets.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "reorder-and-margin",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Buying decisions rarely depend on one number. A line that is low on stock should be reordered, but not if the supplier has discontinued it. A line is a star only when it earns a good margin and also sells well."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your job is to build these two-part rules. The AND function checks that every condition is true, and IF turns the answer into a clear decision."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use AND with IF to test two or more conditions.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=AND(condition1, condition2, ...)",
+          "text": "AND returns TRUE only when every condition is TRUE. If any one is FALSE, the answer is FALSE."
+        },
+        {
+          "type": "table",
+          "caption": "AND with two conditions",
+          "columns": [
+            "Condition 1",
+            "Condition 2",
+            "AND result"
+          ],
+          "rows": [
+            [
+              "TRUE",
+              "TRUE",
+              "TRUE"
+            ],
+            [
+              "TRUE",
+              "FALSE",
+              "FALSE"
+            ],
+            [
+              "FALSE",
+              "TRUE",
+              "FALSE"
+            ],
+            [
+              "FALSE",
+              "FALSE",
+              "FALSE"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(AND(B2<C2,D2<>\"Discontinued\"),\"Reorder\",\"Hold\")",
+          "text": "Reorder only when stock (B2) is below the reorder point (C2) and the status (D2) is not Discontinued."
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example: 12 pairs on hand, reorder point 20, status Active. 12<20 is TRUE and Active is not Discontinued, so both tests are TRUE and the line shows Reorder. If the status were Discontinued, the second test would be FALSE and the line would show Hold."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: write each test in full inside AND. =AND(E2>$B$8,F2>$B$9) is correct. =AND(E2>$B$8,F2) is not, because F2 on its own is not a test."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: \"above\" is >, and a value exactly equal to the target does not count. Use >= when the rule says \"at least\"."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on AND. Type numbers without commas, for example 1."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-and-result",
+            "i2-count-reorders",
+            "i3-star-formula",
+            "i4-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "AND is TRUE only when every condition is TRUE.",
+            "Put AND inside IF as the condition: =IF(AND(...),\"yes\",\"no\").",
+            "Each condition must be a full test, such as B2<C2.",
+            "Check the boundary: > is above, >= is at least."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: OR, for rules where either condition is enough."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-and-result",
+        "type": "single-choice",
+        "prompt": "What does =AND(5>3,2>4) return?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "TRUE"
+          },
+          {
+            "id": "choice-b",
+            "label": "FALSE"
+          },
+          {
+            "id": "five",
+            "label": "5"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "i2-count-reorders",
+        "type": "numeric",
+        "prompt": "The rule is: reorder when stock is below the reorder point AND the status is not Discontinued. Line A has stock 12, reorder point 20, Active. Line B has stock 8, reorder point 8, Active. Line C has stock 3, reorder point 10, Discontinued. How many lines need a reorder?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i3-star-formula",
+        "type": "single-choice",
+        "prompt": "Which formula shows Star only when margin in E2 is above the target in B8 and sell-through in F2 is above the target in B9?",
+        "options": [
+          {
+            "id": "and-ok",
+            "label": "=IF(AND(E2>$B$8,F2>$B$9),\"Star\",\"Review\")"
+          },
+          {
+            "id": "and-bare",
+            "label": "=IF(AND(E2>$B$8,F2),\"Star\",\"Review\")"
+          },
+          {
+            "id": "and-word",
+            "label": "=IF(E2>$B$8 AND F2>$B$9,\"Star\",\"Review\")"
+          },
+          {
+            "id": "one-test",
+            "label": "=IF(E2>$B$8,\"Star\",\"Review\")"
+          }
+        ]
+      },
+      {
+        "id": "i4-boundary",
+        "type": "single-choice",
+        "prompt": "A line has a margin of exactly 40% and the margin target in B8 is 40%. Its sell-through beats the target. What does =IF(AND(E2>$B$8,F2>$B$9),\"Star\",\"Review\") show?",
+        "options": [
+          {
+            "id": "review",
+            "label": "Review"
+          },
+          {
+            "id": "star",
+            "label": "Star"
+          },
+          {
+            "id": "choice-c",
+            "label": "TRUE"
+          },
+          {
+            "id": "error",
+            "label": "#NAME?"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "B2": "=UPPER(TRIM(A2))",
+    "C2": "=XLOOKUP(UPPER(TRIM(A2)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+    "B3": "=UPPER(TRIM(A3))",
+    "C3": "=XLOOKUP(UPPER(TRIM(A3)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+    "B4": "=UPPER(TRIM(A4))",
+    "C4": "=XLOOKUP(UPPER(TRIM(A4)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+    "B5": "=UPPER(TRIM(A5))",
+    "C5": "=XLOOKUP(UPPER(TRIM(A5)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+    "B6": "=UPPER(TRIM(A6))",
+    "C6": "=XLOOKUP(UPPER(TRIM(A6)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")",
+    "B7": "=UPPER(TRIM(A7))",
+    "C7": "=XLOOKUP(UPPER(TRIM(A7)),$E$2:$E$6,$G$2:$G$6,\"Not listed\")"
+  }
+}

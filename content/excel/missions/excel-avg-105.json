@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-avg-105",
+  "trackId": "excel",
+  "code": "EX-105",
+  "title": "Averages and extremes of weekly sales",
+  "summary": "Use AVERAGE, MAX and MIN to describe four weeks of sales for each store.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "store-weekly-sales-stats",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Your regional manager asks one question every month: how is each store doing, and how steady is it? One total does not answer that. A store that sells 300K in a good week and 100K in a bad week is different from one that sells 200K every week."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will describe each store with three numbers: its average week, its best week and its weakest week. All amounts are in KES thousands (K) and all stores and figures are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use AVERAGE, MAX and MIN on a row of weekly sales.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Three functions for describing a row of numbers",
+          "columns": [
+            "Function",
+            "Returns",
+            "Example"
+          ],
+          "rows": [
+            [
+              "AVERAGE",
+              "the mean: total divided by how many numbers",
+              "=AVERAGE(B2:E2)"
+            ],
+            [
+              "MAX",
+              "the largest number",
+              "=MAX(B2:E2)"
+            ],
+            [
+              "MIN",
+              "the smallest number",
+              "=MIN(B2:E2)"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=AVERAGE(B2:E2)",
+          "text": "B2:E2 is a range: every cell from B2 to E2. AVERAGE adds the numbers in the range and divides by how many numbers there are."
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. A store sells 120, 150, 90 and 140 in four weeks. The total is 500 and there are 4 weeks, so AVERAGE returns 125. MAX returns 150 and MIN returns 90."
+        },
+        {
+          "type": "paragraph",
+          "text": "Empty cells are not zeros. AVERAGE, MAX and MIN skip empty cells and text. If a store was closed in week 2 and you leave the cell empty, the average uses only the weeks that have numbers. If you type 0, that week is counted and pulls the average down."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: an average can hide extremes. Store sales of 100, 100, 100 and 500 average 200, yet no week was close to 200. Show MIN and MAX next to AVERAGE to see how steady a store is."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on AVERAGE, MAX and MIN. Type numbers without commas."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-average",
+            "i2-empty-cell",
+            "i3-spread",
+            "i4-extremes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "AVERAGE, MAX and MIN each take a range such as B2:E2.",
+            "An empty cell is skipped but a typed 0 is counted, which changes the average.",
+            "Show MIN and MAX beside AVERAGE, because an average alone can hide extreme weeks.",
+            "Change the row number of the formula for each store, and the results follow the data."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: COUNT, to count how many stock lines have been counted."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-average",
+        "type": "numeric",
+        "prompt": "A store's four weekly sales, in K, are 110, 150, 95 and 145. What does =AVERAGE of those four cells return, in K?",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i2-empty-cell",
+        "type": "single-choice",
+        "prompt": "Weekly sales, in K, are 200, (an empty cell because the store was closed), 100 and 300. What does AVERAGE over the four cells return?",
+        "options": [
+          {
+            "id": "two-hundred",
+            "label": "200"
+          },
+          {
+            "id": "one-fifty",
+            "label": "150"
+          },
+          {
+            "id": "div0",
+            "label": "#DIV/0!"
+          },
+          {
+            "id": "six-hundred",
+            "label": "600"
+          }
+        ]
+      },
+      {
+        "id": "i3-spread",
+        "type": "numeric",
+        "prompt": "A store's four weekly sales, in K, are 230, 185, 310 and 265. What does =MAX(B2:E2)-MIN(B2:E2) return, in K? This is the gap between the best and the weakest week.",
+        "answerHint": "Whole number, in K"
+      },
+      {
+        "id": "i4-extremes",
+        "type": "single-choice",
+        "prompt": "Store sales over four weeks are 100, 100, 100 and 500 (K). The average is 200. Which statement is correct?",
+        "options": [
+          {
+            "id": "pulled-up",
+            "label": "One big week pulls the average up, so MIN and MAX are useful to show how uneven the weeks were"
+          },
+          {
+            "id": "typical",
+            "label": "200 is a typical week, so MIN and MAX add nothing"
+          },
+          {
+            "id": "choice-c",
+            "label": "AVERAGE is wrong here, because it should be 100"
+          },
+          {
+            "id": "median",
+            "label": "AVERAGE ignores the largest number, so the 500 has no effect"
+          }
+        ]
+      }
+    ]
+  }
+}

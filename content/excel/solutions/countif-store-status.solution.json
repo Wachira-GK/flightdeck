@@ -1,0 +1,9 @@
+{
+  "cells": {
+    "F2": "=COUNTIF($C$2:$C$11,E2)",
+    "F3": "=COUNTIF($C$2:$C$11,E3)",
+    "F4": "=COUNTIF($C$2:$C$11,E4)",
+    "F5": "=COUNTIF($C$2:$C$11,\"<>Open\")",
+    "F6": "=COUNTIF($B$2:$B$11,\"Kisumu\")"
+  }
+}

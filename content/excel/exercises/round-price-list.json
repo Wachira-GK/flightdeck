@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "round-price-list",
+  "version": 1,
+  "title": "Round a price list with ROUND",
+  "objective": "Use ROUND with 2, 0 and -1 digits to round raw prices, and total the rounded prices.",
+  "instructions": "Column B holds raw prices in KES after a currency conversion. In C2:C5 round each price to 2 decimal places. In D2:D5 round to the nearest whole shilling. In E2:E5 round to the nearest KES 10. In D7 add up the whole-shilling prices from D2:D5 (not the raw prices).",
+  "grid": {
+    "rows": 7,
+    "cols": 5
+  },
+  "starter": {
+    "A1": "Item",
+    "B1": "Raw price (KES)",
+    "C1": "2 decimals",
+    "D1": "Whole KES",
+    "E1": "Nearest 10",
+    "A2": "Sneakers",
+    "B2": "1249.456",
+    "A3": "Sandals",
+    "B3": "899.5",
+    "A4": "Boots",
+    "B4": "2374.25",
+    "A5": "School shoes",
+    "B5": "649.504",
+    "A7": "Total of whole-KES prices"
+  },
+  "editableCells": [
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "D7"
+  ],
+  "allowedFunctions": [
+    "ROUND",
+    "SUM"
+  ],
+  "hints": [
+    "ROUND takes two arguments: =ROUND(number, digits). The first is the cell to round, for example B2.",
+    "2 digits keeps two decimals, 0 gives a whole number, and -1 rounds to the nearest 10.",
+    "For D7, add the rounded prices with =SUM(D2:D5). The total of rounded prices is not the same as the rounded total of raw prices."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

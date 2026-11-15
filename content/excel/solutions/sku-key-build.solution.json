@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "D2": "=UPPER(LEFT(TRIM(A2),3))&\"-\"&RIGHT(\"000\"&B2,3)&\"-\"&C2",
+    "E2": "=IF(COUNTIF($D$2:$D$7,D2)>1,\"Duplicate\",\"Unique\")",
+    "D3": "=UPPER(LEFT(TRIM(A3),3))&\"-\"&RIGHT(\"000\"&B3,3)&\"-\"&C3",
+    "E3": "=IF(COUNTIF($D$2:$D$7,D3)>1,\"Duplicate\",\"Unique\")",
+    "D4": "=UPPER(LEFT(TRIM(A4),3))&\"-\"&RIGHT(\"000\"&B4,3)&\"-\"&C4",
+    "E4": "=IF(COUNTIF($D$2:$D$7,D4)>1,\"Duplicate\",\"Unique\")",
+    "D5": "=UPPER(LEFT(TRIM(A5),3))&\"-\"&RIGHT(\"000\"&B5,3)&\"-\"&C5",
+    "E5": "=IF(COUNTIF($D$2:$D$7,D5)>1,\"Duplicate\",\"Unique\")",
+    "D6": "=UPPER(LEFT(TRIM(A6),3))&\"-\"&RIGHT(\"000\"&B6,3)&\"-\"&C6",
+    "E6": "=IF(COUNTIF($D$2:$D$7,D6)>1,\"Duplicate\",\"Unique\")",
+    "D7": "=UPPER(LEFT(TRIM(A7),3))&\"-\"&RIGHT(\"000\"&B7,3)&\"-\"&C7",
+    "E7": "=IF(COUNTIF($D$2:$D$7,D7)>1,\"Duplicate\",\"Unique\")"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-grade-lookup-135",
+  "items": [
+    {
+      "id": "g1-grade-c",
+      "type": "numeric",
+      "expected": 4,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.001
+      },
+      "rationale": "Grade C is in row 4 of the table with a rate of 0.04, which is 4%."
+    },
+    {
+      "id": "g2-exact-score",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "Exact match only finds values that appear in the list. 73 is inside the band that starts at 70 but it is not equal to 70, so there is no match and the result is #N/A. XLOOKUP in this course never picks the nearest value."
+    },
+    {
+      "id": "g3-label-fix",
+      "type": "single-choice",
+      "correctOptionId": "type",
+      "rationale": "An IF formula turns any score into a grade label. The label then appears exactly in the discount table, so exact-match XLOOKUP works. Typing all 101 scores into the table would also work but is slow and error-prone, and case settings do not apply to numbers."
+    },
+    {
+      "id": "g4-net",
+      "type": "numeric",
+      "expected": 558,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.001
+      },
+      "rationale": "Grade B has a rate of 0.07, so the discount is 600 x 0.07 = 42K and the net order is 600 - 42 = 558K."
+    }
+  ]
+}

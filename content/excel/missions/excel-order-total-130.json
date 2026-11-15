@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-order-total-130",
+  "trackId": "excel",
+  "code": "EX-130",
+  "title": "Order totals from a price list",
+  "summary": "Multiply a looked-up unit price by the quantity on each line, then add the lines to get the order total.",
+  "estimatedMinutes": 18,
+  "passMark": 0.75,
+  "exerciseId": "order-total-lookup",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A Kisumu store has sent a stock order with product codes and quantities. Finance needs the value of each line and the total for the whole order, using the current price list."
+        },
+        {
+          "type": "paragraph",
+          "text": "Each line total is the unit price times the number of pairs. You will let XLOOKUP find the unit price and multiply it by the quantity in one formula. SUM then adds all the line totals."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: build a line total as XLOOKUP price multiplied by quantity, then add the lines with SUM.",
+            "Time: about 18 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(B2,$F$2:$F$7,$H$2:$H$7)*C2",
+          "text": "XLOOKUP returns the unit price for the code in B2. The * C2 multiplies that price by the quantity in C2. You can multiply the result of a lookup like any other number."
+        },
+        {
+          "type": "table",
+          "caption": "Price list in F1:H7 (KES)",
+          "columns": [
+            "Row",
+            "F: Code",
+            "G: Product",
+            "H: Unit price"
+          ],
+          "rows": [
+            [
+              "2",
+              "SS-210",
+              "School shoe",
+              "2,499"
+            ],
+            [
+              "3",
+              "SN-450",
+              "Canvas sneaker",
+              "1,999"
+            ],
+            [
+              "4",
+              "SD-120",
+              "Ladies sandal",
+              "899"
+            ],
+            [
+              "5",
+              "BT-330",
+              "Ankle boot",
+              "4,599"
+            ],
+            [
+              "6",
+              "SL-075",
+              "Slipper",
+              "499"
+            ],
+            [
+              "7",
+              "GB-610",
+              "Gumboot",
+              "1,299"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"SN-450\",$F$2:$F$7,$H$2:$H$7)*12",
+          "text": "The price of SN-450 is 1,999. Twelve pairs cost 1,999 x 12 = 23,988 KES."
+        },
+        {
+          "type": "formula",
+          "formula": "=SUM(D2:D6)",
+          "text": "SUM adds all the numbers in the range D2:D6, which holds the five line totals. Put it under the lines to get the order total."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Point at the code and quantity cells (B2 and C2) instead of typing values inside the formula, so the formula can be copied down.",
+            "Fix the price list with $ signs. The code and quantity cells are relative, so they move down one row each time.",
+            "If one line returns an error such as #N/A, SUM also returns that error. One bad code spoils the total, so check each line."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: build the first line total, check it by hand with a calculator, and only then copy it down."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the price list from Training (F1:H7). Type numbers without commas, for example 19992."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "o1-line-total",
+            "o2-order-total",
+            "o3-missing-code",
+            "o4-why-lookup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Line total = XLOOKUP(code, codes, prices) * quantity.",
+            "Fix the price list with $ signs and leave the code and quantity cells relative.",
+            "SUM adds the line totals to give the order total.",
+            "An error in one line, such as #N/A, passes into the SUM."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "With the price taken from the list, the order total always reflects the latest prices."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "o1-line-total",
+        "type": "numeric",
+        "prompt": "A line orders 8 pairs of SS-210. What does =XLOOKUP(\"SS-210\",$F$2:$F$7,$H$2:$H$7)*8 return, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "o2-order-total",
+        "type": "numeric",
+        "prompt": "An order has 5 pairs of SD-120, 2 pairs of BT-330 and 10 pairs of SL-075. What is the order total in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "o3-missing-code",
+        "type": "single-choice",
+        "prompt": "One line in an order has a code that is not in the price list, and there is no fourth argument. The other four lines are fine. What does =SUM(D2:D6) show?",
+        "options": [
+          {
+            "id": "partial",
+            "label": "The total of the four good lines"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "blank",
+            "label": "An empty cell"
+          }
+        ]
+      },
+      {
+        "id": "o4-why-lookup",
+        "type": "single-choice",
+        "prompt": "Why use XLOOKUP for the price instead of typing the price into each line formula?",
+        "options": [
+          {
+            "id": "faster",
+            "label": "Typed prices are not allowed in Excel"
+          },
+          {
+            "id": "update",
+            "label": "When the price list changes, every line total updates by itself"
+          },
+          {
+            "id": "round",
+            "label": "XLOOKUP rounds the prices"
+          },
+          {
+            "id": "sort",
+            "label": "XLOOKUP sorts the order"
+          }
+        ]
+      }
+    ]
+  }
+}

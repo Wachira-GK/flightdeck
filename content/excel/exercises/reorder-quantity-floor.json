@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "reorder-quantity-floor",
+  "version": 1,
+  "title": "Reorder quantity floored at zero",
+  "objective": "Calculate a reorder quantity from a target cover and never return a negative number.",
+  "instructions": "B holds average weekly sales, C pairs on hand and D pairs on order for six styles. The target cover in weeks is in G2. In E2:E7 calculate the pairs to reorder: target weeks multiplied by weekly sales, minus on hand, minus on order. If the answer is negative, show 0. Use the MAX function for this.",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Style",
+    "B1": "Avg weekly sales",
+    "C1": "On hand",
+    "D1": "On order",
+    "E1": "Reorder qty",
+    "F2": "Target cover (weeks)",
+    "G2": "6",
+    "A2": "Canvas sneaker",
+    "B2": "40",
+    "C2": "120",
+    "D2": "60",
+    "A3": "Ladies sandal",
+    "B3": "25",
+    "C3": "200",
+    "D3": "0",
+    "A4": "School shoe",
+    "B4": "30",
+    "C4": "45",
+    "D4": "50",
+    "A5": "Ankle boot",
+    "B5": "12",
+    "C5": "30",
+    "D5": "0",
+    "A6": "Slipper",
+    "B6": "18",
+    "C6": "40",
+    "D6": "100",
+    "A7": "Gumboot",
+    "B7": "35",
+    "C7": "20",
+    "D7": "120"
+  },
+  "editableCells": [
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7"
+  ],
+  "allowedFunctions": [
+    "MAX",
+    "IF"
+  ],
+  "hints": [
+    "The shortfall is $G$2*B2-C2-D2. The dollar signs lock the target cell.",
+    "A negative shortfall must become 0. MAX(0, shortfall) does that in one step.",
+    "Put the shortfall from the first hint inside MAX(0, ...), then copy the formula down to row 7."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "size-suffix-right",
+  "version": 1,
+  "title": "Size suffix with RIGHT",
+  "objective": "Use RIGHT to take the size from the end of an article code, convert it to a number, and look up the pairs in stock.",
+  "instructions": "Each article code in column A ends with a two-digit size. In B2:B6, extract the size with RIGHT. RIGHT returns text, so in C2:C6 turn the text size in column B into a number by multiplying it by 1. In D2:D6, look up the number in column C in the stock list in F1:G7 with XLOOKUP and show the text \"No stock\" when the size is not in the list. Fix the stock list with $ signs.",
+  "grid": {
+    "rows": 7,
+    "cols": 7
+  },
+  "starter": {
+    "A1": "Article code",
+    "B1": "Size (text)",
+    "C1": "Size (number)",
+    "D1": "Pairs in stock",
+    "F1": "Size",
+    "G1": "Pairs in stock",
+    "A2": "SN-450-42",
+    "A3": "SD-120-38",
+    "A4": "BT-330-41",
+    "A5": "SS-210-44",
+    "A6": "SL-075-39",
+    "F2": "38",
+    "G2": "6",
+    "F3": "39",
+    "G3": "4",
+    "F4": "40",
+    "G4": "9",
+    "F5": "41",
+    "G5": "3",
+    "F6": "42",
+    "G6": "7",
+    "F7": "43",
+    "G7": "2"
+  },
+  "editableCells": [
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6"
+  ],
+  "allowedFunctions": [
+    "RIGHT",
+    "XLOOKUP"
+  ],
+  "hints": [
+    "RIGHT(text, number_of_characters) returns characters from the end of the text. =RIGHT(A2,2) gives the last two characters of A2.",
+    "RIGHT gives text, so \"42\" is not the number 42. Multiplying by 1 (=B2*1) turns numeric-looking text into a real number.",
+    "XLOOKUP never matches text with a number. Look up the number column C, not the text column B: =XLOOKUP(C2,$F$2:$F$7,$G$2:$G$7,\"No stock\")."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

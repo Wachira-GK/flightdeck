@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "id": "stock-status-labels",
+  "version": 1,
+  "title": "Stock status labels with nested IF",
+  "objective": "Build a four-way status label with nested IF and AND, then turn the label into an action.",
+  "instructions": "In E2:E7 show the stock status. Use \"Out of stock\" when on hand is 0. Otherwise use \"OK\" when on hand is at least the minimum (column C) and at most the maximum (column D). Otherwise use \"Low\" when on hand is below the minimum, and \"Overstock\" for everything else. In F2:F7 show \"Reorder\" for Out of stock or Low, \"Markdown\" for Overstock and \"None\" for OK. Spell the labels exactly as written.",
+  "grid": {
+    "rows": 7,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Item",
+    "B1": "On hand",
+    "C1": "Minimum",
+    "D1": "Maximum",
+    "E1": "Status",
+    "F1": "Action",
+    "A2": "Sneakers",
+    "B2": "0",
+    "C2": "20",
+    "D2": "60",
+    "A3": "Sandals",
+    "B3": "12",
+    "C3": "20",
+    "D3": "60",
+    "A4": "Boots",
+    "B4": "20",
+    "C4": "20",
+    "D4": "60",
+    "A5": "School shoes",
+    "B5": "60",
+    "C5": "20",
+    "D5": "60",
+    "A6": "Slippers",
+    "B6": "85",
+    "C6": "20",
+    "D6": "60",
+    "A7": "Flip-flops",
+    "B7": "35",
+    "C7": "15",
+    "D7": "50"
+  },
+  "editableCells": [
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7"
+  ],
+  "allowedFunctions": [
+    "IF",
+    "AND",
+    "OR"
+  ],
+  "hints": [
+    "Test the zero case first: =IF(B2=0,\"Out of stock\", ...). IF stops at the first test that is TRUE, so order matters.",
+    "Put another IF in the false branch. The OK test needs AND: AND(B2>=C2,B2<=D2) is TRUE when stock is between the minimum and the maximum.",
+    "Full formula: =IF(B2=0,\"Out of stock\",IF(AND(B2>=C2,B2<=D2),\"OK\",IF(B2<C2,\"Low\",\"Overstock\"))). For F2 use OR: =IF(OR(E2=\"Out of stock\",E2=\"Low\"),\"Reorder\",IF(E2=\"Overstock\",\"Markdown\",\"None\"))."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

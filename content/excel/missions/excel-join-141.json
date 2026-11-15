@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-join-141",
+  "trackId": "excel",
+  "code": "EX-141",
+  "title": "Build labels by joining text with &",
+  "summary": "Join store codes, article numbers, products and sizes into labels and descriptions with the & operator.",
+  "estimatedMinutes": 14,
+  "passMark": 0.75,
+  "exerciseId": "label-join-ampersand",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The stock system prints shelf labels from one text field, and the web shop wants a full description for each article. All the parts already exist in separate columns: store, article number, product, colour, size and price."
+        },
+        {
+          "type": "paragraph",
+          "text": "The & operator joins pieces of text together. In this mission you will build the label and the description from the parts, so that when a size or price changes the text updates by itself."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: join cells and fixed text with the & operator.",
+            "Time: about 14 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=text1 & text2 & text3",
+          "text": "The & operator (ampersand) joins its pieces into one piece of text, in order, with nothing added between them. Pieces can be cells, numbers or text in double quotes."
+        },
+        {
+          "type": "table",
+          "caption": "Parts in row 2",
+          "columns": [
+            "Store",
+            "Article no.",
+            "Product",
+            "Size"
+          ],
+          "rows": [
+            [
+              "NBO",
+              "0123",
+              "Canvas sneaker",
+              "42"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=A2&\"-\"&B2&\" | \"&C2&\" | \"&E2",
+          "text": "Join the store, a hyphen, the article number, a spaced bar, the product, another spaced bar and the size. For these parts the result is: NBO-0123 | Canvas sneaker | 42"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Spaces are not added for you. =C2&D2 gives Canvas sneakerwhite. Put the space inside quotes: =C2&\" \"&D2.",
+            "Numbers become text when joined: =1999&\"\" is the text 1999, which no longer behaves like a number in a lookup.",
+            "Leading zeros: an article number such as 0123 must be stored as text (type it with a leading apostrophe, '0123), otherwise Excel keeps only 123.",
+            "Tip: write the separator once in your head, then check the result with LEN: a label with a missing space is one character shorter than you expect."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Type numbers without commas or spaces, for example 12."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "l1-join-bar",
+            "l2-join-number",
+            "l3-label-length",
+            "l4-missing-space"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "& joins pieces of text; fixed text goes in double quotes.",
+            "No spaces or separators are added for you: write them inside the quotes.",
+            "A joined number becomes text.",
+            "Store codes with leading zeros must be text, or the zeros are lost."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Joining by formula keeps labels in step with the data, so a changed size or price never leaves an old label behind."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "l1-join-bar",
+        "type": "single-choice",
+        "prompt": "Cell A2 holds NBO and cell E2 holds 42. What does =A2&\" | \"&E2 return?",
+        "options": [
+          {
+            "id": "spaced",
+            "label": "NBO | 42"
+          },
+          {
+            "id": "tight",
+            "label": "NBO|42"
+          },
+          {
+            "id": "none",
+            "label": "NBO42"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "l2-join-number",
+        "type": "single-choice",
+        "prompt": "What kind of value does =1999&\"\" return?",
+        "options": [
+          {
+            "id": "text",
+            "label": "Text that reads 1999"
+          },
+          {
+            "id": "number",
+            "label": "The number 1999, unchanged"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          },
+          {
+            "id": "blank",
+            "label": "A blank cell"
+          }
+        ]
+      },
+      {
+        "id": "l3-label-length",
+        "type": "numeric",
+        "prompt": "How many characters does the label \"NBO-0123 | Canvas sneaker | 42\" have? That is, what does =LEN(\"NBO-0123 | Canvas sneaker | 42\") return?",
+        "answerHint": "Whole number, counting spaces and bars"
+      },
+      {
+        "id": "l4-missing-space",
+        "type": "single-choice",
+        "prompt": "C2 holds Canvas sneaker and D2 holds white. What does =C2&D2 return?",
+        "options": [
+          {
+            "id": "stuck",
+            "label": "Canvas sneakerwhite"
+          },
+          {
+            "id": "spaced",
+            "label": "Canvas sneaker white"
+          },
+          {
+            "id": "comma",
+            "label": "Canvas sneaker, white"
+          },
+          {
+            "id": "error",
+            "label": "#VALUE!"
+          }
+        ]
+      }
+    ]
+  }
+}

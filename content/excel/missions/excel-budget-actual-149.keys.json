@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-budget-actual-149",
+  "items": [
+    {
+      "id": "i1-variance",
+      "type": "numeric",
+      "expected": -45,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Variance is actual minus budget: 455 - 500 = -45, so the store is 45K below budget."
+    },
+    {
+      "id": "i2-variance-pct",
+      "type": "numeric",
+      "expected": -9,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "The variance of -45K divided by the budget of 500K is -0.09, which is -9.0% when multiplied by 100."
+    },
+    {
+      "id": "i3-why-abs",
+      "type": "single-choice",
+      "correctOptionId": "both-ways",
+      "rationale": "A store 9% below budget has a variance of -9, and -9 is not greater than 5. ABS turns it into 9, so shortfalls and overshoots are both measured as distance from budget. ABS does not round or count."
+    },
+    {
+      "id": "i4-countif",
+      "type": "numeric",
+      "expected": 3,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "COUNTIF counts the cells equal to Miss. Three of the five flags say Miss, so the answer is 3."
+    }
+  ]
+}

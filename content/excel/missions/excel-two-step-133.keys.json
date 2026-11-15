@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-two-step-133",
+  "items": [
+    {
+      "id": "t1-two-steps",
+      "type": "numeric",
+      "expected": 1800,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Kondele is in the Kisumu region in the store list, and the Kisumu target in the region table is 1,800K."
+    },
+    {
+      "id": "t2-helper",
+      "type": "single-choice",
+      "correctOptionId": "nolink",
+      "rationale": "The store list only knows the region and the target table only knows the region, so the region is the common key between them. The helper column holds that key. XLOOKUP can be used as many times as you like in a row."
+    },
+    {
+      "id": "t3-gap",
+      "type": "numeric",
+      "expected": 200,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Bamburi is in the Mombasa region, whose target is 2,500K, so 2,700 - 2,500 = 200K."
+    },
+    {
+      "id": "t4-typo",
+      "type": "single-choice",
+      "correctOptionId": "second",
+      "rationale": "The first lookup uses the store list, which is correct, so it returns Kisumu. The second lookup then searches the region table for Kisumu, which is spelled Kisum there, so nothing matches and it returns #N/A. XLOOKUP never ignores spelling, only upper and lower case."
+    }
+  ]
+}

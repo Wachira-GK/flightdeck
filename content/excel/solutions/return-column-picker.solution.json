@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "C2": "=XLOOKUP(B2,$G$2:$G$6,$I$2:$I$6)",
+    "D2": "=XLOOKUP(B2,$G$2:$G$6,$J$2:$J$6)",
+    "E2": "=XLOOKUP(B2,$G$2:$G$6,$K$2:$K$6)",
+    "C3": "=XLOOKUP(B3,$G$2:$G$6,$I$2:$I$6)",
+    "D3": "=XLOOKUP(B3,$G$2:$G$6,$J$2:$J$6)",
+    "E3": "=XLOOKUP(B3,$G$2:$G$6,$K$2:$K$6)",
+    "C4": "=XLOOKUP(B4,$G$2:$G$6,$I$2:$I$6)",
+    "D4": "=XLOOKUP(B4,$G$2:$G$6,$J$2:$J$6)",
+    "E4": "=XLOOKUP(B4,$G$2:$G$6,$K$2:$K$6)",
+    "C5": "=XLOOKUP(B5,$G$2:$G$6,$I$2:$I$6)",
+    "D5": "=XLOOKUP(B5,$G$2:$G$6,$J$2:$J$6)",
+    "E5": "=XLOOKUP(B5,$G$2:$G$6,$K$2:$K$6)"
+  }
+}

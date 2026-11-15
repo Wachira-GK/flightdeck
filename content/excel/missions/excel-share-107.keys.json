@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-share-107",
+  "items": [
+    {
+      "id": "i1-share",
+      "type": "numeric",
+      "expected": 17.5,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.01
+      },
+      "rationale": "Share = 350 / 2,000 = 0.175. Multiply by 100 to read it as a percentage: 17.5%."
+    },
+    {
+      "id": "i2-decimal",
+      "type": "single-choice",
+      "correctOptionId": "forty",
+      "rationale": "Percent means out of 100, so 0.4 is 0.4 x 100 = 40 out of 100, which is 40%. 4% would be 0.04 and 0.4% would be 0.004."
+    },
+    {
+      "id": "i3-absolute",
+      "type": "single-choice",
+      "correctOptionId": "moves",
+      "rationale": "A normal reference moves when you copy a formula down, so B7 becomes B8, which is empty, and dividing by zero gives #DIV/0!. Writing $B$7 locks the reference to the total."
+    },
+    {
+      "id": "i4-missing-share",
+      "type": "numeric",
+      "expected": 0.25,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.001
+      },
+      "rationale": "Shares of a complete total add up to 1, so the fourth share is 1 - 0.4 - 0.2 - 0.15 = 0.25."
+    }
+  ]
+}

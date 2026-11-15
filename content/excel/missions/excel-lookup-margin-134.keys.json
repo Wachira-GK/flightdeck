@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-lookup-margin-134",
+  "items": [
+    {
+      "id": "m1-margin-kes",
+      "type": "numeric",
+      "expected": 469,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The price of SD-120 is 899 and the cost is 430, so the margin is 899 - 430 = 469 KES."
+    },
+    {
+      "id": "m2-margin-pct",
+      "type": "numeric",
+      "expected": 55.9,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "The margin of SL-075 is 499 - 220 = 279 KES. Divided by the price of 499 this is 0.5591, which is 55.9% to 1 decimal place."
+    },
+    {
+      "id": "m3-markup-pct",
+      "type": "numeric",
+      "expected": 81.7,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0.05
+      },
+      "rationale": "The margin of SN-450 is 1999 - 1100 = 899 KES. Mark-up divides this by the cost of 1100, which gives 0.8173, or 81.7% to 1 decimal place."
+    },
+    {
+      "id": "m4-formula",
+      "type": "single-choice",
+      "correctOptionId": "price",
+      "rationale": "Margin percentage is the margin divided by the selling price, which is D2/C2. D2/B2 divides by the cost and gives the mark-up. B2/C2 gives the cost as a share of the price, and C2/D2 is the price divided by the margin, which is not a useful measure."
+    }
+  ]
+}

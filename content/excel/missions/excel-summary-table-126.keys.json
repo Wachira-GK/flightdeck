@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-summary-table-126",
+  "items": [
+    {
+      "id": "l1-sandals",
+      "type": "numeric",
+      "expected": 115,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Sandals rows are 45 and 70, which add to 115."
+    },
+    {
+      "id": "l2-misspelt",
+      "type": "numeric",
+      "expected": 110,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "A line spelt \"Boot\" does not match \"Boots\", so it is missed by the Boots row and by every other row. The table total is short by that line's sales, 110K, and the cross-check would flag it."
+    },
+    {
+      "id": "l3-anchors",
+      "type": "single-choice",
+      "correctOptionId": "e2",
+      "rationale": "E2 is relative, so it becomes E3, E4 and picks up each category in turn. The $ signs lock the two list ranges so every row searches the same full list."
+    },
+    {
+      "id": "l4-why-check",
+      "type": "single-choice",
+      "correctOptionId": "missed-lines",
+      "rationale": "Lines with a misspelt or missing category fall out of every SUMIF, so the table total no longer equals the list total (here the list total is 590K). The check compares the two and shows a message when they differ. It does not test speed, rounding or prices."
+    }
+  ]
+}

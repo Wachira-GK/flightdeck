@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-margin-134",
+  "trackId": "excel",
+  "code": "EX-134",
+  "title": "Margin from looked-up cost and price",
+  "summary": "Look up cost and price by product code, then work out the margin in KES and as a percentage of the price.",
+  "estimatedMinutes": 18,
+  "passMark": 0.75,
+  "exerciseId": "lookup-margin-calc",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The buying team wants to check the margin on a short list of products. The product list holds the cost and the selling price for each code. For every code you need the cost, the price, the margin in KES and the margin as a percentage."
+        },
+        {
+          "type": "paragraph",
+          "text": "XLOOKUP will fetch cost and price. Ordinary subtraction and division then give the margin. Be careful which number you divide by, because margin and mark-up are different measures."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: combine two XLOOKUPs with simple arithmetic to calculate margin, and tell margin on price from mark-up on cost.",
+            "Time: about 18 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Product list in G1:J6 (KES, prices excluding VAT)",
+          "columns": [
+            "Row",
+            "G: Code",
+            "H: Product",
+            "I: Cost",
+            "J: Price"
+          ],
+          "rows": [
+            [
+              "2",
+              "SS-210",
+              "School shoe",
+              "1,350",
+              "2,499"
+            ],
+            [
+              "3",
+              "SN-450",
+              "Canvas sneaker",
+              "1,100",
+              "1,999"
+            ],
+            [
+              "4",
+              "SD-120",
+              "Ladies sandal",
+              "430",
+              "899"
+            ],
+            [
+              "5",
+              "BT-330",
+              "Ankle boot",
+              "2,600",
+              "4,599"
+            ],
+            [
+              "6",
+              "SL-075",
+              "Slipper",
+              "220",
+              "499"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(A2,$G$2:$G$6,$I$2:$I$6)",
+          "text": "Looks up the code in A2 and returns the cost. Use $J$2:$J$6 as the return range for the price."
+        },
+        {
+          "type": "formula",
+          "formula": "=C2-B2",
+          "text": "Margin in KES is price minus cost, where B2 is the looked-up cost and C2 is the looked-up price."
+        },
+        {
+          "type": "formula",
+          "formula": "=D2/C2",
+          "text": "Margin percentage is the margin divided by the price. It tells you how many shillings of every 100 shillings of sales are margin."
+        },
+        {
+          "type": "paragraph",
+          "text": "Example for SD-120: cost 430 and price 899 give a margin of 469 KES. As a share of the price this is 52.2%."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Margin % divides the margin by the selling price. Mark-up % divides the same margin by the cost. For the same product mark-up is always larger than margin, when the cost is below the price.",
+            "In this simulator percentages are plain decimals, so 0.52 means 52%. There is no percentage format, so you multiply by 100 yourself when you want to say it as a percentage.",
+            "Look up cost and price in separate columns. Then the margin formulas are short and easy to check."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: sanity-check one line by hand. If a product costs 100 and sells for 150, the margin is 50, which is 33.3% of the price but 50% of the cost."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the product list from Training (G1:J6). Give percentages to 1 decimal place, for example 52.2 for 52.2%."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "m1-margin-kes",
+            "m2-margin-pct",
+            "m3-markup-pct",
+            "m4-formula"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Fetch cost and price with two XLOOKUPs using the same code.",
+            "Margin in KES = price minus cost.",
+            "Margin % = margin / price. Mark-up % = margin / cost.",
+            "In this simulator 0.52 means 52%, because there are no percentage formats."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Pulling cost and price from one list keeps margins correct whenever either number changes."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "m1-margin-kes",
+        "type": "numeric",
+        "prompt": "What is the margin in KES for SD-120 (price minus cost)?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "m2-margin-pct",
+        "type": "numeric",
+        "prompt": "What is the margin percentage of SL-075 (margin divided by price), to 1 decimal place? Give the answer as a percentage, for example 52.2.",
+        "answerHint": "Percentage, 1 decimal place"
+      },
+      {
+        "id": "m3-markup-pct",
+        "type": "numeric",
+        "prompt": "What is the mark-up percentage of SN-450 (margin divided by cost), to 1 decimal place? Give the answer as a percentage, for example 12.3.",
+        "answerHint": "Percentage, 1 decimal place"
+      },
+      {
+        "id": "m4-formula",
+        "type": "single-choice",
+        "prompt": "In the sheet, B2 holds the cost, C2 the price and D2 the margin in KES. Which formula gives the margin percentage on the selling price?",
+        "options": [
+          {
+            "id": "cost",
+            "label": "=D2/B2"
+          },
+          {
+            "id": "price",
+            "label": "=D2/C2"
+          },
+          {
+            "id": "share",
+            "label": "=B2/C2"
+          },
+          {
+            "id": "flip",
+            "label": "=C2/D2"
+          }
+        ]
+      }
+    ]
+  }
+}

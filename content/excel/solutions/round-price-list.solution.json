@@ -1,0 +1,17 @@
+{
+  "cells": {
+    "C2": "=ROUND(B2,2)",
+    "C3": "=ROUND(B3,2)",
+    "C4": "=ROUND(B4,2)",
+    "C5": "=ROUND(B5,2)",
+    "D2": "=ROUND(B2,0)",
+    "D3": "=ROUND(B3,0)",
+    "D4": "=ROUND(B4,0)",
+    "D5": "=ROUND(B5,0)",
+    "E2": "=ROUND(B2,-1)",
+    "E3": "=ROUND(B3,-1)",
+    "E4": "=ROUND(B4,-1)",
+    "E5": "=ROUND(B5,-1)",
+    "D7": "=SUM(D2:D5)"
+  }
+}

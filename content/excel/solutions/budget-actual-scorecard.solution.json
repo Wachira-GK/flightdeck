@@ -1,0 +1,20 @@
+{
+  "cells": {
+    "D2": "=C2-B2",
+    "D3": "=C3-B3",
+    "D4": "=C4-B4",
+    "D5": "=C5-B5",
+    "D6": "=C6-B6",
+    "E2": "=ROUND(D2/B2*100,1)",
+    "E3": "=ROUND(D3/B3*100,1)",
+    "E4": "=ROUND(D4/B4*100,1)",
+    "E5": "=ROUND(D5/B5*100,1)",
+    "E6": "=ROUND(D6/B6*100,1)",
+    "F2": "=IF(ABS(E2)>$I$2,\"Miss\",\"On track\")",
+    "F3": "=IF(ABS(E3)>$I$2,\"Miss\",\"On track\")",
+    "F4": "=IF(ABS(E4)>$I$2,\"Miss\",\"On track\")",
+    "F5": "=IF(ABS(E5)>$I$2,\"Miss\",\"On track\")",
+    "F6": "=IF(ABS(E6)>$I$2,\"Miss\",\"On track\")",
+    "I3": "=COUNTIF(F2:F6,\"Miss\")"
+  }
+}

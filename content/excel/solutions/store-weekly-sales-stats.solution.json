@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "F2": "=AVERAGE(B2:E2)",
+    "G2": "=MAX(B2:E2)",
+    "H2": "=MIN(B2:E2)",
+    "F3": "=AVERAGE(B3:E3)",
+    "G3": "=MAX(B3:E3)",
+    "H3": "=MIN(B3:E3)",
+    "F4": "=AVERAGE(B4:E4)",
+    "G4": "=MAX(B4:E4)",
+    "H4": "=MIN(B4:E4)",
+    "F5": "=AVERAGE(B5:E5)",
+    "G5": "=MAX(B5:E5)",
+    "H5": "=MIN(B5:E5)"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "id": "averageif-region-average",
+  "version": 1,
+  "title": "Average sales per store by region",
+  "objective": "Calculate the average per store for each region with AVERAGEIF and compare one region with the overall average.",
+  "instructions": "The sales list is in A1:C11. In F2:F4, use AVERAGEIF to find the average Sales (K) per store for the region named in E2:E4. Fix both ranges with $ signs and point the criteria at the region cell. In F5, use AVERAGE to find the average of all ten stores. In F6, subtract the all-store average (F5) from the Nairobi average (F2). Do not round; the answers may have decimals.",
+  "grid": {
+    "rows": 11,
+    "cols": 6
+  },
+  "starter": {
+    "A1": "Store",
+    "B1": "Region",
+    "C1": "Sales (K)",
+    "E1": "Region",
+    "F1": "Average per store (K)",
+    "E2": "Nairobi",
+    "E3": "Mombasa",
+    "E4": "Kisumu",
+    "E5": "All stores",
+    "E6": "Nairobi minus all stores",
+    "A2": "Westlands",
+    "B2": "Nairobi",
+    "C2": "120",
+    "A3": "Nyali",
+    "B3": "Mombasa",
+    "C3": "85",
+    "A4": "Kondele",
+    "B4": "Kisumu",
+    "C4": "64",
+    "A5": "Karen",
+    "B5": "Nairobi",
+    "C5": "150",
+    "A6": "Bamburi",
+    "B6": "Mombasa",
+    "C6": "92",
+    "A7": "Eastleigh",
+    "B7": "Nairobi",
+    "C7": "98",
+    "A8": "Milimani",
+    "B8": "Kisumu",
+    "C8": "71",
+    "A9": "Likoni",
+    "B9": "Mombasa",
+    "C9": "110",
+    "A10": "Kibuye",
+    "B10": "Kisumu",
+    "C10": "58",
+    "A11": "Kilimani",
+    "B11": "Nairobi",
+    "C11": "135"
+  },
+  "editableCells": [
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "allowedFunctions": [
+    "AVERAGEIF",
+    "AVERAGE"
+  ],
+  "hints": [
+    "AVERAGEIF has three parts: =AVERAGEIF(where to look, what to match, what to average).",
+    "For F2 look in the Region column ($B$2:$B$11), match E2 and average the Sales column ($C$2:$C$11). Copy the pattern for F3 and F4.",
+    "F5 is =AVERAGE(C2:C11), which ignores the regions. F6 is a simple subtraction: =F2-F5."
+  ],
+  "namedRanges": {},
+  "timeoutMs": 500
+}

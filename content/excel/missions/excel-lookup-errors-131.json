@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-lookup-errors-131",
+  "trackId": "excel",
+  "code": "EX-131",
+  "title": "XLOOKUP not-found vs IFERROR",
+  "summary": "Learn what the XLOOKUP fourth argument catches, what IFERROR catches, and when to use each.",
+  "estimatedMinutes": 18,
+  "passMark": 0.75,
+  "exerciseId": "lookup-error-handling",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A planner at head office is calculating sell-through for products in a store: units sold divided by opening stock. The product list has a code, the opening stock and the units sold. Some codes in the store file are not on the list, and one new product has stock of zero."
+        },
+        {
+          "type": "paragraph",
+          "text": "Two different tools handle problems. XLOOKUP has its own fourth argument for a missing code. IFERROR wraps any formula and replaces any error. They catch different things, so you need to know which one to use."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: choose between the if_not_found argument and IFERROR, and use IFERROR to protect a calculation built on lookups.",
+            "Time: about 18 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])",
+          "text": "The fourth argument is used only when the code is not found. It does not catch any other error."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(value, value_if_error)",
+          "text": "IFERROR shows value unless value is an error of any kind (#N/A, #DIV/0!, #VALUE! and others). In that case it shows value_if_error instead."
+        },
+        {
+          "type": "table",
+          "caption": "What each tool catches",
+          "columns": [
+            "Problem",
+            "if_not_found",
+            "IFERROR"
+          ],
+          "rows": [
+            [
+              "Code is missing, so XLOOKUP gives #N/A",
+              "Yes",
+              "Yes"
+            ],
+            [
+              "Divide by zero (#DIV/0!) in the next step",
+              "No",
+              "Yes"
+            ],
+            [
+              "Text used in a sum (#VALUE!)",
+              "No",
+              "Yes"
+            ],
+            [
+              "A mistake in your own formula, such as the wrong range",
+              "No (only a missing code)",
+              "Yes, which can hide the mistake"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=XLOOKUP(\"ZZ-999\",$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+          "text": "ZZ-999 is not on the list, so the cell shows the text Not listed. The text is a good clear message, but you cannot use it in arithmetic."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(D2/C2,\"n/a\")",
+          "text": "If C2 is zero, D2/C2 would show #DIV/0!. If C2 holds the text Not listed, it would show #VALUE!. IFERROR replaces both with n/a."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Use if_not_found when you only want to handle a missing code and want other errors to stay visible.",
+            "Use IFERROR to protect a calculation that can fail in several ways, such as a division.",
+            "Be careful: IFERROR hides every error, including a typing mistake in your own formula. Use it on the calculation you know can fail, not on every cell."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Use the formulas and table from Training. Give decimals to 2 decimal places if needed."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "e1-div0",
+            "e2-text-times",
+            "e3-sellthrough",
+            "e4-hidden-errors"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "The XLOOKUP fourth argument handles one problem only: the code is not found.",
+            "IFERROR replaces any error from the formula inside it, such as #DIV/0! or #VALUE!.",
+            "Text such as Not listed cannot be used in arithmetic, so wrap calculations in IFERROR.",
+            "IFERROR can hide real mistakes, so use it on purpose, not on every cell."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Use the lookup argument for missing codes and IFERROR for calculations that can fail."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "e1-div0",
+        "type": "single-choice",
+        "prompt": "The code GB-610 is on the list, but its opening stock is 0. In the sheet, C2 holds that stock (0) and D2 holds the units sold, so D2/C2 shows #DIV/0!. Which tool replaces this #DIV/0! with n/a?",
+        "options": [
+          {
+            "id": "notfound",
+            "label": "The if_not_found argument of XLOOKUP"
+          },
+          {
+            "id": "iferror",
+            "label": "IFERROR around D2/C2"
+          },
+          {
+            "id": "both",
+            "label": "Neither, #DIV/0! cannot be replaced"
+          },
+          {
+            "id": "round",
+            "label": "ROUND"
+          }
+        ]
+      },
+      {
+        "id": "e2-text-times",
+        "type": "single-choice",
+        "prompt": "ZZ-999 is not on the list. What does =XLOOKUP(\"ZZ-999\",$G$2:$G$6,$H$2:$H$6,\"Not listed\")*2 show?",
+        "options": [
+          {
+            "id": "na",
+            "label": "#N/A"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "text",
+            "label": "Not listed"
+          },
+          {
+            "id": "value",
+            "label": "#VALUE!"
+          }
+        ]
+      },
+      {
+        "id": "e3-sellthrough",
+        "type": "numeric",
+        "prompt": "A product has opening stock of 48 and units sold of 36. Give the sell-through (units sold divided by opening stock) as a decimal, for example 0.5.",
+        "answerHint": "Decimal, for example 0.5"
+      },
+      {
+        "id": "e4-hidden-errors",
+        "type": "single-choice",
+        "prompt": "Why is it risky to wrap every formula on a sheet in IFERROR(..., \"n/a\")?",
+        "options": [
+          {
+            "id": "slow",
+            "label": "It makes the file larger"
+          },
+          {
+            "id": "numbers",
+            "label": "It turns numbers into text"
+          },
+          {
+            "id": "hide",
+            "label": "It also hides real mistakes, such as a wrong range, so the problem is not noticed"
+          },
+          {
+            "id": "case",
+            "label": "It makes text case-sensitive"
+          }
+        ]
+      }
+    ]
+  }
+}

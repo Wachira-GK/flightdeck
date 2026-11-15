@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-order-total-130",
+  "items": [
+    {
+      "id": "o1-line-total",
+      "type": "numeric",
+      "expected": 19992,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "The price of SS-210 is 2,499, and 2,499 x 8 = 19,992 KES."
+    },
+    {
+      "id": "o2-order-total",
+      "type": "numeric",
+      "expected": 18683,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Each line is price x quantity: 5 x 899 = 4495, 2 x 4599 = 9198 and 10 x 499 = 4990. Adding them gives 18,683 KES."
+    },
+    {
+      "id": "o3-missing-code",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "The lookup on the bad line returns #N/A, and SUM does not skip error values, so the error passes into the order total. The fix is to correct the code or handle missing codes explicitly."
+    },
+    {
+      "id": "o4-why-lookup",
+      "type": "single-choice",
+      "correctOptionId": "update",
+      "rationale": "A looked-up price comes from one list, so a price review is made in one place and every line total recalculates. Typed prices would have to be changed by hand on every line. Typing numbers in formulas is allowed, but it is risky, and XLOOKUP neither rounds nor sorts."
+    }
+  ]
+}

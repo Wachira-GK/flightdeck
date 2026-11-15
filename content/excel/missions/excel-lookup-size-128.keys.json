@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-lookup-size-128",
+  "items": [
+    {
+      "id": "s1-run-size-40",
+      "type": "numeric",
+      "expected": 16,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Size 40 is in row 6 of the table and the Pairs in run column holds 16 on that row, so XLOOKUP returns 16."
+    },
+    {
+      "id": "s2-text-size",
+      "type": "single-choice",
+      "correctOptionId": "na",
+      "rationale": "XLOOKUP does not convert between text and numbers: the text 39 and the number 39 are different values, so nothing matches and the result is #N/A. It also never picks a nearest size, because it only does exact matches."
+    },
+    {
+      "id": "s3-run-value",
+      "type": "numeric",
+      "expected": 14994,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Size 43 has 6 pairs in the run and a price of 2,499, and 6 x 2,499 = 14,994 KES."
+    },
+    {
+      "id": "s4-new-size",
+      "type": "single-choice",
+      "correctOptionId": "extend",
+      "rationale": "The ranges are fixed to rows 2 to 10, so a new row 11 is never searched. The table row must exist and the lookup and return ranges must be extended to include it. The fourth argument only changes the message shown when nothing matches."
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-nested-if-104",
+  "trackId": "excel",
+  "code": "EX-104",
+  "title": "Commission tiers with nested IF",
+  "summary": "Look up a sales rate from a tier table by placing one IF inside another.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "commission-tier-if-chain",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The Eldoret store pays its sales reps a commission on a sliding scale. The more a rep sells in the month, the higher the rate. HR sends you the tier table and the month's sales, and wants every rep's rate by lunchtime."
+        },
+        {
+          "type": "paragraph",
+          "text": "One IF can only choose between two results. A tier table has three, so you place an IF inside another IF. This is called a nested IF. It is the classic way to look up a rate from a table of bands."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: return a rate from a tier table using nested IF and absolute references.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Commission tier table (example values)",
+          "columns": [
+            "Sales from (KES)",
+            "Rate"
+          ],
+          "rows": [
+            [
+              "0",
+              "2%"
+            ],
+            [
+              "50,000",
+              "4%"
+            ],
+            [
+              "100,000",
+              "6%"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "A rep gets the rate of the highest tier they have reached. Selling 87,500 has reached the 50,000 tier but not the 100,000 tier, so the rate is 4%."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(B2>=$F$4,$G$4,IF(B2>=$F$3,$G$3,$G$2))",
+          "text": "Read it from the outside in. If sales (B2) have reached the top tier in F4, return its rate in G4. Otherwise, run the second IF: if they have reached the middle tier in F3, return G3. If neither is true, the rep is in the first tier, so return G2."
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. Sales are 87,500. Is 87,500 >= 100,000? No, so Excel moves to the inner IF. Is 87,500 >= 50,000? Yes, so the answer is the middle rate, 4%."
+        },
+        {
+          "type": "paragraph",
+          "text": "Always test the highest tier first. If you test the lowest tier first, every rep passes it and everyone gets 2%."
+        },
+        {
+          "type": "paragraph",
+          "text": "Use >= (at or above), because a rep who sells exactly 50,000 has reached the 50,000 tier. The $ signs in $F$4 lock the tier table, so the formula still points at the table when you copy it down to the next rep. B2 has no $ signs on purpose: it must move to B3, B4 and so on."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: a table with n tiers needs n - 1 IF functions. The last tier needs no test, because it is what remains. Also note that the simulator stores 4% as 0.04, because it has no number formats."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on nested IF and tier tables. Type numbers without commas, for example 3500."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-commission-amount",
+            "i2-boundary",
+            "i3-order",
+            "i4-count-ifs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "A nested IF places one IF inside the value_if_false part of another, so one formula can choose between three or more results.",
+            "Test the highest tier first and use >= so the boundary amount belongs to the higher tier.",
+            "Point at the tier table with $ signs (absolute references) so the table stays fixed when you copy the formula down.",
+            "A table with n tiers needs n - 1 IF functions."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: averages, minimums and maximums, to describe a week of store sales in three numbers."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-commission-amount",
+        "type": "numeric",
+        "prompt": "Using the tier table in the training (2% from 0, 4% from 50,000, 6% from 100,000), a rep sells KES 64,000. How much commission, in KES, does the rep earn?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i2-boundary",
+        "type": "single-choice",
+        "prompt": "A rep sells exactly KES 50,000. With the formula =IF(B2>=$F$4,$G$4,IF(B2>=$F$3,$G$3,$G$2)), which rate does the rep get?",
+        "options": [
+          {
+            "id": "two",
+            "label": "2%, the first tier"
+          },
+          {
+            "id": "four",
+            "label": "4%, the middle tier"
+          },
+          {
+            "id": "six",
+            "label": "6%, the top tier"
+          },
+          {
+            "id": "error",
+            "label": "An error, because 50,000 is on the boundary"
+          }
+        ]
+      },
+      {
+        "id": "i3-order",
+        "type": "single-choice",
+        "prompt": "Why does the formula test the highest tier (>= $F$4) first?",
+        "options": [
+          {
+            "id": "first-true",
+            "label": "IF stops at the first test that is TRUE, so testing the lowest tier first would give everyone the lowest rate"
+          },
+          {
+            "id": "faster",
+            "label": "Excel calculates the largest numbers faster"
+          },
+          {
+            "id": "required",
+            "label": "Excel only accepts tiers listed from highest to lowest"
+          },
+          {
+            "id": "no-reason",
+            "label": "The order makes no difference to the result"
+          }
+        ]
+      },
+      {
+        "id": "i4-count-ifs",
+        "type": "numeric",
+        "prompt": "A new plan has 5 commission tiers. How many IF functions does the nested formula need?",
+        "answerHint": "A whole number"
+      }
+    ]
+  }
+}

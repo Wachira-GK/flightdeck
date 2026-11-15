@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "missionSlug": "excel-join-141",
+  "items": [
+    {
+      "id": "l1-join-bar",
+      "type": "single-choice",
+      "correctOptionId": "spaced",
+      "rationale": "The text between the quotes is \" | \", a bar with one space on each side, so the result is NBO | 42. Without the spaces inside the quotes you would get NBO|42."
+    },
+    {
+      "id": "l2-join-number",
+      "type": "single-choice",
+      "correctOptionId": "text",
+      "rationale": "The & operator always produces text, so joining 1999 with an empty text gives the text 1999. It no longer matches the number 1999 in a comparison or lookup."
+    },
+    {
+      "id": "l3-label-length",
+      "type": "numeric",
+      "expected": 30,
+      "tolerance": {
+        "kind": "absolute",
+        "value": 0
+      },
+      "rationale": "Every character counts: NBO-0123 is 8, then space, bar and space add 3, Canvas sneaker is 14, space, bar and space add 3 more, and 42 adds 2. Total 8 + 3 + 14 + 3 + 2 = 30."
+    },
+    {
+      "id": "l4-missing-space",
+      "type": "single-choice",
+      "correctOptionId": "stuck",
+      "rationale": "& adds nothing between the pieces, so the two cells run together. To get a space you must join one yourself: =C2&\" \"&D2."
+    }
+  ]
+}

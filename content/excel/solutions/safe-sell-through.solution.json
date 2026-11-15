@@ -1,0 +1,14 @@
+{
+  "cells": {
+    "E2": "=IFERROR(C2/B2,\"No stock\")",
+    "E3": "=IFERROR(C3/B3,\"No stock\")",
+    "E4": "=IFERROR(C4/B4,\"No stock\")",
+    "E5": "=IFERROR(C5/B5,\"No stock\")",
+    "E6": "=IFERROR(C6/B6,\"No stock\")",
+    "F2": "=IFERROR((B2-C2)/D2,\"No sales\")",
+    "F3": "=IFERROR((B3-C3)/D3,\"No sales\")",
+    "F4": "=IFERROR((B4-C4)/D4,\"No sales\")",
+    "F5": "=IFERROR((B5-C5)/D5,\"No sales\")",
+    "F6": "=IFERROR((B6-C6)/D6,\"No sales\")"
+  }
+}

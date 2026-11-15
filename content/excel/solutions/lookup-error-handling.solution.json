@@ -1,0 +1,19 @@
+{
+  "cells": {
+    "C2": "=XLOOKUP(B2,$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+    "D2": "=XLOOKUP(B2,$G$2:$G$6,$I$2:$I$6,\"Not listed\")",
+    "E2": "=IFERROR(D2/C2,\"n/a\")",
+    "C3": "=XLOOKUP(B3,$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+    "D3": "=XLOOKUP(B3,$G$2:$G$6,$I$2:$I$6,\"Not listed\")",
+    "E3": "=IFERROR(D3/C3,\"n/a\")",
+    "C4": "=XLOOKUP(B4,$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+    "D4": "=XLOOKUP(B4,$G$2:$G$6,$I$2:$I$6,\"Not listed\")",
+    "E4": "=IFERROR(D4/C4,\"n/a\")",
+    "C5": "=XLOOKUP(B5,$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+    "D5": "=XLOOKUP(B5,$G$2:$G$6,$I$2:$I$6,\"Not listed\")",
+    "E5": "=IFERROR(D5/C5,\"n/a\")",
+    "C6": "=XLOOKUP(B6,$G$2:$G$6,$H$2:$H$6,\"Not listed\")",
+    "D6": "=XLOOKUP(B6,$G$2:$G$6,$I$2:$I$6,\"Not listed\")",
+    "E6": "=IFERROR(D6/C6,\"n/a\")"
+  }
+}

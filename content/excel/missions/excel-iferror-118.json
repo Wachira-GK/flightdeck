@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-iferror-118",
+  "trackId": "excel",
+  "code": "EX-118",
+  "title": "IFERROR: readable fallbacks for #DIV/0!",
+  "summary": "Wrap sell-through and stock cover divisions in IFERROR so new stores and zero sales show a clear message.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "safe-sell-through",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A new store has not received stock yet, so its sell-through is sold divided by zero received. Excel shows #DIV/0!. In a report that goes to head office, that looks like a mistake."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your job is to build sell-through and stock cover formulas that stay readable when a division is impossible. IFERROR replaces an error with a message you choose."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use IFERROR to replace errors with a useful fallback.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=IFERROR(value, value_if_error)",
+          "text": "IFERROR returns the first argument. If that is an error, it returns the second argument instead."
+        },
+        {
+          "type": "formula",
+          "formula": "=IFERROR(C2/B2,\"No stock\")",
+          "text": "Sold divided by received. If received is 0, show No stock instead of #DIV/0!."
+        },
+        {
+          "type": "table",
+          "caption": "IFERROR in action",
+          "columns": [
+            "Received",
+            "Sold",
+            "Result of IFERROR(C/B,\"No stock\")"
+          ],
+          "rows": [
+            [
+              "400",
+              "260",
+              "0.65"
+            ],
+            [
+              "250",
+              "175",
+              "0.7"
+            ],
+            [
+              "0",
+              "0",
+              "No stock"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Dividing by zero is impossible, so Excel returns #DIV/0!. Other errors exist too, such as #VALUE! when you do arithmetic on text. IFERROR catches all of them."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: choose a fallback that tells the reader what happened. A message such as No stock is better than 0, because 0 looks like a real result: a store that received stock and sold none."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: IFERROR also hides your own mistakes, such as a wrong cell reference that causes an error. Check the formula without IFERROR first, then wrap it."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on IFERROR. Type numbers without commas, for example 0.4."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-fallback",
+            "i2-sell-through",
+            "i3-no-error",
+            "i4-good-fallback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "IFERROR(value, value_if_error) replaces any error with your fallback.",
+            "Wrap the whole division: =IFERROR(C2/B2,\"No stock\").",
+            "Pick a fallback that explains the situation, not one that looks like data.",
+            "Check the plain formula first, because IFERROR also hides genuine mistakes."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: stock status labels with nested IF and AND."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-fallback",
+        "type": "single-choice",
+        "prompt": "What does =IFERROR(10/0,\"n/a\") return?",
+        "options": [
+          {
+            "id": "na",
+            "label": "n/a"
+          },
+          {
+            "id": "div",
+            "label": "#DIV/0!"
+          },
+          {
+            "id": "zero",
+            "label": "0"
+          },
+          {
+            "id": "ten",
+            "label": "10"
+          }
+        ]
+      },
+      {
+        "id": "i2-sell-through",
+        "type": "numeric",
+        "prompt": "C2 holds 180 units sold and B2 holds 240 units received. What does =IFERROR(C2/B2,0) return? Give the decimal.",
+        "answerHint": "A decimal, for example 0.4"
+      },
+      {
+        "id": "i3-no-error",
+        "type": "numeric",
+        "prompt": "What does =IFERROR(120/4,\"None\") return?",
+        "answerHint": "Whole number"
+      },
+      {
+        "id": "i4-good-fallback",
+        "type": "single-choice",
+        "prompt": "A new store has received no stock. Which fallback is best in a sell-through column?",
+        "options": [
+          {
+            "id": "text",
+            "label": "\"No stock\", because it explains why there is no percentage"
+          },
+          {
+            "id": "zero",
+            "label": "0, because it keeps the column numeric"
+          },
+          {
+            "id": "blank",
+            "label": "\"\", because it looks cleaner"
+          },
+          {
+            "id": "hundred",
+            "label": "1, so the store looks successful"
+          }
+        ]
+      }
+    ]
+  }
+}

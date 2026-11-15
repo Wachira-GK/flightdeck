@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-share-107",
+  "trackId": "excel",
+  "code": "EX-107",
+  "title": "Share of total with an absolute reference",
+  "summary": "Turn each region's sales into a share of the total, and see why 0.25 means 25%.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "region-share-of-total",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The managing director asks which regions carry the business. Raw sales do not answer that quickly. A percentage does: Nairobi is 45% of sales, Eldoret only 5%."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will work out each region's share of total sales. The key idea is that every share divides by the same total cell, so you must lock that cell with an absolute reference. All figures are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate share of total as part / total, using $B$7 for the total.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=B2/$B$7",
+          "text": "Share of total = part divided by total. B2 is the region's sales and B7 is the total. The $ signs lock the total in place."
+        },
+        {
+          "type": "paragraph",
+          "text": "Percent means out of 100. So 35% is 35 / 100, which is 0.35, and 45% is 0.45. A share worked out as part / total is already a decimal. Formatting it as a percentage (with the % button in Excel) only changes how it looks. In this simulator there are no number formats, so you will see 0.6, not 60%."
+        },
+        {
+          "type": "table",
+          "caption": "Decimals and percentages",
+          "columns": [
+            "Decimal",
+            "Percentage"
+          ],
+          "rows": [
+            [
+              "0.6",
+              "60%"
+            ],
+            [
+              "0.4",
+              "40%"
+            ],
+            [
+              "0.05",
+              "5%"
+            ],
+            [
+              "1",
+              "100%"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. Regions sell 540, 300, 180, 120 and 60 (K), so the total is 1,200. Nairobi's share is 540 / 1,200 = 0.45, which is 45%."
+        },
+        {
+          "type": "paragraph",
+          "text": "Why $B$7? When you copy =B2/B7 down one row, both references move down and you get =B3/B8, which divides by an empty cell. The dollar signs make a reference absolute: =B3/$B$7 still divides by B7. Use them whenever many formulas point at the same cell."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: shares of a complete total add up to 1 (100%). Add them up as a check. If they do not, something is missing from the total."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on share of total. Type numbers without commas or the % sign."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-share",
+            "i2-decimal",
+            "i3-absolute",
+            "i4-missing-share"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Share of total = part / total.",
+            "A share is a decimal: 0.6 is the same as 60%. Percent means out of 100.",
+            "Lock the total with an absolute reference such as $B$7 before copying the formula down.",
+            "Shares of a complete total add up to 1, which is a good check."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: percentage change, to compare this year with last year."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-share",
+        "type": "numeric",
+        "prompt": "Regional sales add up to a total of 2,000K and Kisumu sold 350K. What is Kisumu's share of the total, as a percentage? Type 25 for 25%.",
+        "answerHint": "A percentage, for example 25 for 25%"
+      },
+      {
+        "id": "i2-decimal",
+        "type": "single-choice",
+        "prompt": "A share cell shows 0.4. What share of the total is that?",
+        "options": [
+          {
+            "id": "forty",
+            "label": "40%"
+          },
+          {
+            "id": "four",
+            "label": "4%"
+          },
+          {
+            "id": "point-four",
+            "label": "0.4%"
+          },
+          {
+            "id": "four-hundred",
+            "label": "400%"
+          }
+        ]
+      },
+      {
+        "id": "i3-absolute",
+        "type": "single-choice",
+        "prompt": "The total is in B7. You write =B2/B7 in C2 and copy it down to C3. What goes wrong?",
+        "options": [
+          {
+            "id": "moves",
+            "label": "C3 becomes =B3/B8, which divides by an empty cell and gives #DIV/0!"
+          },
+          {
+            "id": "nothing",
+            "label": "Nothing, the formula copies correctly"
+          },
+          {
+            "id": "doubles",
+            "label": "C3 shows double the correct share"
+          },
+          {
+            "id": "blank",
+            "label": "C3 stays empty"
+          }
+        ]
+      },
+      {
+        "id": "i4-missing-share",
+        "type": "numeric",
+        "prompt": "Four regions have shares of 0.4, 0.2, 0.15 and a fourth region that completes the total. What is the fourth share, as a decimal?",
+        "answerHint": "A decimal, for example 0.1"
+      }
+    ]
+  }
+}

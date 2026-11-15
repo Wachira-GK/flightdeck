@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-count-106",
+  "trackId": "excel",
+  "code": "EX-106",
+  "title": "Counting entries with COUNT",
+  "summary": "Count how many stock lines have a number, and see what COUNT ignores.",
+  "estimatedMinutes": 12,
+  "passMark": 0.75,
+  "exerciseId": "stock-count-progress",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "During a stock count the store team writes pairs counted next to each style. Some lines are still empty, some say n/a and some say TBC. The area manager asks: how many lines have been counted, and how many are left?"
+        },
+        {
+          "type": "paragraph",
+          "text": "You will use COUNT to answer that, and then use the count to work out an average. All styles and figures are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: use COUNT to count numbers in a range and understand what it ignores.",
+            "Time: about 12 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=COUNT(C2:C11)",
+          "text": "COUNT returns how many cells in the range contain a number."
+        },
+        {
+          "type": "table",
+          "caption": "What COUNT does with each kind of cell",
+          "columns": [
+            "Cell holds",
+            "Counted?",
+            "Why"
+          ],
+          "rows": [
+            [
+              "24",
+              "Yes",
+              "it is a number"
+            ],
+            [
+              "0",
+              "Yes",
+              "zero is a number: the line was counted and nothing is left"
+            ],
+            [
+              "n/a or TBC",
+              "No",
+              "it is text"
+            ],
+            [
+              "(empty)",
+              "No",
+              "nothing has been entered"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. Cells hold 24, 0, n/a, empty and 15. COUNT returns 3, which is 24, 0 and 15."
+        },
+        {
+          "type": "paragraph",
+          "text": "Use the count in other formulas. Lines still to count is lines in the list minus lines counted. Average pairs per counted line is =SUM(range)/COUNT(range)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: a number stored as text, such as '18 typed with an apostrophe in front, looks like a number but COUNT skips it. If a count looks too low, check for numbers stored as text."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on COUNT. Type numbers without commas."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-count",
+            "i2-zero",
+            "i3-average",
+            "i4-text-number"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "COUNT counts the cells that hold numbers.",
+            "Text, such as n/a, and empty cells are not counted, but 0 is.",
+            "Lines still to count = lines in the list - lines counted.",
+            "A number stored as text is skipped, so a low count can mean a data problem."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: share of total, to turn each region's sales into a percentage."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-count",
+        "type": "numeric",
+        "prompt": "The range B2:B7 holds 12, 0, n/a, 5, an empty cell and 30. What does =COUNT(B2:B7) return?",
+        "answerHint": "A whole number"
+      },
+      {
+        "id": "i2-zero",
+        "type": "single-choice",
+        "prompt": "A store counted a style and found no pairs left, so it typed 0. Does COUNT include that cell?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "Yes, because 0 is a number"
+          },
+          {
+            "id": "no",
+            "label": "No, because 0 means nothing was entered"
+          },
+          {
+            "id": "only-format",
+            "label": "Only if the cell is formatted as a number"
+          },
+          {
+            "id": "error",
+            "label": "No, it returns an error"
+          }
+        ]
+      },
+      {
+        "id": "i3-average",
+        "type": "numeric",
+        "prompt": "The range C2:C7 holds 25, TBC, 40, 0, an empty cell and 15. What does =SUM(C2:C7)/COUNT(C2:C7) return?",
+        "answerHint": "Whole number, in pairs"
+      },
+      {
+        "id": "i4-text-number",
+        "type": "single-choice",
+        "prompt": "One cell in a stock list holds the text '18 (typed with an apostrophe in front). What does COUNT do with it?",
+        "options": [
+          {
+            "id": "ignores",
+            "label": "It ignores it, because the cell holds text even though it looks like a number"
+          },
+          {
+            "id": "counts",
+            "label": "It counts it, because the characters are digits"
+          },
+          {
+            "id": "error",
+            "label": "It returns #VALUE!"
+          },
+          {
+            "id": "zero",
+            "label": "It counts it as 0"
+          }
+        ]
+      }
+    ]
+  }
+}

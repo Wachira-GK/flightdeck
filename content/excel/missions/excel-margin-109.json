@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-margin-109",
+  "trackId": "excel",
+  "code": "EX-109",
+  "title": "Mark-up and margin",
+  "summary": "Work out mark-up and margin from cost and price, and learn why they are different numbers.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "markup-vs-margin",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A buyer says, \"We mark up everything by 50%.\" The finance manager says, \"Our margin target is 30%.\" They are both talking about profit, but they are not talking about the same number."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will work out both for four shoe lines and check each against a margin target. Costs, prices and targets are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate mark-up and margin from cost and price, and explain the difference.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "table",
+          "caption": "Mark-up and margin",
+          "columns": [
+            "Measure",
+            "Formula",
+            "Profit is compared with"
+          ],
+          "rows": [
+            [
+              "Profit",
+              "=Price-Cost",
+              "(the money made per pair)"
+            ],
+            [
+              "Mark-up",
+              "=(Price-Cost)/Cost",
+              "the cost"
+            ],
+            [
+              "Margin",
+              "=(Price-Cost)/Price",
+              "the selling price"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. A pair costs 500 and sells for 700. Profit is 700 - 500 = 200. Mark-up is 200 / 500 = 0.4, which is 40%. Margin is 200 / 700 = 0.286, which is 28.6%."
+        },
+        {
+          "type": "paragraph",
+          "text": "The same profit gives two different percentages because they divide by different numbers. The price is bigger than the cost, so margin is always smaller than mark-up (when there is a profit). A 100% mark-up is only a 50% margin."
+        },
+        {
+          "type": "paragraph",
+          "text": "To set a price from cost and a mark-up, multiply the cost by 1 plus the mark-up. A cost of 400 with a 50% mark-up gives a price of 400 x (1 + 50%) = 600. Do not add 50% of the price: the mark-up is on the cost."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: always say which one you mean. A target margin is a share of the selling price, so it is the right number to compare with a margin target, as you do in column F."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on mark-up and margin. Type numbers without commas or the % sign."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-margin",
+            "i2-markup",
+            "i3-price",
+            "i4-difference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Mark-up = (price - cost) / cost. Margin = (price - cost) / price.",
+            "The same profit gives a smaller margin than mark-up, because the price is bigger than the cost.",
+            "Price from cost and mark-up = cost x (1 + mark-up).",
+            "Keep targets in a cell, such as $G$2, so the check follows when the target changes."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: VAT and discounts, to move between prices with and without VAT."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-margin",
+        "type": "numeric",
+        "prompt": "A pair costs KES 600 and sells for KES 800. What is its margin, as a percentage? Type 25 for 25%.",
+        "answerHint": "A percentage, for example 25 for 25%"
+      },
+      {
+        "id": "i2-markup",
+        "type": "numeric",
+        "prompt": "The same pair costs KES 600 and sells for KES 800. What is its mark-up, as a percentage to 1 decimal place?",
+        "answerHint": "A percentage to 1 decimal place, for example 12.5"
+      },
+      {
+        "id": "i3-price",
+        "type": "numeric",
+        "prompt": "A pair costs KES 400 and the buyer applies a 50% mark-up on cost. What is the selling price, in KES?",
+        "answerHint": "Whole number, in KES"
+      },
+      {
+        "id": "i4-difference",
+        "type": "single-choice",
+        "prompt": "Why is the margin of a profitable item always lower than its mark-up?",
+        "options": [
+          {
+            "id": "bigger-base",
+            "label": "Margin divides the profit by the price, which is bigger than the cost that mark-up divides by"
+          },
+          {
+            "id": "tax",
+            "label": "Margin has tax taken off and mark-up does not"
+          },
+          {
+            "id": "same",
+            "label": "It is not: margin is always higher than mark-up"
+          },
+          {
+            "id": "rounding",
+            "label": "It is only a rounding effect"
+          }
+        ]
+      }
+    ]
+  }
+}

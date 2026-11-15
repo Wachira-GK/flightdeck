@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-growth-108",
+  "trackId": "excel",
+  "code": "EX-108",
+  "title": "Percentage change versus last year",
+  "summary": "Work out growth against last year and protect the formula from a last year of zero.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "store-growth-vs-last-year",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Every monthly review starts with the same question: are we up or down on last year? Sales of 900K mean little until you know last year was 800K."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will work out percentage change for each store. One store opened this year, so its last year figure is zero and the normal formula would fail. You will use IF to guard against that. All figures are fictional."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate growth with (this - last) / last and guard the divide by zero with IF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=(C2-B2)/B2",
+          "text": "Percentage change = (this year - last year) / last year. The brackets make Excel subtract first and then divide."
+        },
+        {
+          "type": "paragraph",
+          "text": "Worked example. Last year was 480 and this year is 600. The change is 600 - 480 = 120. Divided by last year, 120 / 480 = 0.25, which is 25% growth."
+        },
+        {
+          "type": "paragraph",
+          "text": "A fall gives a negative answer. Last year 200 and this year 150 gives (150 - 200) / 200 = -0.25, which is a 25% fall."
+        },
+        {
+          "type": "paragraph",
+          "text": "Always divide by last year, not this year. Last year is the starting point (the base) that the change is measured against."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(B2=0,\"New\",(C2-B2)/B2)",
+          "text": "If last year is 0 the division is impossible and Excel shows #DIV/0!. The IF checks for that first and shows New. Otherwise it calculates growth as usual."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: the simulator has no number formats, so growth of 12.5% appears as 0.125. In Excel you would format the cell as a percentage."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on percentage change. Type numbers without commas or the % sign. A fall is a negative number."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-growth",
+            "i2-decline",
+            "i3-base",
+            "i4-guard"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Percentage change = (this year - last year) / last year.",
+            "A positive answer is growth and a negative answer is a fall.",
+            "Divide by last year, the base, not by this year.",
+            "Guard a possible divide by zero with IF, testing the cell that you divide by."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: mark-up and margin, two ways to talk about profit that are often confused."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-growth",
+        "type": "numeric",
+        "prompt": "A store sold 480K last year and 600K this year. What is its growth, as a percentage? Type 25 for 25%.",
+        "answerHint": "A percentage, for example 25 for 25%"
+      },
+      {
+        "id": "i2-decline",
+        "type": "numeric",
+        "prompt": "A store sold 200K last year and 150K this year. What is its change, as a percentage? Type -10 for a 10% fall.",
+        "answerHint": "A negative percentage for a fall"
+      },
+      {
+        "id": "i3-base",
+        "type": "single-choice",
+        "prompt": "Why does the formula divide by last year and not by this year?",
+        "options": [
+          {
+            "id": "base",
+            "label": "Last year is the starting point, so the change is measured as a share of where we started"
+          },
+          {
+            "id": "bigger",
+            "label": "Last year is always the larger number"
+          },
+          {
+            "id": "excel",
+            "label": "Excel only allows dividing by the first number"
+          },
+          {
+            "id": "same",
+            "label": "It makes no difference; either gives the same answer"
+          }
+        ]
+      },
+      {
+        "id": "i4-guard",
+        "type": "single-choice",
+        "prompt": "Last year is in B6 and this year in C6. B6 can be 0 for a new store. Which formula shows New for it and growth for other stores?",
+        "options": [
+          {
+            "id": "choice-a",
+            "label": "=IF(B6=0,\"New\",(C6-B6)/B6)"
+          },
+          {
+            "id": "swapped",
+            "label": "=IF(B6=0,(C6-B6)/B6,\"New\")"
+          },
+          {
+            "id": "wrong-cell",
+            "label": "=IF(C6=0,\"New\",(C6-B6)/B6)"
+          },
+          {
+            "id": "no-guard",
+            "label": "=(C6-B6)/C6"
+          }
+        ]
+      }
+    ]
+  }
+}

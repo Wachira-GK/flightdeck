@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "slug": "excel-budget-actual-149",
+  "trackId": "excel",
+  "code": "EX-149",
+  "title": "Budget vs actual scorecard",
+  "summary": "Measure how far each store is from its budget, flag the ones outside tolerance and count the misses.",
+  "estimatedMinutes": 15,
+  "passMark": 0.75,
+  "exerciseId": "budget-actual-scorecard",
+  "steps": [
+    {
+      "id": "briefing",
+      "title": "Briefing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "At month end the regional manager opens one sheet: budget against actual for each store. A shortfall matters, but so does a big overshoot, because it can mean the budget was set badly or stock was pushed into one store."
+        },
+        {
+          "type": "paragraph",
+          "text": "You will work out each store's variance in K and in %, flag any store more than 5% away from budget, and count how many stores missed."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Objective: calculate variance and variance %, flag misses with ABS and count them with COUNTIF.",
+            "Time: about 15 minutes.",
+            "You pass the mission at 75% or more in the Assessment."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "blocks": [
+        {
+          "type": "formula",
+          "formula": "=C2-B2",
+          "text": "Variance = actual minus budget. Positive means above budget and negative means below."
+        },
+        {
+          "type": "formula",
+          "formula": "=ROUND(D2/B2*100,1)",
+          "text": "Variance % = variance divided by budget, times 100, rounded to 1 decimal place. It tells you how big the gap is compared with the size of the budget."
+        },
+        {
+          "type": "formula",
+          "formula": "=ABS(number)",
+          "text": "ABS removes the minus sign: ABS(-7.5) is 7.5. It measures how far from budget a store is, in either direction."
+        },
+        {
+          "type": "formula",
+          "formula": "=IF(ABS(E2)>$I$2,\"Miss\",\"On track\")",
+          "text": "If the gap in either direction is bigger than the tolerance in I2, show Miss. The dollar signs lock the tolerance cell."
+        },
+        {
+          "type": "table",
+          "caption": "Worked example, tolerance 5%",
+          "columns": [
+            "Budget",
+            "Actual",
+            "Variance %",
+            "Flag"
+          ],
+          "rows": [
+            [
+              "500",
+              "455",
+              "-9.0",
+              "Miss (ABS gives 9.0, above 5)"
+            ],
+            [
+              "500",
+              "510",
+              "2.0",
+              "On track"
+            ],
+            [
+              "400",
+              "420",
+              "5.0",
+              "On track (5.0 is not above 5)"
+            ]
+          ]
+        },
+        {
+          "type": "formula",
+          "formula": "=COUNTIF(F2:F6,\"Miss\")",
+          "text": "COUNTIF counts the cells in a range that match a condition. Here it counts how many flags say Miss."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tip: without ABS, a store 9% below budget has -9, which is smaller than the tolerance of 5, and it would never be flagged."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "title": "Simulation",
+      "blocks": [
+        {
+          "type": "excel-grid"
+        },
+        {
+          "type": "exercise-hints"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Four questions on variance and flags. Type numbers without commas or the % sign, for example -9."
+        },
+        {
+          "type": "assessment-items",
+          "itemIds": [
+            "i1-variance",
+            "i2-variance-pct",
+            "i3-why-abs",
+            "i4-countif"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "debrief",
+      "title": "Debrief",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Variance = actual - budget, and variance % = variance / budget x 100.",
+            "ABS measures the size of a gap whichever direction it goes.",
+            "An IF with a tolerance cell flags the stores that are off plan.",
+            "COUNTIF(range,\"Miss\") counts how many stores missed."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Next: the capstone, a one-row-per-store scorecard that brings your lookup and conditional-sum skills together."
+        }
+      ]
+    }
+  ],
+  "assessment": {
+    "items": [
+      {
+        "id": "i1-variance",
+        "type": "numeric",
+        "prompt": "A store had a budget of 500K and an actual of 455K. What is the variance (actual minus budget), in K? Include the minus sign if it is negative.",
+        "answerHint": "Number in K, with a minus sign if below budget"
+      },
+      {
+        "id": "i2-variance-pct",
+        "type": "numeric",
+        "prompt": "For the same store (budget 500K, actual 455K), what is the variance %, to 1 decimal place? Include the minus sign.",
+        "answerHint": "Number, 1 decimal place, with a minus sign if below budget"
+      },
+      {
+        "id": "i3-why-abs",
+        "type": "single-choice",
+        "prompt": "Why does the flag formula use ABS(E2) in =IF(ABS(E2)>$I$2,\"Miss\",\"On track\")?",
+        "options": [
+          {
+            "id": "both-ways",
+            "label": "So that a store far below budget (a negative %) is flagged just like one far above it"
+          },
+          {
+            "id": "round",
+            "label": "To round the variance to 1 decimal place"
+          },
+          {
+            "id": "positive-only",
+            "label": "Because variance % can never be negative"
+          },
+          {
+            "id": "count",
+            "label": "To count the stores that missed"
+          }
+        ]
+      },
+      {
+        "id": "i4-countif",
+        "type": "numeric",
+        "prompt": "The flags in F2:F6 read Miss, On track, Miss, Miss, On track. What does =COUNTIF(F2:F6,\"Miss\") return?",
+        "answerHint": "Whole number"
+      }
+    ]
+  }
+}

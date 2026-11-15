@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "E2": "=IF(B2=0,\"Out of stock\",IF(AND(B2>=C2,B2<=D2),\"OK\",IF(B2<C2,\"Low\",\"Overstock\")))",
+    "E3": "=IF(B3=0,\"Out of stock\",IF(AND(B3>=C3,B3<=D3),\"OK\",IF(B3<C3,\"Low\",\"Overstock\")))",
+    "E4": "=IF(B4=0,\"Out of stock\",IF(AND(B4>=C4,B4<=D4),\"OK\",IF(B4<C4,\"Low\",\"Overstock\")))",
+    "E5": "=IF(B5=0,\"Out of stock\",IF(AND(B5>=C5,B5<=D5),\"OK\",IF(B5<C5,\"Low\",\"Overstock\")))",
+    "E6": "=IF(B6=0,\"Out of stock\",IF(AND(B6>=C6,B6<=D6),\"OK\",IF(B6<C6,\"Low\",\"Overstock\")))",
+    "E7": "=IF(B7=0,\"Out of stock\",IF(AND(B7>=C7,B7<=D7),\"OK\",IF(B7<C7,\"Low\",\"Overstock\")))",
+    "F2": "=IF(OR(E2=\"Out of stock\",E2=\"Low\"),\"Reorder\",IF(E2=\"Overstock\",\"Markdown\",\"None\"))",
+    "F3": "=IF(OR(E3=\"Out of stock\",E3=\"Low\"),\"Reorder\",IF(E3=\"Overstock\",\"Markdown\",\"None\"))",
+    "F4": "=IF(OR(E4=\"Out of stock\",E4=\"Low\"),\"Reorder\",IF(E4=\"Overstock\",\"Markdown\",\"None\"))",
+    "F5": "=IF(OR(E5=\"Out of stock\",E5=\"Low\"),\"Reorder\",IF(E5=\"Overstock\",\"Markdown\",\"None\"))",
+    "F6": "=IF(OR(E6=\"Out of stock\",E6=\"Low\"),\"Reorder\",IF(E6=\"Overstock\",\"Markdown\",\"None\"))",
+    "F7": "=IF(OR(E7=\"Out of stock\",E7=\"Low\"),\"Reorder\",IF(E7=\"Overstock\",\"Markdown\",\"None\"))"
+  }
+}

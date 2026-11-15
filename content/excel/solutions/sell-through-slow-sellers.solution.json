@@ -1,0 +1,16 @@
+{
+  "cells": {
+    "D2": "=IFERROR(ROUND(B2/(B2+C2)*100,1),0)",
+    "E2": "=IF(D2<$G$2,\"Slow\",\"OK\")",
+    "D3": "=IFERROR(ROUND(B3/(B3+C3)*100,1),0)",
+    "E3": "=IF(D3<$G$2,\"Slow\",\"OK\")",
+    "D4": "=IFERROR(ROUND(B4/(B4+C4)*100,1),0)",
+    "E4": "=IF(D4<$G$2,\"Slow\",\"OK\")",
+    "D5": "=IFERROR(ROUND(B5/(B5+C5)*100,1),0)",
+    "E5": "=IF(D5<$G$2,\"Slow\",\"OK\")",
+    "D6": "=IFERROR(ROUND(B6/(B6+C6)*100,1),0)",
+    "E6": "=IF(D6<$G$2,\"Slow\",\"OK\")",
+    "D7": "=IFERROR(ROUND(B7/(B7+C7)*100,1),0)",
+    "E7": "=IF(D7<$G$2,\"Slow\",\"OK\")"
+  }
+}
