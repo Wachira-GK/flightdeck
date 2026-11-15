@@ -78,6 +78,8 @@ export async function handleCheck(
   id: string,
   request: Request,
   lookup: ExerciseLookup = getGradableExercise,
+  /** Called once, only for a normally graded sheet (status 200), so the caller can save the verdict. */
+  onGraded?: (g: { submission: unknown; passed: boolean; score: number; validatorVersion: string }) => void,
 ): Promise<CheckHandlerResponse> {
   const entry = lookup(id);
   if (!entry) return { status: 404, body: { error: "Unknown exercise." } };
@@ -136,6 +138,7 @@ export async function handleCheck(
     message: c.message,
     ...(c.cell ? { cell: c.cell } : {}),
   }));
+  onGraded?.({ submission, passed: result.passed, score: result.score, validatorVersion: result.validatorVersion });
   return {
     status: 200,
     body: {
