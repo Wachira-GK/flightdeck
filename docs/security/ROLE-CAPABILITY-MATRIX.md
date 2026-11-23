@@ -26,6 +26,9 @@ Roles live in `public.user_roles` (written only by the server). Enforcement: DB 
 | Issue / revoke certificate | ✖ | ✖ | ✖ | ✖ | ✖ | S | server only (RLS-T21) |
 | Verify certificate by code | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | `verify_certificate()` (RLS-T24) |
 | Create entitlement / record payment | ✖ | ✖ | ✖ | ✖ | ✖ | S | webhook handler only (RLS-T21, DB-I01) |
+| Manage users (list, edit name, set roles, suspend/reactivate) | ✖ | ✖ | ✖ | ✖ | ✖ | S (not self, not master; audited) | `fd_admin_*` (ADM-T01..T12, ADR-009) |
+| Start a password reset for another user (emailed one-time link) | ✖ | ✖ | ✖ | ✖ | ✖ | S (not self, not master) | `fd_admin_reset_begin` (ADM-T10) |
+| Change the master admin | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ (master: name only) | SQL only (ADM-T06) |
 | Read audit log / outbox / webhooks | ✖ | ✖ | ✖ | ✖ | ✖ | S | `app_private`, no grants (RLS-T20) |
 
 Separation of duties: the author of a version can never publish it, even with admin role (`publish_course_version` checks `actor ≠ created_by` and an explicit reviewer assignment).

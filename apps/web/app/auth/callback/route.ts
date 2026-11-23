@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { adminConfig, takeResetVerifier } from "@/server/admin/admin";
 import { exchangePkceCode } from "@/server/auth/gotrue";
 import { isVerifier } from "@/server/auth/pkce";
 import { applySessionCookies, authConfig, OAUTH_COOKIE, oauthCookieOptions } from "@/server/auth/session";
@@ -15,12 +16,19 @@ export async function GET(request: NextRequest) {
   const code = p.get("code") ?? "";
   const cookie = request.cookies.get(OAUTH_COOKIE)?.value ?? "";
   const dot = cookie.indexOf(".");
-  const verifier = dot > 0 ? cookie.slice(0, dot) : "";
+  let verifier = dot > 0 ? cookie.slice(0, dot) : "";
   let next = "/cockpit";
   try {
     next = safeNext(decodeURIComponent(dot > 0 ? cookie.slice(dot + 1) : ""));
   } catch {
     next = "/cockpit"; // malformed escape in the cookie
+  }
+  // A reset link that an ADMIN started for this learner carries ?rid= instead of a cookie: the secret verifier
+  // was kept on the server (migration 20261123000800) and is handed over once. It only ever leads to /reset-password.
+  const rid = p.get("rid") ?? "";
+  if (!verifier && rid) {
+    verifier = (await takeResetVerifier(adminConfig(), rid)) ?? "";
+    next = "/reset-password";
   }
 
   const go = (path: string) => {

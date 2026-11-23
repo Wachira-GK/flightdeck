@@ -47,6 +47,11 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
               {r}
             </Badge>
           ))}
+          {roles.includes("admin") ? (
+            <Link href="/admin" className="underline">
+              Admin: users
+            </Link>
+          ) : null}
         </div>
         {sp.password === "changed" ? (
           <p role="status" className="mt-3 rounded-md bg-accent-subtle px-3 py-2 text-sm">
