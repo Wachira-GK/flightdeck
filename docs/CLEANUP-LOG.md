@@ -14,3 +14,8 @@ Rule: nothing here is deleted without GREEN. Only temporary working files I crea
 Deleted so far in this phase: only my own build logs (`C:\Temp\fd-build.log`, `C:\Temp\fd-deploy.log`), 24 Nov.
 
 24 Nov (later): progress reset run on live DB at Godfrey's GREEN (2 enrolments, 1 step, 3 simulator checks removed; audit entry progress_reset). The one-off script is C:\Temp\fdpg\reset.mjs, inside item 5 (held).
+
+## 2026-11-24 additions
+- C:\Temp\fdpg is now REQUIRED by the weekly scheduled backup (needs pg + ca.crt): do NOT delete it, even on a later cleanup GREEN, unless the backup is moved elsewhere first.
+- Temp working files created for the levels build (held, not deleted): C:\Temp\add-levels.mjs, C:\Temp\patch-level.mjs.
+
