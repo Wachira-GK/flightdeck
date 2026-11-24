@@ -137,3 +137,51 @@ describe('CWS-T01..T07 content workspace', () => {
     expect(r.audit.map((a) => a.action)).toEqual(['content_save', 'content_submit', 'content_publish', 'content_retire']);
   });
 });
+
+describe('CWS-T08..T09 publishing keeps the live catalogue rows in step (stage 2a-ii)', () => {
+  const full = (slug: string, title: string) => ({
+    slug, code: 'EX-902', title, summary: 'A summary', passMark: 0.8, exerciseId: `${slug}-sheet`,
+    steps: ['briefing', 'training', 'simulation', 'assessment', 'debrief'].map((id) => ({ id, title: id.toUpperCase(), blocks: [] })),
+    assessment: { items: [] },
+  });
+  const sheet = (slug: string) => ({ id: `${slug}-sheet`, title: 'Sheet', version: 1, editableCells: ['B2'] });
+
+  it('CWS-T08 a new mission gets mission, 5 steps, assessment (pass mark 80), exercise and an enabled access row; retire switches it off', async () => {
+    const slug = 'excel-demo-902';
+    const r = await db.scenario(async (step) => {
+      await step(service, `select public.fd_content_save($1::uuid, $2, 'excel', 'beginner', $3::jsonb, $4::jsonb, $5::jsonb, null, null)`, [AUTHOR, slug, full(slug, 'Demo two'), sheet(slug), { schemaVersion: 1, missionSlug: slug, items: [] }]);
+      await step(service, submit, [AUTHOR, slug, 1]);
+      const pub = out(await step<{ r: Row }>(service, review, [REVIEWER, slug, 1, 'publish', null]));
+      const live = await step<Row>(service, `select m.title, (select count(*) from public.mission_steps s where s.mission_id = m.id) as steps,
+          (select a.pass_mark from public.assessments a where a.slug = m.slug || '-assessment') as pass,
+          (select count(*) from public.exercises e where e.slug = '${slug}-sheet') as ex,
+          (select count(*) from public.mission_steps s where s.mission_id = m.id and s.exercise_id is not null) as sim_linked,
+          (select a.is_enabled from app_private.mission_access a where a.mission_slug = m.slug) as enabled,
+          (select i.live_synced from app_private.content_items i where i.slug = m.slug and i.status = 'published') as synced
+        from public.missions m where m.slug = '${slug}'`);
+      const retire = out(await step<{ r: Row }>(service, `select public.fd_content_retire($1::uuid, $2) as r`, [ADMIN, slug]));
+      const after = await step<Row>(service, `select is_enabled from app_private.mission_access where mission_slug = '${slug}'`);
+      return { pub, live: live[0]!, retire, after: after[0]! };
+    });
+    expect(r.pub).toMatchObject({ ok: true });
+    expect(r.live).toMatchObject({ title: 'Demo two', steps: 5, ex: 1, sim_linked: 1, enabled: true, synced: true });
+    expect(Number(r.live.pass)).toBe(80);
+    expect(r.retire).toMatchObject({ ok: true });
+    expect(r.after).toMatchObject({ is_enabled: false });
+  });
+
+  it('CWS-T09 republishing an existing seeded mission updates it in place: same mission id, same steps, saved progress stays attached', async () => {
+    const r = await db.scenario(async (step) => {
+      const before = await step<Row>(service, `select m.id, (select array_agg(s.id order by s.position) from public.mission_steps s where s.mission_id = m.id) as steps from public.missions m where m.slug = 'excel-sum-101'`);
+      const doc = { ...full('excel-sum-101', 'Totals with SUM (revised)'), code: 'EX-101' };
+      await step(service, `select public.fd_content_save($1::uuid, 'excel-sum-101', 'excel', 'beginner', $2::jsonb, null, $3::jsonb, null, null)`, [AUTHOR, doc, { schemaVersion: 1, missionSlug: 'excel-sum-101', items: [] }]);
+      await step(service, submit, [AUTHOR, 'excel-sum-101', 1]);
+      await step(service, review, [REVIEWER, 'excel-sum-101', 1, 'publish', null]);
+      const after = await step<Row>(service, `select m.id, m.title, (select array_agg(s.id order by s.position) from public.mission_steps s where s.mission_id = m.id) as steps from public.missions m where m.slug = 'excel-sum-101'`);
+      return { before: before[0]!, after: after[0]! };
+    });
+    expect(r.after.id).toBe(r.before.id);
+    expect(r.after.title).toBe('Totals with SUM (revised)');
+    expect(r.after.steps).toEqual(r.before.steps);
+  });
+});
