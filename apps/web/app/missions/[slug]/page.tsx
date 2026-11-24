@@ -15,15 +15,25 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
+/** The 4 hand-written prototype missions, else any real Excel mission from the generated registry (all 50 are playable). */
+function findMission(slug: string): Mission | undefined {
+  const proto = getMission(slug);
+  if (proto) return proto;
+  const ex = getExcelMission(slug)?.mission;
+  return ex
+    ? { slug: ex.slug, trackId: "excel", code: ex.code, title: ex.title, summary: ex.summary, estimatedMinutes: ex.estimatedMinutes, completedSteps: [], currentStep: "briefing" }
+    : undefined;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const mission = getMission(slug);
+  const mission = findMission(slug);
   return { title: mission ? mission.title : "Mission not found" };
 }
 
 export default async function MissionPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const mission = getMission(slug);
+  const mission = findMission(slug);
   if (!mission) notFound();
 
   // Access rules (ADR-011): free tier, availability switch, per-learner unlocks. A closed mission sends no content.
