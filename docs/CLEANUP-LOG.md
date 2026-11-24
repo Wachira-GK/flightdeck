@@ -19,3 +19,5 @@ Deleted so far in this phase: only my own build logs (`C:\Temp\fd-build.log`, `C
 - C:\Temp\fdpg is now REQUIRED by the weekly scheduled backup (needs pg + ca.crt): do NOT delete it, even on a later cleanup GREEN, unless the backup is moved elsewhere first.
 - Temp working files created for the levels build (held, not deleted): C:\Temp\add-levels.mjs, C:\Temp\patch-level.mjs.
 
+
+- 2026-11-24 (held, not deleted): C:\Temp\patch-page.mjs, patch-cat.mjs, patch-cockpit.mjs, patch-lint.mjs, smoke.ps1 - one-off scripts from stage 2b; safe to delete on Godfrey's go.
