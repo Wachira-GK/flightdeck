@@ -339,6 +339,57 @@ export async function resetMfa(cfg: AdminConfig | null, actorId: string, targetI
   return failed ? { ok: true, value: true, warning: "Some factors could not be removed. Try again." } : ok;
 }
 
+// ---------------------------------------------------------------------------
+// Mission access (ADR-011): free tier, availability switch, per-learner unlocks
+// ---------------------------------------------------------------------------
+export interface MissionAccessRow {
+  slug: string;
+  title: string;
+  position: number;
+  course: string;
+  isFree: boolean;
+  isEnabled: boolean;
+  /** Learners this mission is unlocked for by hand. */
+  unlocks: number;
+}
+
+const toMissionRow = (u: unknown): MissionAccessRow | null => {
+  const o = u as Record<string, unknown> | null;
+  if (!o || typeof o.slug !== "string") return null;
+  return {
+    slug: o.slug,
+    title: typeof o.title === "string" ? o.title : o.slug,
+    position: typeof o.position === "number" ? o.position : 0,
+    course: typeof o.course === "string" ? o.course : "",
+    isFree: o.isFree === true,
+    isEnabled: o.isEnabled !== false,
+    unlocks: typeof o.unlocks === "number" ? o.unlocks : 0,
+  };
+};
+
+export function listMissionAccess(cfg: AdminConfig | null, actorId: string): Promise<AdminResult<MissionAccessRow[]>> {
+  return call(cfg, "fd_admin_mission_list", { p_actor: actorId }, (j) => (Array.isArray(j.missions) ? j.missions.map(toMissionRow).filter((m): m is MissionAccessRow => m !== null) : []));
+}
+
+export function setMissionAccess(cfg: AdminConfig | null, actorId: string, slug: string, isFree: boolean, isEnabled: boolean): Promise<AdminResult<true>> {
+  return call(cfg, "fd_admin_set_mission", { p_actor: actorId, p_slug: slug, p_free: isFree, p_enabled: isEnabled }, () => true as const);
+}
+
+export function userUnlocks(cfg: AdminConfig | null, actorId: string, targetId: string): Promise<AdminResult<string[]>> {
+  return call(cfg, "fd_admin_user_unlocks", { p_actor: actorId, p_target: targetId }, (j) => (Array.isArray(j.slugs) ? j.slugs.filter((s): s is string => typeof s === "string") : []));
+}
+
+/** Grants or removes unlocks, in batches of 60 (the database limit per call). */
+export async function setUnlocks(cfg: AdminConfig | null, actorId: string, targetId: string, slugs: string[], grant: boolean): Promise<AdminResult<number>> {
+  let changed = 0;
+  for (let i = 0; i < slugs.length; i += 60) {
+    const r = await call(cfg, "fd_admin_set_unlocks", { p_actor: actorId, p_target: targetId, p_slugs: slugs.slice(i, i + 60), p_grant: grant }, (j) => (typeof j.changed === "number" ? j.changed : 0));
+    if (!r.ok) return r;
+    changed += r.value;
+  }
+  return { ok: true, value: changed };
+}
+
 /** Used by /auth/callback when the link carries ?rid= : the verifier is returned once, then deleted. */
 export async function takeResetVerifier(cfg: AdminConfig | null, rid: string): Promise<string | null> {
   if (!cfg || !/^[0-9a-f-]{36}$/i.test(rid)) return null;

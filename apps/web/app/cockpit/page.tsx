@@ -8,6 +8,7 @@ import { STEP_LABELS } from "@/lib/mission";
 import { getOwnProfile } from "@/server/auth/gotrue";
 import { authConfig, requireUser } from "@/server/auth/session";
 import { getOwnProgress } from "@/server/cockpit-data";
+import { accessConfig, accessSummary, isOpenFor } from "@/server/access";
 
 export const metadata: Metadata = { title: "Cockpit" };
 
@@ -24,7 +25,10 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
   const roles = profile?.roles ?? [];
   const now = new Date();
   const greeting = greetingFor(hourIn(now, profile?.timeZone ?? "Africa/Nairobi"));
-  const view = buildCockpit(catalogue, saved ?? EMPTY_PROGRESS);
+  // Only missions this person can open count as "next" (ADR-011). If access cannot be read, nothing is hidden and the server still enforces.
+  const access = await accessSummary(accessConfig(), user.id);
+  const visible = access ? catalogue.map((t) => ({ ...t, missions: t.missions.filter((m) => isOpenFor(access, m.slug)) })) : catalogue;
+  const view = buildCockpit(visible, saved ?? EMPTY_PROGRESS);
   const active = view.active;
   const nextStepHref = active ? `/missions/${active.mission.slug}?step=${active.currentStep}` : "/catalogue";
 
@@ -51,9 +55,14 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
             Account security
           </Link>
           {roles.includes("admin") ? (
-            <Link href="/admin" className="underline">
-              Admin: users
-            </Link>
+            <>
+              <Link href="/admin" className="underline">
+                Admin: users
+              </Link>
+              <Link href="/admin/missions" className="underline">
+                Admin: mission access
+              </Link>
+            </>
           ) : null}
         </div>
         {sp.password === "changed" ? (

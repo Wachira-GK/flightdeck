@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, Button, Card } from "@flightdeck/ui";
-import { EDITABLE_ROLES, FAILURE_TEXT, userDetail, type AdminFailure } from "@/server/admin/admin";
+import { EDITABLE_ROLES, FAILURE_TEXT, listMissionAccess, userDetail, userUnlocks, type AdminFailure } from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
-import { resetMfaAction, sendResetAction, setNameAction, setRolesAction, setStatusAction } from "../../actions";
+import { resetMfaAction, sendResetAction, setNameAction, setRolesAction, setStatusAction, setUnlocksAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Admin: user" };
 export const dynamic = "force-dynamic";
@@ -18,6 +18,7 @@ const DONE: Record<string, string> = {
   reactivated: "Account reactivated.",
   reset: "Reset link sent. They must open it within an hour.",
   mfareset: "Two-step sign-in reset. They set it up again the next time they sign in.",
+  unlocks: "Mission access saved.",
 };
 const inputClass = "mt-1 block min-h-11 w-full rounded-md border border-border-strong bg-surface px-3 py-2 text-base";
 
@@ -47,6 +48,10 @@ export default async function AdminUserPage({
     );
   }
   const { user, summary } = r.value;
+  const [missionsR, unlocksR] = await Promise.all([listMissionAccess(cfg, userId), userUnlocks(cfg, userId, id)]);
+  const paidMissions = missionsR.ok ? missionsR.value.filter((m) => !m.isFree) : [];
+  const freeCount = missionsR.ok ? missionsR.value.length - paidMissions.length : 0;
+  const unlocked = new Set(unlocksR.ok ? unlocksR.value : []);
   const isSelf = user.id === userId;
   // The database refuses these too; the screen just does not offer buttons that can only fail.
   const locked = user.isMaster || isSelf;
@@ -89,6 +94,48 @@ export default async function AdminUserPage({
           <Stat label="Simulator checks" value={summary.exerciseAttempts} />
         </dl>
         <p className="mt-3 text-sm text-fg-muted">Opening this page was recorded in the audit log. Answers and grades cannot be edited from here.</p>
+      </Card>
+
+      <Card className="mt-6">
+        <h2 className="text-lg font-semibold">Mission access</h2>
+        <p className="mt-1 text-sm text-fg-muted">
+          The {freeCount} free missions are open to everyone. Tick the other missions this person may open. <Link href="/admin/missions" className="underline">Change which missions are free</Link>.
+          Admins, authors and reviewers can open every mission.
+        </p>
+        {!missionsR.ok || !unlocksR.ok ? (
+          <p role="alert" className="mt-3 text-danger">
+            {FAILURE_TEXT[!missionsR.ok ? missionsR.reason : !unlocksR.ok ? unlocksR.reason : "unavailable"]}
+          </p>
+        ) : (
+          <form action={setUnlocksAction} className="mt-3">
+            <input type="hidden" name="target" value={user.id} />
+            <fieldset>
+              <legend className="text-sm font-medium">
+                Unlocked: {paidMissions.filter((m) => unlocked.has(m.slug)).length} of {paidMissions.length}
+              </legend>
+              <div className="mt-2 max-h-72 space-y-1 overflow-y-auto rounded-md border border-border p-3">
+                {paidMissions.map((m) => (
+                  <label key={m.slug} className="flex min-h-11 items-center gap-3">
+                    <input type="checkbox" name="mission" value={m.slug} defaultChecked={unlocked.has(m.slug)} className="size-5" />
+                    <span>{m.title}</span>
+                    {!m.isEnabled ? <span className="text-sm text-fg-muted">(switched off)</span> : null}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Button type="submit" name="mode" value="save">
+                Save access
+              </Button>
+              <Button type="submit" name="mode" value="all" variant="secondary">
+                Unlock all
+              </Button>
+              <Button type="submit" name="mode" value="none" variant="secondary">
+                Remove all unlocks
+              </Button>
+            </div>
+          </form>
+        )}
       </Card>
 
       {locked ? (

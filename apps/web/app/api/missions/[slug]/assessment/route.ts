@@ -1,4 +1,5 @@
 import { handleAssessment } from "@/server/assessment";
+import { accessConfig, missionAccess } from "@/server/access";
 import { currentUserId } from "@/server/current-user";
 import { progressConfig, recordAssessment, type SaveOutcome } from "@/server/progress";
 
@@ -9,11 +10,16 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const userId = await currentUserId();
+  // ADR-011: a mission that is locked or switched off is neither graded nor saved.
+  const access = await missionAccess(accessConfig(), userId, slug);
+  if (access !== "open") {
+    return Response.json({ error: "mission_closed", reason: access }, { status: access === "error" ? 503 : 403, headers: { "Cache-Control": "no-store" } });
+  }
   const { status, body } = await handleAssessment(slug, request);
 
   if (status === 200 && "passed" in body) {
     let outcome: SaveOutcome = { saved: false, reason: "signed_out" };
-    const userId = await currentUserId();
     if (userId) outcome = await recordAssessment(progressConfig(), userId, slug, body.score, body.passed);
     return Response.json({ ...body, saved: outcome.saved, ...(outcome.reason ? { savedReason: outcome.reason } : {}) }, { status, headers: { "Cache-Control": "no-store" } });
   }

@@ -7,6 +7,8 @@ import { getMathMission, MathMissionStep } from "@/components/math";
 import { StepRail } from "@/components/step-rail";
 import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
+import { accessConfig, accessMessage, missionAccess } from "@/server/access";
+import { currentUserId } from "@/server/current-user";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -23,6 +25,32 @@ export default async function MissionPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const mission = getMission(slug);
   if (!mission) notFound();
+
+  // Access rules (ADR-011): free tier, availability switch, per-learner unlocks. A closed mission sends no content.
+  const userId = await currentUserId();
+  const access = await missionAccess(accessConfig(), userId, slug);
+  if (access !== "open") {
+    const msg = accessMessage(access);
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+        <Card className="p-6">
+          <p className="text-sm text-fg-muted">{mission.code}</p>
+          <h1 className="mt-1 text-2xl font-semibold">{msg.title}</h1>
+          <p className="mt-3 text-fg-muted">{msg.body}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {access === "locked" && !userId ? (
+              <Link href={`/sign-in?next=${encodeURIComponent(`/missions/${slug}`)}`} className={buttonVariants()}>
+                Sign in
+              </Link>
+            ) : null}
+            <Link href="/cockpit" className={buttonVariants({ variant: "secondary" })}>
+              Back to Cockpit
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   const mathMission = mission.trackId === "mathlab" ? getMathMission(mission.slug) : undefined;
   const excelMission = mission.trackId === "excel" ? getExcelMission(mission.slug) : undefined;

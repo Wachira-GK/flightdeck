@@ -5,7 +5,19 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authConfig } from "@/server/auth/session";
 import { cleanName } from "@/server/auth/validate";
-import { EDITABLE_ROLES, resetMfa, sendResetLink, setName, setRoles, setStatus, type AdminResult } from "@/server/admin/admin";
+import {
+  EDITABLE_ROLES,
+  listMissionAccess,
+  resetMfa,
+  sendResetLink,
+  setMissionAccess,
+  setName,
+  setRoles,
+  setStatus,
+  setUnlocks,
+  userUnlocks,
+  type AdminResult,
+} from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
 
 // Each action: (1) re-checks that the caller is an active admin, (2) takes the actor id from the verified session
@@ -65,6 +77,39 @@ export async function sendResetAction(fd: FormData): Promise<void> {
 export async function resetMfaAction(fd: FormData): Promise<void> {
   const { target, actor, cfg } = await begin(fd);
   back(target, await resetMfa(cfg, actor, target), "mfareset");
+}
+
+/** One mission's free and availability switches. The slug is checked against the database, never trusted. */
+export async function setMissionAction(fd: FormData): Promise<void> {
+  const slug = field(fd, "slug");
+  if (!/^[a-z0-9-]{2,64}$/.test(slug)) redirect("/admin/missions");
+  const a = await requireAdmin("/admin/missions");
+  const r = await setMissionAccess(a.cfg, a.userId, slug, fd.get("free") === "on", fd.get("enabled") === "on");
+  redirect(`/admin/missions?${r.ok ? `done=${encodeURIComponent(slug)}` : `error=${r.reason}`}`);
+}
+
+/** Saves a learner's unlocks: "save" applies the ticked list, "all" unlocks every paid mission, "none" removes all unlocks. */
+export async function setUnlocksAction(fd: FormData): Promise<void> {
+  const { target, actor, cfg } = await begin(fd);
+  const all = await listMissionAccess(cfg, actor);
+  if (!all.ok) back(target, all, "unlocks");
+  const paid = all.ok ? all.value.filter((m) => !m.isFree).map((m) => m.slug) : [];
+  const current = await userUnlocks(cfg, actor, target);
+  if (!current.ok) back(target, current, "unlocks");
+  const have = new Set(current.ok ? current.value : []);
+  const mode = field(fd, "mode");
+  const wanted = new Set(mode === "all" ? paid : mode === "none" ? [] : fd.getAll("mission").map(String).filter((s) => paid.includes(s)));
+  const toGrant = [...wanted].filter((s) => !have.has(s));
+  const toRevoke = [...have].filter((s) => !wanted.has(s));
+  if (toGrant.length) {
+    const g = await setUnlocks(cfg, actor, target, toGrant, true);
+    if (!g.ok) back(target, g, "unlocks");
+  }
+  if (toRevoke.length) {
+    const v = await setUnlocks(cfg, actor, target, toRevoke, false);
+    if (!v.ok) back(target, v, "unlocks");
+  }
+  back(target, { ok: true, value: true }, "unlocks");
 }
 
 function cleanReason(raw: string): string | null {

@@ -20,7 +20,12 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <header>
-        <p className="text-sm text-fg-muted">Admin</p>
+        <p className="text-sm text-fg-muted">
+          Admin ·{" "}
+          <Link href="/admin/missions" className="underline">
+            Mission access
+          </Link>
+        </p>
         <h1 className="mt-1 text-3xl font-semibold sm:text-4xl">Users</h1>
         <p className="mt-2 text-fg-muted">
           You are signed in as {me.displayName || "an admin"}
