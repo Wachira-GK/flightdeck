@@ -122,3 +122,60 @@ export async function userActivity(adminId: string, userId: string, cfg: AccessC
     daily: rows(o.daily).map((d) => ({ day: str(d.day), visits: num(d.visits), signIns: num(d.signIns) })),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Learning evidence (stage 2): active time per mission and fast-pass review flags
+// ---------------------------------------------------------------------------
+/** The learner was active on a mission for about `seconds`. The database credits time no faster than the clock runs. */
+export async function recordBeat(userId: string | null, slug: string, seconds: number, cfg: AccessConfig | null = accessConfig()): Promise<boolean> {
+  if (!cfg || !userId || !slug || slug.length > 120) return false;
+  return send(cfg, "fd_activity_heartbeat", { p_user: userId, p_slug: slug, p_seconds: Math.round(seconds) });
+}
+
+export interface ReviewFlag {
+  userId: string;
+  slug: string;
+  score: number;
+  gradedAt: string;
+  seconds: number;
+  reason: "no_time" | "fast";
+}
+export interface ReviewFlags {
+  trackingSince: string | null;
+  minSeconds: number;
+  flags: ReviewFlag[];
+}
+
+export async function reviewFlags(adminId: string, days: number, minSeconds: number, cfg: AccessConfig | null = accessConfig()): Promise<ReviewFlags | null> {
+  if (!cfg) return null;
+  const o = await ask(cfg, "fd_admin_review_flags", { p_actor: adminId, p_days: days, p_min_seconds: minSeconds });
+  if (!o) return null;
+  return {
+    trackingSince: typeof o.trackingSince === "string" ? o.trackingSince : null,
+    minSeconds: num(o.minSeconds),
+    flags: rows(o.flags).flatMap((f) =>
+      typeof f.userId === "string" && typeof f.slug === "string"
+        ? [{ userId: f.userId, slug: f.slug, score: num(f.score), gradedAt: str(f.gradedAt), seconds: num(f.seconds), reason: f.reason === "fast" ? ("fast" as const) : ("no_time" as const) }]
+        : [],
+    ),
+  };
+}
+
+export interface MissionTime {
+  slug: string;
+  seconds: number;
+  days: number;
+  lastDay: string;
+}
+
+export async function userMissionTime(adminId: string, userId: string, cfg: AccessConfig | null = accessConfig()): Promise<MissionTime[] | null> {
+  if (!cfg) return null;
+  const o = await ask(cfg, "fd_admin_user_mission_time", { p_actor: adminId, p_target: userId });
+  if (!o) return null;
+  return rows(o.missions).map((m) => ({ slug: str(m.slug), seconds: num(m.seconds), days: num(m.days), lastDay: str(m.lastDay) }));
+}
+
+/** 754 -> "12 min" ; 40 -> "40 s". */
+export function minutesText(seconds: number): string {
+  return seconds < 60 ? `${seconds} s` : `${Math.round(seconds / 60)} min`;
+}

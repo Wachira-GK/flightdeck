@@ -1,6 +1,6 @@
 // ACT-W01..W05: the activity log helpers (ADR-012). Recording must never get in the learner's way.
 import { describe, expect, it } from "vitest";
-import { activityOverview, recordSignIn, touchVisit, userActivity } from "./activity";
+import { activityOverview, minutesText, recordBeat, recordSignIn, reviewFlags, touchVisit, userActivity, userMissionTime } from "./activity";
 import type { AccessConfig } from "./access";
 import { subOf } from "./auth/aal";
 
@@ -66,6 +66,34 @@ describe("ACT-W activity helpers", () => {
     const u = await userActivity("admin", "u", cfgWith(() => json({ ok: true, signIns7: 1, signIns30: 2, daysActive30: 3, firstSeen: null, lastSeen: "t", recent: [{ at: "a", method: "password" }], daily: [] })));
     expect(u).toMatchObject({ signIns7: 1, signIns30: 2, daysActive30: 3, firstSeen: null, lastSeen: "t", recent: [{ at: "a", method: "password" }] });
     expect(await userActivity("admin", "u", cfgWith(() => Promise.reject(new Error("x"))))).toBeNull();
+  });
+
+  it("ACT-W06 heartbeats send the verified user, slug and whole seconds; flags and times parse defensively", async () => {
+    let body: unknown;
+    const cfg = cfgWith((_u, init) => {
+      body = JSON.parse(String(init.body));
+      return json({ ok: true });
+    });
+    expect(await recordBeat(UID, "excel-sum-101", 14.6, cfg)).toBe(true);
+    expect(body).toEqual({ p_user: UID, p_slug: "excel-sum-101", p_seconds: 15 });
+    expect(await recordBeat(null, "x", 5, cfg)).toBe(false);
+    expect(await recordBeat(UID, "x".repeat(121), 5, cfg)).toBe(false);
+    expect(await recordBeat(UID, "x", 5, null)).toBe(false);
+
+    const f = await reviewFlags(
+      "admin",
+      90,
+      180,
+      cfgWith(() => json({ ok: true, trackingSince: "2026-11-24", minSeconds: 180, flags: [{ userId: "u", slug: "m", score: 90, gradedAt: "t", seconds: 40, reason: "fast" }, { slug: "bad" }, { userId: "u2", slug: "m2", reason: "other" }] })),
+    );
+    expect(f?.flags).toEqual([
+      { userId: "u", slug: "m", score: 90, gradedAt: "t", seconds: 40, reason: "fast" },
+      { userId: "u2", slug: "m2", score: 0, gradedAt: "", seconds: 0, reason: "no_time" },
+    ]);
+    expect(await reviewFlags("admin", 90, 180, cfgWith(() => json({ ok: false })))).toBeNull();
+    expect(await userMissionTime("admin", "u", cfgWith(() => json({ ok: true, missions: [{ slug: "m", seconds: 125, days: 2, lastDay: "d" }] })))).toEqual([{ slug: "m", seconds: 125, days: 2, lastDay: "d" }]);
+    expect(minutesText(40)).toBe("40 s");
+    expect(minutesText(754)).toBe("13 min");
   });
 
   it("ACT-W05 subOf reads a user id from a token and refuses anything that is not a uuid", () => {

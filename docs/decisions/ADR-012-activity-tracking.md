@@ -28,3 +28,9 @@ The privacy page must say we keep sign-in times and days active for administrati
 - Active time per mission: the mission page sends a small heartbeat only while the tab is visible and the learner is interacting; the server adds up seconds per learner per mission step. Capped per day so a left-open tab cannot inflate it.
 - Review flags for suspiciously fast passes (for example a pass in seconds, identical timing across attempts, no activity before the attempt). Flags are SOFT: they go to an admin review list and never block a learner automatically. Evidence kept for certificates is retained longer than general activity.
 - Limits we accept: this makes forging harder, not impossible.
+
+## Stage 2 built (24 Nov 2026, migration 20261124001400)
+
+- The mission page sends a heartbeat every 15 seconds only while the tab is visible and the learner touched the page in the last minute. The server credits time no faster than the clock runs (so spamming earns nothing), at most 30 seconds per call and 4 hours per mission per day.
+- /admin/review lists passed assessments with under 3 minutes of recorded time (soft flag; changes nothing). Per-mission active time shows on each user page.
+- Open: pass attempts made before 24 Nov 2026 show as 'none recorded'. Retention for mission_time is not yet purged (decide with ADR-006; certificate evidence should be kept longer than sign-in logs).

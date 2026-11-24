@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, buttonVariants, Card, Progress } from "@flightdeck/ui";
+import { ActiveTimeBeat } from "@/components/activity-beat";
 import { ExcelMissionStep, getExcelMission } from "@/components/excel";
 import { getMathMission, MathMissionStep } from "@/components/math";
 import { StepRail } from "@/components/step-rail";
@@ -72,6 +73,7 @@ export default async function MissionPage({ params, searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      {userId ? <ActiveTimeBeat slug={slug} /> : null}
       <nav aria-label="Breadcrumb" className="text-sm text-fg-muted">
         <ol className="flex flex-wrap gap-2">
           <li>

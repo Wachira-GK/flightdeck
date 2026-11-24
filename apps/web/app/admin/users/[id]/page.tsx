@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge, Button, Card } from "@flightdeck/ui";
 import { EDITABLE_ROLES, FAILURE_TEXT, listMissionAccess, userDetail, userUnlocks, type AdminFailure } from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
-import { userActivity } from "@/server/activity";
+import { minutesText, userActivity, userMissionTime } from "@/server/activity";
 import { resetMfaAction, sendResetAction, setNameAction, setRolesAction, setStatusAction, setUnlocksAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Admin: user" };
@@ -49,7 +49,7 @@ export default async function AdminUserPage({
     );
   }
   const { user, summary } = r.value;
-  const [missionsR, unlocksR, act] = await Promise.all([listMissionAccess(cfg, userId), userUnlocks(cfg, userId, id), userActivity(userId, id, cfg)]);
+  const [missionsR, unlocksR, act, times] = await Promise.all([listMissionAccess(cfg, userId), userUnlocks(cfg, userId, id), userActivity(userId, id, cfg), userMissionTime(userId, id, cfg)]);
   const paidMissions = missionsR.ok ? missionsR.value.filter((m) => !m.isFree) : [];
   const freeCount = missionsR.ok ? missionsR.value.length - paidMissions.length : 0;
   const unlocked = new Set(unlocksR.ok ? unlocksR.value : []);
@@ -107,6 +107,12 @@ export default async function AdminUserPage({
               <Stat label="Days active, 30 days" value={act.daysActive30} />
               <Stat label="Last seen" value={act.lastSeen ? new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeZone: "Africa/Nairobi" }).format(new Date(act.lastSeen)) : "never"} />
             </dl>
+            {times && times.length > 0 ? (
+              <p className="mt-3 text-sm text-fg-muted">
+                Active time per mission: {times.slice(0, 8).map((t) => `${t.slug} ${minutesText(t.seconds)}`).join(", ")}
+                {times.length > 8 ? ` and ${times.length - 8} more` : ""}.
+              </p>
+            ) : null}
             {act.recent.length > 0 ? (
               <p className="mt-3 text-sm text-fg-muted">
                 Recent sign-ins (Nairobi time):{" "}
