@@ -12,3 +12,5 @@ Rule: nothing here is deleted without GREEN. Only temporary working files I crea
 | 6 | `C:\WebDev\Backups\flightdeck-2026-11-24-01-30` | `C:\WebDev\Backups` | Data backup (personal data and answer keys). KEEP, not a cleanup item; listed so it is not forgotten | 24 Nov | KEEP |
 
 Deleted so far in this phase: only my own build logs (`C:\Temp\fd-build.log`, `C:\Temp\fd-deploy.log`), 24 Nov.
+
+24 Nov (later): progress reset run on live DB at Godfrey's GREEN (2 enrolments, 1 step, 3 simulator checks removed; audit entry progress_reset). The one-off script is C:\Temp\fdpg\reset.mjs, inside item 5 (held).
