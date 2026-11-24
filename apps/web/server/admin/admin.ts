@@ -392,6 +392,55 @@ export function setMissionAccess(cfg: AdminConfig | null, actorId: string, slug:
   return call(cfg, "fd_admin_set_mission", { p_actor: actorId, p_slug: slug, p_free: isFree, p_enabled: isEnabled }, () => true as const);
 }
 
+// ---------------------------------------------------------------------------
+// Audit log (read-only, ADR-013)
+// ---------------------------------------------------------------------------
+export interface AuditRow {
+  id: number;
+  at: string;
+  actorId: string | null;
+  action: string;
+  entity: string;
+  entityId: string | null;
+  detail: string;
+}
+export interface AuditPage {
+  rows: AuditRow[];
+  more: boolean;
+  actions: string[];
+}
+
+/** Short, readable text for the detail column. Long values are cut so one row cannot flood the screen. */
+export function auditDetailText(detail: unknown): string {
+  if (detail === null || typeof detail !== "object") return "";
+  const text = Object.entries(detail as Record<string, unknown>)
+    .map(([k, v]) => `${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`)
+    .join("; ");
+  return text.length > 200 ? `${text.slice(0, 200)}…` : text;
+}
+
+export function auditLog(cfg: AdminConfig | null, actorId: string, action: string, before: number | null): Promise<AdminResult<AuditPage>> {
+  return call(cfg, "fd_admin_audit_list", { p_actor: actorId, p_action: action || null, p_before: before, p_limit: 50 }, (j) => ({
+    rows: (Array.isArray(j.rows) ? j.rows : []).flatMap((x: unknown) => {
+      const r = x as Record<string, unknown> | null;
+      if (!r || typeof r.id !== "number" || typeof r.action !== "string") return [];
+      return [
+        {
+          id: r.id,
+          at: typeof r.at === "string" ? r.at : "",
+          actorId: typeof r.actorId === "string" ? r.actorId : null,
+          action: r.action,
+          entity: typeof r.entity === "string" ? r.entity : "",
+          entityId: typeof r.entityId === "string" ? r.entityId : null,
+          detail: auditDetailText(r.detail),
+        },
+      ];
+    }),
+    more: j.more === true,
+    actions: Array.isArray(j.actions) ? j.actions.filter((a): a is string => typeof a === "string") : [],
+  }));
+}
+
 export function userUnlocks(cfg: AdminConfig | null, actorId: string, targetId: string): Promise<AdminResult<string[]>> {
   return call(cfg, "fd_admin_user_unlocks", { p_actor: actorId, p_target: targetId }, (j) => (Array.isArray(j.slugs) ? j.slugs.filter((s): s is string => typeof s === "string") : []));
 }

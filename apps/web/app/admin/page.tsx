@@ -28,6 +28,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           ·{" "}
           <Link href="/admin/activity" className="underline">
             Activity
+          </Link>{" "}
+          ·{" "}
+          <Link href="/admin/audit" className="underline">
+            Audit log
           </Link>
         </p>
         <h1 className="mt-1 text-3xl font-semibold sm:text-4xl">Users</h1>
