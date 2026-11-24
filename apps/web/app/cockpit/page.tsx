@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, buttonVariants, Card, CardEyebrow, Progress } from "@flightdeck/ui";
-import { getCatalogue } from "@/lib/catalogue";
+import { getLiveCatalogue } from "@/server/catalogue-live";
 import { buildCockpit, EMPTY_PROGRESS } from "@/lib/cockpit";
 import { greetingFor, hourIn, relativeTime } from "@/lib/greeting";
 import { STEP_LABELS } from "@/lib/mission";
@@ -21,7 +21,7 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
   const { user, accessToken } = await requireUser("/cockpit", sp.refreshed === "1");
   const cfg = authConfig();
   // Own profile, roles and saved progress, read with the learner's own token: Row Level Security decides what is returned.
-  const [profile, saved, catalogue] = await Promise.all([getOwnProfile(cfg, accessToken), getOwnProgress(cfg, accessToken), getCatalogue()]);
+  const [profile, saved, catalogue] = await Promise.all([getOwnProfile(cfg, accessToken), getOwnProgress(cfg, accessToken), getLiveCatalogue()]);
   const displayName = profile?.displayName || user.email.split("@")[0]!;
   const roles = profile?.roles ?? [];
   const now = new Date();

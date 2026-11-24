@@ -21,6 +21,13 @@ export function hasExcelAssessment(slug: string): boolean {
   return Object.hasOwn(MISSIONS, slug);
 }
 
+/** Same handler, but grading with mission + keys that came from the database (the learner's pinned revision). */
+export async function handleExcelAssessmentWith(content: { mission: ExcelMission; keys: ExcelMissionKeys }, request: Request): Promise<HandlerResponse> {
+  const parsed = await parseAnswersRequest(request);
+  if (!parsed.ok) return parsed.response;
+  return { status: 200, body: gradeExcelAssessment(content.mission, content.keys, parsed.answers) };
+}
+
 /** Pure request handler so it can be unit-tested without a server. Nothing is persisted (Supabase paused). */
 export async function handleExcelAssessment(slug: string, request: Request): Promise<HandlerResponse> {
   if (!hasExcelAssessment(slug)) return { status: 404, body: { error: "Unknown mission." } };

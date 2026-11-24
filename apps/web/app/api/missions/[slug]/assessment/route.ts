@@ -16,7 +16,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   if (access !== "open") {
     return Response.json({ error: "mission_closed", reason: access }, { status: access === "error" ? 503 : 403, headers: { "Cache-Control": "no-store" } });
   }
-  const { status, body } = await handleAssessment(slug, request);
+  const { status, body } = await handleAssessment(slug, request, userId);
 
   if (status === 200 && "passed" in body) {
     let outcome: SaveOutcome = { saved: false, reason: "signed_out" };

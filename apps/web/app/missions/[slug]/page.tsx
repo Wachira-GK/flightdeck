@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, buttonVariants, Card, Progress } from "@flightdeck/ui";
 import { ActiveTimeBeat } from "@/components/activity-beat";
-import { ExcelMissionStep, getExcelMission } from "@/components/excel";
+import { ExcelMissionStep, getExcelMission, type ExcelMissionContent } from "@/components/excel";
 import { getMathMission, MathMissionStep } from "@/components/math";
 import { StepRail } from "@/components/step-rail";
 import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
 import { accessConfig, accessMessage, missionAccess } from "@/server/access";
 import { touchVisit } from "@/server/activity";
+import { contentForLearner } from "@/server/content-db";
 import { currentUserId } from "@/server/current-user";
 
 type Props = {
@@ -17,29 +18,43 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-/** The 4 hand-written prototype missions, else any real Excel mission from the generated registry (all 50 are playable). */
-function findMission(slug: string): Mission | undefined {
+interface Loaded {
+  mission: Mission;
+  /** Excel content to render; from the database (learner's pinned revision) or the built-in files. */
+  excel?: ExcelMissionContent;
+}
+
+function toMission(ex: ExcelMissionContent["mission"]): Mission {
+  return { slug: ex.slug, trackId: "excel", code: ex.code, title: ex.title, summary: ex.summary, estimatedMinutes: ex.estimatedMinutes, completedSteps: [], currentStep: "briefing" };
+}
+
+/**
+ * The 4 hand-written prototype missions; else a published Excel mission from the database (the learner's pinned
+ * revision when `pin` is set); else the built-in files. A database problem silently falls back to the files.
+ */
+async function loadMission(slug: string, userId: string | null, pin: boolean): Promise<Loaded | undefined> {
   const proto = getMission(slug);
-  if (proto) return proto;
-  const ex = getExcelMission(slug)?.mission;
-  return ex
-    ? { slug: ex.slug, trackId: "excel", code: ex.code, title: ex.title, summary: ex.summary, estimatedMinutes: ex.estimatedMinutes, completedSteps: [], currentStep: "briefing" }
-    : undefined;
+  if (proto) return { mission: proto };
+  const db = await contentForLearner(userId, slug, pin);
+  if (db && db.track === "excel") return { mission: toMission(db.mission), excel: { mission: db.mission, exercise: db.exercise } };
+  const ex = getExcelMission(slug);
+  return ex ? { mission: toMission(ex.mission), excel: ex } : undefined;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const mission = findMission(slug);
-  return { title: mission ? mission.title : "Mission not found" };
+  const loaded = await loadMission(slug, null, false);
+  return { title: loaded ? loaded.mission.title : "Mission not found" };
 }
 
 export default async function MissionPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const mission = findMission(slug);
-  if (!mission) notFound();
+  const userId = await currentUserId();
+  const preview = await loadMission(slug, userId, false); // no pin yet: a closed mission must not pin anything
+  if (!preview) notFound();
+  let mission = preview.mission;
 
   // Access rules (ADR-011): free tier, availability switch, per-learner unlocks. A closed mission sends no content.
-  const userId = await currentUserId();
   const [access] = await Promise.all([missionAccess(accessConfig(), userId, slug), touchVisit(userId)]); // touchVisit: activity log, best effort
   if (access !== "open") {
     const msg = accessMessage(access);
@@ -64,8 +79,16 @@ export default async function MissionPage({ params, searchParams }: Props) {
     );
   }
 
+  // Open: a signed-in learner is pinned to the revision they first open, so a newer publish never changes a mission mid-way.
+  let excelMission = preview.excel;
+  if (userId && excelMission) {
+    const pinned = await loadMission(slug, userId, true);
+    if (pinned?.excel) {
+      excelMission = pinned.excel;
+      mission = pinned.mission;
+    }
+  }
   const mathMission = mission.trackId === "mathlab" ? getMathMission(mission.slug) : undefined;
-  const excelMission = mission.trackId === "excel" ? getExcelMission(mission.slug) : undefined;
   const step = parseStep((await searchParams).step);
   const track = getTrack(mission.trackId);
   const { prev, next } = adjacentSteps(step);

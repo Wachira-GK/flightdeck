@@ -31,7 +31,7 @@ export interface CheckResponseBody {
 
 export type CheckHandlerResponse = { status: number; body: CheckResponseBody | { error: string } };
 
-export type ExerciseLookup = (id: string) => GradableExercise | undefined;
+export type ExerciseLookup = (id: string) => GradableExercise | undefined | Promise<GradableExercise | undefined>;
 
 /**
  * Rejections a normal learner can cause by typing in an editable cell: graded as a failed check
@@ -81,7 +81,7 @@ export async function handleCheck(
   /** Called once, only for a normally graded sheet (status 200), so the caller can save the verdict. */
   onGraded?: (g: { submission: unknown; passed: boolean; score: number; validatorVersion: string }) => void,
 ): Promise<CheckHandlerResponse> {
-  const entry = lookup(id);
+  const entry = await lookup(id);
   if (!entry) return { status: 404, body: { error: "Unknown exercise." } };
 
   const type = (request.headers.get("content-type") ?? "").toLowerCase();

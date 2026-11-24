@@ -106,12 +106,61 @@ function readMissions(track: ConfigTrack, course: ConfigCourse | undefined): Cat
       // A half-written or invalid content file is left out; the seed generator is the strict gate.
     }
   }
-  // Beginner first, then Intermediate, then Advanced; by code inside a level. "Next mission" follows this order.
+  return sortAndNumber(missions);
+}
+
+/** Beginner first, then Intermediate, then Advanced; by code inside a level. "Next mission" follows this order. */
+function sortAndNumber(missions: Omit<CatalogueMission, "position">[]): CatalogueMission[] {
   const rank = (l: MissionLevel) => MISSION_LEVELS.findIndex((x) => x.id === l);
-  missions.sort(
+  const sorted = [...missions].sort(
     (a, b) => rank(a.level) - rank(b.level) || a.code.localeCompare(b.code, "en", { numeric: true }) || a.slug.localeCompare(b.slug),
   );
-  return missions.map((m, i) => ({ ...m, position: i + 1 }));
+  return sorted.map((m, i) => ({ ...m, position: i + 1 }));
+}
+
+/** One published mission as the database reports it (ADR-015). Learner-safe: no documents, no keys. */
+export type PublishedItem = {
+  slug: string;
+  track: "excel" | "math";
+  code: string;
+  title: string;
+  level: unknown;
+  summary: unknown;
+  estimatedMinutes: unknown;
+};
+
+/** Which database content kind each catalogue track shows. */
+const TRACK_KIND: Record<string, PublishedItem["track"]> = { "excel-masterclass": "excel", mathlab: "math" };
+
+/**
+ * Overlays database-published missions on the built-in catalogue: a published mission replaces the built-in
+ * one with the same slug (title, level, summary...) and a new slug is added. Built-in missions the database does
+ * not mention stay as they are, so an empty or unreachable database changes nothing.
+ */
+export function overlayCatalogue(tracks: CatalogueTrack[], items: PublishedItem[] | null): CatalogueTrack[] {
+  if (!items || items.length === 0) return tracks;
+  return tracks.map((t) => {
+    const kind = TRACK_KIND[t.slug];
+    const course = t.courses[0];
+    if (!kind || !course || t.status !== "available") return t;
+    const bySlug = new Map<string, Omit<CatalogueMission, "position">>(t.missions.map((m) => [m.slug, { ...m, position: undefined }]));
+    for (const m of bySlug.values()) delete (m as { position?: number }).position;
+    for (const it of items) {
+      if (it.track !== kind) continue;
+      const existing = bySlug.get(it.slug);
+      bySlug.set(it.slug, {
+        slug: it.slug,
+        level: parseLevel(it.level),
+        code: it.code,
+        title: it.title,
+        summary: typeof it.summary === "string" ? it.summary : null,
+        estimatedMinutes: typeof it.estimatedMinutes === "number" ? it.estimatedMinutes : null,
+        courseSlug: existing?.courseSlug ?? course.slug,
+        href: `/missions/${it.slug}`,
+      });
+    }
+    return { ...t, missions: sortAndNumber([...bySlug.values()]) };
+  });
 }
 
 export const contentCatalogueSource: CatalogueSource = {

@@ -1,4 +1,6 @@
 import { handleCheck } from "@/server/excel-check";
+import { contentExercise } from "@/server/content-db";
+import { getGradableExercise } from "@/server/excel-keys";
 import { MISSION_DEFINITIONS } from "@/components/excel/registry.generated";
 import { accessConfig, missionAccess } from "@/server/access";
 import { currentUserId } from "@/server/current-user";
@@ -13,15 +15,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   const userId = await currentUserId();
   // ADR-011: an exercise belongs to a mission; a locked or switched-off mission is neither checked nor saved.
-  const owner = Object.values(MISSION_DEFINITIONS).find((m) => (m as { exerciseId?: string }).exerciseId === id);
-  if (owner) {
-    const access = await missionAccess(accessConfig(), userId, owner.slug);
+  const fromDb = await contentExercise(id);
+  const ownerSlug = fromDb?.slug ?? Object.values(MISSION_DEFINITIONS).find((m) => (m as { exerciseId?: string }).exerciseId === id)?.slug;
+  if (ownerSlug) {
+    const access = await missionAccess(accessConfig(), userId, ownerSlug);
     if (access !== "open") {
       return Response.json({ error: "mission_closed", reason: access }, { status: access === "error" ? 503 : 403, headers: { "Cache-Control": "no-store" } });
     }
   }
   let graded: { submission: unknown; passed: boolean; score: number; validatorVersion: string } | undefined;
-  const { status, body } = await handleCheck(id, request, undefined, (g) => {
+  const { status, body } = await handleCheck(id, request, (exId) => (fromDb ? { exercise: fromDb.exercise, key: fromDb.key } : getGradableExercise(exId)), (g) => {
     graded = g;
   });
 

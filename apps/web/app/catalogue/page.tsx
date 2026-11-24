@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, buttonVariants, Card, CardEyebrow } from "@flightdeck/ui";
 import { LevelSection } from "@/components/level-section";
-import { getCatalogue, MISSION_LEVELS, type CatalogueTrack } from "@/lib/catalogue";
+import { MISSION_LEVELS, type CatalogueTrack } from "@/lib/catalogue";
+import { getLiveCatalogue } from "@/server/catalogue-live";
 
 export const metadata: Metadata = {
   title: "Catalogue",
   description: "Browse FlightDeck tracks and missions: Excel Masterclass and MathLab.",
 };
 
-// Fully static: built once from the content files, served as HTML with ~0 Worker CPU.
-// No searchParams, cookies or headers on this page.
-export const dynamic = "force-static";
+// Rendered per request: the built-in missions plus anything an author has published (ADR-015). The database
+// list is cached for 30 s inside the Worker and falls back to the built-in list if the database is unreachable.
+export const dynamic = "force-dynamic";
 
 export default async function CataloguePage() {
-  const tracks = await getCatalogue();
+  const tracks = await getLiveCatalogue();
   const missionCount = tracks.reduce((n, t) => n + t.missions.length, 0);
 
   return (
