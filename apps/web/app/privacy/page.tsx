@@ -38,14 +38,21 @@ export default function PrivacyPage() {
           certificates fair. We do not record what you type or answer here, your location, or your device.
         </li>
       </ul>
-      <p className="mt-2">
-        At this stage, your answers in missions are checked when you submit them and are not saved to your account. When we add saving of
-        progress, we will update this notice first.
-      </p>
+      <ul className={ul}>
+        <li>
+          Your learning progress, when you are signed in: the missions you start, the steps you complete, and for each assessment or simulator check your score, whether
+          you passed, the answers or workbook you submitted, and when. Free missions can be retried as often as you like, and every attempt is saved.
+        </li>
+        <li>
+          How much active time you spend on each mission (the mission name and a running total of seconds, counted only while the page is open and you are using it).
+          We use it to help keep certificates fair. It never includes what you type.
+        </li>
+      </ul>
+      <p className="mt-2">If you are not signed in, your answers are checked when you submit them and are not saved.</p>
 
       <h2 className={h2}>Why we collect it</h2>
       <p className="mt-2">
-        To create and secure your account, to show you your Cockpit, and to email you a link to confirm your address. We do not sell your
+        To create and secure your account, to show you your Cockpit and your progress, to keep certificates fair, and to email you a link to confirm your address. We do not sell your
         information and we do not show advertising.
       </p>
 
@@ -64,7 +71,7 @@ export default function PrivacyPage() {
       </p>
 
       <h2 className={h2}>How long we keep it</h2>
-      <p className="mt-2">While your account is open. If you ask us to delete your account, we delete your name and email from our systems. Sign-in and activity records are removed after 13 months.</p>
+      <p className="mt-2">While your account is open. If you ask us to delete your account, we delete your name and email from our systems. Sign-in and activity records are removed after 13 months. Progress and active-time records are kept while your account is open and are removed with it.</p>
 
       <h2 className={h2}>Your rights</h2>
       <p className="mt-2">

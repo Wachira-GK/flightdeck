@@ -37,3 +37,7 @@ A paid purchase will create the same kind of unlock (or an entitlement the funct
 - The mission text is bundled in the app's JavaScript (it is learner-safe content, ADR-003), so access control protects grading, saving and the page, not secrecy of the lesson wording. Answer keys are never in the bundle.
 - The public catalogue page is static and lists every mission; clicking a locked one shows the "not unlocked" page.
 - Unlock changes apply on the next request; there is no cache.
+
+## Addendum 24 Nov 2026: free missions have unlimited attempts
+
+Godfrey: free missions have unlimited attempts and grading, so a learner can retry until they reach 100%. Migration 20261124001500 changes the attempt-numbering trigger: if the mission is Free (app_private.mission_access.is_free) the per-assessment limit is replaced by a safety ceiling of 1,000 stored attempts; non-free missions keep max_attempts (default 3). Grading itself was never limited; the old limit only stopped attempt 4 and later from being SAVED. Simulator checks keep their 200-per-exercise storage cap. Tests PROG-T04, PROG-T04b.

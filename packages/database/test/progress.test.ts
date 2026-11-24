@@ -64,6 +64,7 @@ describe('PROG-T01..T07 progress recording', () => {
 
   it('PROG-T04 the attempt limit is respected and reported, not thrown', async () => {
     const out = await db.scenario(async (step) => {
+      await step('postgres', `update app_private.mission_access set is_free = false where mission_slug = 'excel-sum-101'`); // a paid mission keeps the limit
       const results: Row[] = [];
       for (let i = 0; i < 4; i++) results.push((await step<{ r: Row }>(service, rec, [L1, 'excel-sum-101', 50, false]))[0]!.r);
       const n = await step<Row>('postgres', `select count(*)::int as n from public.assessment_attempts where user_id = '${L1}'`);
@@ -72,6 +73,22 @@ describe('PROG-T01..T07 progress recording', () => {
     expect(out.results.map((r) => r.saved)).toEqual([true, true, true, false]);
     expect(out.results[3]).toMatchObject({ reason: 'attempt_limit' });
     expect(out.n).toBe(3);
+  });
+
+  it('PROG-T04b a FREE mission has unlimited attempts: ten failures and then a pass are all stored and the step completes', async () => {
+    const out = await db.scenario(async (step) => {
+      await step('postgres', `insert into app_private.mission_access (mission_slug, is_free) values ('excel-sum-101', true) on conflict (mission_slug) do update set is_free = true`);
+      const results: Row[] = [];
+      for (let i = 0; i < 10; i++) results.push((await step<{ r: Row }>(service, rec, [L1, 'excel-sum-101', 50, false]))[0]!.r);
+      const last = (await step<{ r: Row }>(service, rec, [L1, 'excel-sum-101', 100, true]))[0]!.r;
+      const n = await step<Row>('postgres', `select count(*)::int as n from public.assessment_attempts where user_id = '${L1}'`);
+      const done = await step<Row>('postgres', `select count(*)::int as n from public.step_progress where user_id = '${L1}' and status = 'completed'`);
+      return { results, last, n: n[0]!.n, done: done[0]!.n };
+    });
+    expect(out.results.every((r) => r.saved === true)).toBe(true);
+    expect(out.last).toMatchObject({ saved: true, attemptNo: 11, passed: true });
+    expect(out.n).toBe(11);
+    expect(out.done).toBe(1);
   });
 
   it('PROG-T05 an exercise verdict is stored; a pass completes the simulation step', async () => {
