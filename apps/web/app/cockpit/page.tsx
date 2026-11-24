@@ -65,6 +65,9 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
               </Link>
             </>
           ) : null}
+          <Link href="/exams" className="underline">
+            Certificate exams
+          </Link>
           {roles.includes("author") || roles.includes("admin") ? (
             <Link href="/author" className="underline">
               Author missions

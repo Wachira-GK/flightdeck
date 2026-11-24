@@ -17,6 +17,11 @@ const MISSIONS: Record<string, { mission: ExcelMission; keys: ExcelMissionKeys }
 );
 export const EXCEL_ASSESSMENT_SLUGS = Object.keys(MISSIONS);
 
+/** Built-in mission + keys (files), for the exam pool fallback. Server-only. */
+export function getBuiltInExcel(slug: string): { mission: ExcelMission; keys: ExcelMissionKeys } | undefined {
+  return Object.hasOwn(MISSIONS, slug) ? MISSIONS[slug] : undefined;
+}
+
 export function hasExcelAssessment(slug: string): boolean {
   return Object.hasOwn(MISSIONS, slug);
 }
