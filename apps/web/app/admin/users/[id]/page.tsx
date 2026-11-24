@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge, Button, Card } from "@flightdeck/ui";
 import { EDITABLE_ROLES, FAILURE_TEXT, listMissionAccess, userDetail, userUnlocks, type AdminFailure } from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
+import { userActivity } from "@/server/activity";
 import { resetMfaAction, sendResetAction, setNameAction, setRolesAction, setStatusAction, setUnlocksAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Admin: user" };
@@ -48,7 +49,7 @@ export default async function AdminUserPage({
     );
   }
   const { user, summary } = r.value;
-  const [missionsR, unlocksR] = await Promise.all([listMissionAccess(cfg, userId), userUnlocks(cfg, userId, id)]);
+  const [missionsR, unlocksR, act] = await Promise.all([listMissionAccess(cfg, userId), userUnlocks(cfg, userId, id), userActivity(userId, id, cfg)]);
   const paidMissions = missionsR.ok ? missionsR.value.filter((m) => !m.isFree) : [];
   const freeCount = missionsR.ok ? missionsR.value.length - paidMissions.length : 0;
   const unlocked = new Set(unlocksR.ok ? unlocksR.value : []);
@@ -94,6 +95,30 @@ export default async function AdminUserPage({
           <Stat label="Simulator checks" value={summary.exerciseAttempts} />
         </dl>
         <p className="mt-3 text-sm text-fg-muted">Opening this page was recorded in the audit log. Answers and grades cannot be edited from here.</p>
+      </Card>
+
+      <Card className="mt-6">
+        <h2 className="text-lg font-semibold">Sign-in activity</h2>
+        {act ? (
+          <>
+            <dl className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+              <Stat label="Sign-ins, 7 days" value={act.signIns7} />
+              <Stat label="Sign-ins, 30 days" value={act.signIns30} />
+              <Stat label="Days active, 30 days" value={act.daysActive30} />
+              <Stat label="Last seen" value={act.lastSeen ? new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeZone: "Africa/Nairobi" }).format(new Date(act.lastSeen)) : "never"} />
+            </dl>
+            {act.recent.length > 0 ? (
+              <p className="mt-3 text-sm text-fg-muted">
+                Recent sign-ins (Nairobi time):{" "}
+                {act.recent.map((e) => `${new Intl.DateTimeFormat("en-GB", { dateStyle: "short", timeStyle: "short", timeZone: "Africa/Nairobi" }).format(new Date(e.at))} (${e.method})`).join(", ")}
+              </p>
+            ) : (
+              <p className="mt-3 text-sm text-fg-muted">No sign-ins recorded yet.</p>
+            )}
+          </>
+        ) : (
+          <p className="mt-2 text-sm text-fg-muted">Activity could not be read right now.</p>
+        )}
       </Card>
 
       <Card className="mt-6">
@@ -255,7 +280,7 @@ const ROLE_HINT: Record<string, string> = {
   admin: "manages users and roles",
 };
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: number | string }) {
   return (
     <div>
       <dt className="text-fg-muted">{label}</dt>

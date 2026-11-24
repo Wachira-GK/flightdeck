@@ -33,6 +33,10 @@ export default function PrivacyPage() {
           (hashed) version.
         </li>
         <li>Two sign-in cookies that keep you signed in (see below).</li>
+        <li>
+          When you sign in and which days you are active on FlightDeck. Our administrators use this to see how often learners come back and to help keep
+          certificates fair. We do not record what you type or answer here, your location, or your device.
+        </li>
       </ul>
       <p className="mt-2">
         At this stage, your answers in missions are checked when you submit them and are not saved to your account. When we add saving of
@@ -60,7 +64,7 @@ export default function PrivacyPage() {
       </p>
 
       <h2 className={h2}>How long we keep it</h2>
-      <p className="mt-2">While your account is open. If you ask us to delete your account, we delete your name and email from our systems.</p>
+      <p className="mt-2">While your account is open. If you ask us to delete your account, we delete your name and email from our systems. Sign-in and activity records are removed after 13 months.</p>
 
       <h2 className={h2}>Your rights</h2>
       <p className="mt-2">

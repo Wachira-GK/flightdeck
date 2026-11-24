@@ -9,6 +9,7 @@ import { getOwnProfile } from "@/server/auth/gotrue";
 import { authConfig, requireUser } from "@/server/auth/session";
 import { getOwnProgress } from "@/server/cockpit-data";
 import { accessConfig, accessSummary, isOpenFor } from "@/server/access";
+import { touchVisit } from "@/server/activity";
 
 export const metadata: Metadata = { title: "Cockpit" };
 
@@ -26,7 +27,7 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
   const now = new Date();
   const greeting = greetingFor(hourIn(now, profile?.timeZone ?? "Africa/Nairobi"));
   // Only missions this person can open count as "next" (ADR-011). If access cannot be read, nothing is hidden and the server still enforces.
-  const access = await accessSummary(accessConfig(), user.id);
+  const [access] = await Promise.all([accessSummary(accessConfig(), user.id), touchVisit(user.id)]); // touchVisit: activity log, best effort
   const visible = access ? catalogue.map((t) => ({ ...t, missions: t.missions.filter((m) => isOpenFor(access, m.slug)) })) : catalogue;
   const view = buildCockpit(visible, saved ?? EMPTY_PROGRESS);
   const active = view.active;

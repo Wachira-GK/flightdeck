@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { adminConfig, takeResetVerifier } from "@/server/admin/admin";
+import { recordSignIn } from "@/server/activity";
+import { subOf } from "@/server/auth/aal";
 import { exchangePkceCode } from "@/server/auth/gotrue";
 import { isVerifier } from "@/server/auth/pkce";
 import { applySessionCookies, authConfig, OAUTH_COOKIE, oauthCookieOptions } from "@/server/auth/session";
@@ -46,5 +48,7 @@ export async function GET(request: NextRequest) {
 
   const res = go(next);
   applySessionCookies(res.cookies, r.value);
+  // A reset link also ends here; only a real Google sign-in is counted (best effort, never blocks the sign-in).
+  if (next !== "/reset-password") await recordSignIn(subOf(r.value.accessToken), "google");
   return res;
 }

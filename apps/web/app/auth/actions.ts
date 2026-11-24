@@ -2,6 +2,8 @@
 
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { recordSignIn } from "@/server/activity";
+import { subOf } from "@/server/auth/aal";
 import { requestPasswordReset, resendSignupEmail, signInWithPassword, signOut, signUp, updatePassword, type AuthFailure } from "@/server/auth/gotrue";
 import { challengeFor, newVerifier } from "@/server/auth/pkce";
 import { ACCESS_COOKIE, applySessionCookies, authConfig, clearSessionCookies, OAUTH_COOKIE, oauthCookieOptions, readSession } from "@/server/auth/session";
@@ -45,6 +47,7 @@ export async function signInAction(_prev: AuthFormState, fd: FormData): Promise<
   if (!r.ok) return { error: FAILURE_TEXT[r.reason], email, unconfirmed: r.reason === "email_not_confirmed" };
 
   applySessionCookies(await cookies(), r.value);
+  await recordSignIn(subOf(r.value.accessToken), "password"); // best effort: never blocks the sign-in
   redirect(safeNext(field(fd, "next")));
 }
 
@@ -63,6 +66,7 @@ export async function signUpAction(_prev: AuthFormState, fd: FormData): Promise<
   if (r.value.session) {
     // The project does not require email confirmation: the learner is signed in straight away.
     applySessionCookies(await cookies(), r.value.session);
+    await recordSignIn(subOf(r.value.session.accessToken), "signup");
     redirect(safeNext(field(fd, "next")));
   }
   // Same screen whether or not the address was already registered (no account enumeration).

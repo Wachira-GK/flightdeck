@@ -8,6 +8,7 @@ import { StepRail } from "@/components/step-rail";
 import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
 import { accessConfig, accessMessage, missionAccess } from "@/server/access";
+import { touchVisit } from "@/server/activity";
 import { currentUserId } from "@/server/current-user";
 
 type Props = {
@@ -38,7 +39,7 @@ export default async function MissionPage({ params, searchParams }: Props) {
 
   // Access rules (ADR-011): free tier, availability switch, per-learner unlocks. A closed mission sends no content.
   const userId = await currentUserId();
-  const access = await missionAccess(accessConfig(), userId, slug);
+  const [access] = await Promise.all([missionAccess(accessConfig(), userId, slug), touchVisit(userId)]); // touchVisit: activity log, best effort
   if (access !== "open") {
     const msg = accessMessage(access);
     return (
