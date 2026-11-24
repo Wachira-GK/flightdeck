@@ -28,6 +28,7 @@ export {
   type CellAddress,
   type CellRefParts,
 } from "./refs";
+export { shiftFormula } from "./shift";
 export { tokenize, type Token, type TokenType } from "./lexer";
 export {
   parseFormula,

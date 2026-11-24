@@ -6,6 +6,7 @@ import {
   exerciseLimits,
   formatValue,
   isCellError,
+  parseKey,
   type CellValue,
   type ExerciseDefinition,
   type ExerciseKey,
@@ -13,7 +14,7 @@ import {
   type ValidationResult,
 } from "@flightdeck/excel-engine";
 import { Badge, Button, cn } from "@flightdeck/ui";
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import {
   createBrowserEngineWorker,
   createEngineClient,
@@ -23,14 +24,21 @@ import {
 } from "./engine-client";
 import {
   applyEdit,
+  applyFill,
+  autoFillExtent,
   cellAlign,
   cellAriaLabel,
   checkSummary,
+  closeParens,
   firstEditable,
+  insertPointRef,
   isTypingKey,
   moveSelection,
+  pointingAllowed,
   posToKey,
+  rangeText,
   type GridPos,
+  type PointSpan,
 } from "./grid-helpers";
 import { HARD_TIMEOUT_MS } from "./protocol";
 import { checkEndpointFor, checkOnServer, type ServerCheckResult } from "./server-check";
@@ -79,7 +87,16 @@ interface EditState {
   draft: string;
 }
 
+/** A reference being pointed at while a formula is typed: where it sits in the text and which cells it covers. */
+interface PointState extends PointSpan {
+  anchor: GridPos;
+  focus: GridPos;
+}
+
 const ALIGN_CLASS = { left: "text-left", right: "text-right", center: "text-center" } as const;
+
+const inBlock = (a: GridPos, b: GridPos, p: GridPos): boolean =>
+  p.row >= Math.min(a.row, b.row) && p.row <= Math.max(a.row, b.row) && p.col >= Math.min(a.col, b.col) && p.col <= Math.max(a.col, b.col);
 
 /**
  * Interactive Excel practice grid. Formulas run in a Web Worker (TB7) with a 500 ms hard timeout;
@@ -104,6 +121,10 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const [checkError, setCheckError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  /** The cell reference being pointed at while a formula is typed (Excel "Point" mode). */
+  const [point, setPoint] = useState<PointState | null>(null);
+  /** Where the fill handle is currently being dragged to (null when not dragging). */
+  const [fillTo, setFillTo] = useState<GridPos | null>(null);
 
   const clientRef = useRef<EngineClient | null>(null);
   /** Set when the Worker cannot start (blocked/slow network): calculate on the main thread instead. */
@@ -114,6 +135,16 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   /** True while an edit is open; guards blur-commits that fire after Enter/Escape already ended it. */
   const editActiveRef = useRef(false);
   const barRef = useRef<HTMLInputElement | null>(null);
+  /** The in-cell editor while one is open. */
+  const cellEditorRef = useRef<HTMLInputElement | null>(null);
+  /** True while the mouse button is held after clicking a cell to point at it (dragging extends the reference). */
+  const pointDragRef = useRef(false);
+  /** The click that follows a pointing mouse-down must not also select the cell. */
+  const suppressClickRef = useRef(false);
+  /** Caret position to restore after the formula text changes. */
+  const pendingCaretRef = useRef<number | null>(null);
+  const fillFromRef = useRef<GridPos | null>(null);
+  const fillToRef = useRef<GridPos | null>(null);
 
   const selKey = posToKey(sel);
   const selEditable = editable.has(selKey);
@@ -194,6 +225,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
 
   /** Focuses the in-cell editor as soon as it mounts, caret at the end. */
   const focusEditor = useCallback((el: HTMLInputElement | null) => {
+    cellEditorRef.current = el;
     if (el && el.ownerDocument.activeElement !== el) {
       el.focus();
       el.setSelectionRange(el.value.length, el.value.length);
@@ -217,10 +249,13 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const commit = (move?: "down" | "right") => {
     if (!edit || !editActiveRef.current) return;
     editActiveRef.current = false;
-    const next = applyEdit(inputs, selKey, edit.draft);
+    // Like Excel, a formula left open is completed on Enter: =SUM(B2:B4 is stored as =SUM(B2:B4).
+    const finalDraft = closeParens(edit.draft);
+    const next = applyEdit(inputs, selKey, finalDraft);
     setEdit(null);
+    setPoint(null);
     focusCellRef.current = true;
-    if ((inputs[selKey] ?? "") !== edit.draft) {
+    if ((inputs[selKey] ?? "") !== finalDraft) {
       setInputs(next);
       setCheck(null);
       recalc(next);
@@ -234,6 +269,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
   const cancel = () => {
     editActiveRef.current = false;
     setEdit(null);
+    setPoint(null);
     focusCellRef.current = true;
   };
 
@@ -255,6 +291,16 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
       if (isTypingKey(e)) {
         e.preventDefault();
         setEdit((cur) => (cur ? { ...cur, draft: cur.draft + e.key } : cur));
+      }
+      return;
+    }
+    if (e.altKey && e.key.startsWith("Arrow")) {
+      // Keyboard fill: Alt+Arrow copies this cell into the neighbour (formulas shift) and moves there, so repeating it fills a column or row.
+      const next = moveSelection(sel, { key: e.key }, size);
+      if (next) {
+        e.preventDefault();
+        doFill(sel, next);
+        select(next);
       }
       return;
     }
@@ -280,7 +326,133 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
     }
   };
 
+  /** The text box the person is typing into (in the cell, or the formula bar). */
+  const editorInput = () => (edit?.source === "bar" ? barRef.current : cellEditorRef.current);
+
+  /** Writes the pointed-at cell or block into the formula at the caret (replacing the previous pointed reference). */
+  const pointAt = (anchor: GridPos, focus: GridPos, caret: number, prev: PointState | null) => {
+    if (!edit) return;
+    const text = rangeText(anchor, focus);
+    const ins = insertPointRef(edit.draft, caret, prev, text);
+    setEdit({ ...edit, draft: ins.draft });
+    setPoint({ start: ins.start, end: ins.end, anchor, focus });
+    pendingCaretRef.current = ins.end;
+    setAnnouncement(`${text} added to the formula.`);
+  };
+
+  /** Where the caret is, and whether clicking a cell or pressing an arrow now means "refer to that cell". */
+  const pointContext = (): { caret: number; prev: PointState | null } | null => {
+    if (!edit) return null;
+    const el = editorInput();
+    const caret = el?.selectionStart ?? edit.draft.length;
+    const prev = point && point.end === caret ? point : null;
+    return pointingAllowed(edit.draft, caret, prev) ? { caret, prev } : null;
+  };
+
+  // After a click or arrow changed the formula text, put the caret right after the inserted reference.
+  useLayoutEffect(() => {
+    const caret = pendingCaretRef.current;
+    if (caret === null) return;
+    pendingCaretRef.current = null;
+    editorInput()?.setSelectionRange(caret, caret);
+  });
+
+  /** Mouse-down on a cell while typing a formula: refer to that cell instead of leaving the edit. */
+  const onCellMouseDown = (e: ReactMouseEvent, pos: GridPos) => {
+    if (e.button !== 0) return;
+    const ctx = pointContext();
+    if (!ctx) return; // not a place for a reference: the normal behaviour (finish the edit, select the cell) applies
+    e.preventDefault(); // keeps the focus, and the caret, in the formula
+    suppressClickRef.current = true;
+    pointDragRef.current = true;
+    pointAt(pos, pos, ctx.caret, ctx.prev);
+  };
+
+  /** Dragging with the button held widens the reference to a block, like Excel. */
+  const onCellMouseEnter = (pos: GridPos) => {
+    if (!pointDragRef.current || !point) return;
+    pointAt(point.anchor, pos, point.end, point);
+  };
+
+  // The button is released anywhere: the drag is over.
+  useEffect(() => {
+    const up = () => {
+      pointDragRef.current = false;
+    };
+    window.addEventListener("mouseup", up);
+    return () => window.removeEventListener("mouseup", up);
+  }, []);
+
+  /** Arrow keys while typing a formula move a reference around the sheet (Shift extends it to a block). */
+  const pointWithArrow = (e: KeyboardEvent<HTMLInputElement>): boolean => {
+    if (!e.key.startsWith("Arrow") || e.altKey || e.ctrlKey || e.metaKey) return false;
+    const ctx = pointContext();
+    if (!ctx) return false;
+    const from = ctx.prev ? ctx.prev.focus : sel;
+    const moved = moveSelection(from, { key: e.key }, size);
+    if (!moved) return false;
+    e.preventDefault();
+    pointAt(e.shiftKey && ctx.prev ? ctx.prev.anchor : moved, moved, ctx.caret, ctx.prev);
+    return true;
+  };
+
+  /** Fills the selected cell into the dragged range, like Excel's fill handle. Locked cells are never overwritten. */
+  const doFill = (from: GridPos, to: GridPos) => {
+    const r = applyFill(inputs, from, to, size, editable);
+    if (r.filled > 0) {
+      setInputs(r.next);
+      setCheck(null);
+      recalc(r.next);
+    }
+    if (r.filled === 0 && r.skipped === 0) return;
+    const locked = r.skipped > 0 ? ` ${r.skipped} locked ${r.skipped === 1 ? "cell was" : "cells were"} left unchanged.` : "";
+    setAnnouncement(`Filled ${r.filled} ${r.filled === 1 ? "cell" : "cells"}.${locked}`);
+  };
+  const doFillRef = useRef(doFill);
+  useEffect(() => {
+    doFillRef.current = doFill;
+  });
+
+  const startFill = (e: ReactPointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fillFromRef.current = sel;
+    fillToRef.current = sel;
+    setFillTo(sel);
+  };
+
+  // While the fill handle is dragged, follow the pointer over the cells; on release, apply the fill.
+  useEffect(() => {
+    const move = (ev: PointerEvent) => {
+      if (!fillFromRef.current) return;
+      const key = document.elementFromPoint(ev.clientX, ev.clientY)?.closest<HTMLElement>("[data-cell]")?.dataset.cell;
+      const addr = key ? parseKey(key) : null;
+      if (!addr) return;
+      fillToRef.current = { row: addr.row, col: addr.col };
+      setFillTo(fillToRef.current);
+    };
+    const end = (apply: boolean) => {
+      const from = fillFromRef.current;
+      const to = fillToRef.current;
+      fillFromRef.current = null;
+      fillToRef.current = null;
+      setFillTo(null);
+      if (apply && from && to) doFillRef.current(from, to);
+    };
+    const up = () => end(true);
+    const cancelled = () => end(false);
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancelled);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancelled);
+    };
+  }, []);
+
   const onEditorKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (pointWithArrow(e)) return;
     if (e.key === "Enter") {
       e.preventDefault();
       commit(edit?.source === "cell" ? "down" : undefined);
@@ -298,6 +470,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
     setInputs(starter);
     editActiveRef.current = false;
     setEdit(null);
+    setPoint(null);
     setCheck(null);
     recalc(starter);
     setAnnouncement("The sheet was reset to its starting values.");
@@ -385,7 +558,10 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
           onFocus={() => {
             if (selEditable && !edit) beginEdit("bar", selInput);
           }}
-          onChange={(e) => setEdit({ source: "bar", draft: e.target.value })}
+          onChange={(e) => {
+            setPoint(null);
+            setEdit({ source: "bar", draft: e.target.value });
+          }}
           onKeyDown={onEditorKeyDown}
           onBlur={() => {
             if (edit?.source === "bar") commit();
@@ -465,6 +641,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                         if (el) cellRefs.current.set(key, el);
                         else cellRefs.current.delete(key);
                       }}
+                      data-cell={key}
                       role="gridcell"
                       aria-colindex={c + 2}
                       aria-selected={isSel}
@@ -472,7 +649,13 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                       aria-label={cellAriaLabel(key, input, value, isEditable)}
                       tabIndex={isSel && !isEditingHere ? 0 : -1}
                       onKeyDown={onCellKeyDown}
+                      onMouseDown={(e) => onCellMouseDown(e, { row: r, col: c })}
+                      onMouseEnter={() => onCellMouseEnter({ row: r, col: c })}
                       onClick={() => {
+                        if (suppressClickRef.current) {
+                          suppressClickRef.current = false;
+                          return;
+                        }
                         if (!isSel) select({ row: r, col: c });
                       }}
                       onDoubleClick={() => {
@@ -480,7 +663,9 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                       }}
                       className={cn(
                         "h-10 border-r border-border-strong px-1.5 py-1 whitespace-nowrap last:border-r-0 sm:h-9 sm:px-3",
-                        "cursor-cell outline-offset-[-3px]",
+                        "relative cursor-cell outline-offset-[-3px]",
+                        point && edit && inBlock(point.anchor, point.focus, { row: r, col: c }) && "bg-surface-2 outline-2 outline-dashed outline-accent",
+                        fillTo && inBlock(sel, fillTo, { row: r, col: c }) && !isSel && "bg-surface-2 outline-2 outline-dashed outline-accent",
                         isEditable
                           ? "bg-surface shadow-[inset_0_0_0_2px_var(--fd-accent)]"
                           : "bg-surface-2 text-fg",
@@ -496,7 +681,10 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                           value={edit.draft}
                           spellCheck={false}
                           autoComplete="off"
-                          onChange={(e) => setEdit({ source: "cell", draft: e.target.value })}
+                          onChange={(e) => {
+                            setPoint(null);
+                            setEdit({ source: "cell", draft: e.target.value });
+                          }}
                           onKeyDown={onEditorKeyDown}
                           onBlur={() => {
                             if (edit?.source === "cell") commit();
@@ -506,6 +694,20 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
                       ) : (
                         <span aria-hidden="true">{formatValue(value)}</span>
                       )}
+                      {isSel && !isEditingHere && !edit ? (
+                        <span
+                          data-fill-handle
+                          aria-hidden="true"
+                          title="Drag to fill; double-click to fill down"
+                          onPointerDown={startFill}
+                          onDoubleClick={(e) => {
+                            e.stopPropagation();
+                            const end = autoFillExtent(inputs, sel, size);
+                            if (end) doFill(sel, end);
+                          }}
+                          className="absolute -right-1 -bottom-1 z-20 size-2.5 cursor-crosshair touch-none border border-surface bg-accent"
+                        />
+                      ) : null}
                     </td>
                   );
                 })}
@@ -517,7 +719,9 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
 
       <p id={legendId} className="text-xs text-fg-muted">
         Outlined cells are editable; shaded cells are locked. Use the arrow keys to move, Enter or F2 to edit, Escape
-        to cancel. Formulas start with =. Available functions: {exercise.allowedFunctions.join(", ") || "none"}.
+        to cancel. Formulas start with =: while typing one, click or drag cells (or use the arrow keys) to add them, and
+        a missing closing bracket is added when you press Enter. Drag the small square at the corner of the selected
+        cell to fill (double-click it to fill down; Alt+arrow also fills). Available functions: {exercise.allowedFunctions.join(", ") || "none"}.
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
