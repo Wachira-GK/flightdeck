@@ -225,6 +225,19 @@ export async function actorFacts(cfg: AdminConfig | null, actorId: string): Prom
   return r.value ? { ok: true, value: r.value } : fail("forbidden");
 }
 
+/** Which of these users have a CONFIRMED authenticator app, from the database's own record (Supabase's user list does not report it reliably). */
+async function verifiedMfa(cfg: AdminConfig, actorId: string, ids: string[]): Promise<Set<string> | null> {
+  if (!ids.length) return new Set();
+  const r = await call(cfg, "fd_admin_mfa_status", { p_actor: actorId, p_ids: ids }, (j) =>
+    new Set(
+      (Array.isArray(j.factors) ? j.factors : [])
+        .filter((f): f is { userId: string; status: string } => typeof (f as { userId?: unknown })?.userId === "string" && (f as { status?: unknown }).status === "verified")
+        .map((f) => f.userId),
+    ),
+  );
+  return r.ok ? r.value : null;
+}
+
 export const PAGE_SIZE = 25;
 
 export interface UserPage {
@@ -248,9 +261,10 @@ export async function listUsers(cfg: AdminConfig | null, actorId: string, query:
   );
   if (!facts.ok) return facts;
   const byId = new Map(facts.value.map((f) => [f.id, f]));
+  const mfaOn = await verifiedMfa(cfg, actorId, slice.map((u) => u.id));
   const rows: AdminUserRow[] = slice.flatMap((u) => {
     const f = byId.get(u.id);
-    return f ? [{ ...f, email: u.email, lastSignInAt: u.lastSignInAt, mfa: u.mfa }] : [];
+    return f ? [{ ...f, email: u.email, lastSignInAt: u.lastSignInAt, mfa: mfaOn ? mfaOn.has(u.id) : u.mfa }] : [];
   });
   return { ok: true, value: { rows, total: wanted.length, page: p, pages } };
 }
@@ -266,12 +280,13 @@ export async function userDetail(
   const facts = toFacts(r.value.user);
   const au = await getAuthUser(cfg, targetId);
   if (!facts || !au) return fail("unavailable");
+  const mfaOn = await verifiedMfa(cfg, actorId, [targetId]);
   const s = (r.value.summary ?? {}) as Record<string, unknown>;
   const n = (k: string) => (typeof s[k] === "number" ? (s[k] as number) : 0);
   return {
     ok: true,
     value: {
-      user: { ...facts, email: au.email, lastSignInAt: au.lastSignInAt, mfa: au.mfa },
+      user: { ...facts, email: au.email, lastSignInAt: au.lastSignInAt, mfa: mfaOn ? mfaOn.has(targetId) : au.mfa },
       summary: { enrolments: n("enrolments"), stepsCompleted: n("stepsCompleted"), assessmentAttempts: n("assessmentAttempts"), exerciseAttempts: n("exerciseAttempts") },
     },
   };
@@ -318,12 +333,14 @@ export async function sendResetLink(cfg: AdminConfig | null, authCfg: AuthConfig
  * first (active admin, not self, not master) and writes the audit entry; a failed removal is reported, not hidden.
  */
 export async function resetMfa(cfg: AdminConfig | null, actorId: string, targetId: string): Promise<AdminResult<true>> {
-  const ok = await call(cfg, "fd_admin_mfa_reset", { p_actor: actorId, p_target: targetId }, () => true as const);
-  if (!ok.ok || !cfg) return ok;
+  const begun = await call(cfg, "fd_admin_mfa_reset", { p_actor: actorId, p_target: targetId }, (j) => (Array.isArray(j.factorIds) ? j.factorIds.filter((x): x is string => typeof x === "string") : []));
+  if (!begun.ok || !cfg) return begun.ok ? { ok: true, value: true as const } : begun;
   const au = await getAuthUser(cfg, targetId);
   if (!au) return fail("unknown_user");
+  const ok: AdminResult<true> = { ok: true, value: true };
   let failed = 0;
-  for (const fid of au.factorIds) {
+  // The database's list is the truth; anything Supabase's own user record adds is removed too.
+  for (const fid of new Set([...begun.value, ...au.factorIds])) {
     try {
       const res = await (cfg.fetch ?? fetch)(`${base(cfg)}/auth/v1/admin/users/${encodeURIComponent(targetId)}/factors/${encodeURIComponent(fid)}`, {
         method: "DELETE",

@@ -18,3 +18,7 @@ Status: **Accepted 2026-11-24** (follows ADR-009 decision 4: required for admins
 
 ## Tests
 Database `ADM-T13..T14` (admin-mfa.test.ts); web `MFA-W01..W12` (server/auth/mfa.test.ts).
+
+## Addendum 24 Nov 2026: status and reset read the database record
+Supabase's admin user list does not report authenticator factors reliably (the dashboard showed 2-step off for an account that had it on). Admin screens and the reset now read auth.mfa_factors through app_private.mfa_factors_of (migration 20261124001100). Supabase ignores grants on its own auth tables, so this one SECURITY DEFINER helper stays owned by postgres instead of app_definer; the security test RLS-T24 carries a single named exception, approved by the product owner on 24 Nov 2026. The helper selects only user id, factor id and status, is service_role-only, and the admin wrapper fd_admin_mfa_status re-checks that the caller is an active admin. Reset (fd_admin_mfa_reset) now returns every factor id from the database for the web server to remove in Supabase Auth.
+

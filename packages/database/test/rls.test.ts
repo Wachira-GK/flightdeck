@@ -246,7 +246,10 @@ describe('RLS-T01..T24', () => {
     expect(definers.length).toBeGreaterThan(5);
     for (const f of definers) {
       expect(f.config, f.name).toContain('search_path=""');
-      expect(f.owner, f.name).toBe('app_definer');
+      // One reviewed exception (ADR-010, approved by the product owner 24 Nov 2026): Supabase ignores grants on its own
+      // auth tables, so only the migration owner can read auth.mfa_factors. The helper selects three columns, is
+      // service_role-only, and its wrapper re-checks the admin.
+      expect(f.owner, f.name).toBe(f.name === 'app_private.mfa_factors_of(uuid[])' ? 'postgres' : 'app_definer');
       expect(f.public_exec, f.name).toBe(false);
     }
     const noRls = await db.as(service, `select n.nspname || '.' || c.relname as t from pg_class c join pg_namespace n on n.oid = c.relnamespace

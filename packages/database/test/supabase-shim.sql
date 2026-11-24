@@ -13,6 +13,16 @@ create table auth.users (
   raw_user_meta_data jsonb not null default '{}'::jsonb
 );
 
+-- Stand-in for Supabase's authenticator-app factors. Like the real one, no app role can read it (only the owner).
+create table auth.mfa_factors (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null references auth.users (id) on delete cascade,
+  friendly_name text,
+  factor_type   text not null default 'totp',
+  status        text not null default 'unverified' check (status in ('unverified', 'verified')),
+  created_at    timestamptz not null default now()
+);
+
 -- Same contract as Supabase: the JWT `sub` claim of the current request.
 create function auth.uid()
 returns uuid
