@@ -18,6 +18,7 @@ const CSP = [
   "frame-ancestors 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
+const CSP_SIMBAY = CSP.replace("script-src 'self' 'unsafe-inline'", "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'").replace("img-src 'self' data:", "img-src 'self' data: blob:");
 const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
@@ -42,25 +43,27 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
+    const common = [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+    ];
+    const hsts = { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" };
     return [
       {
-        source: "/:path*",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-          ...(isProd
-            ? [
-                { key: "Content-Security-Policy", value: CSP },
-                { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
-              ]
-            : []),
-        ],
+        // Everything except Sim Bay (/simbay): the standard policy.
+        source: "/((?!simbay).*)",
+        headers: [...common, ...(isProd ? [{ key: "Content-Security-Policy", value: CSP }, hsts] : [])],
+      },
+      {
+        // Sim Bay runs its spreadsheet engine as WebAssembly, so it alone also allows 'wasm-unsafe-eval'
+        // (WebAssembly only, not eval of text). Everything else in the policy is unchanged. See ADR-017.
+        source: "/simbay/:path*",
+        headers: [...common, ...(isProd ? [{ key: "Content-Security-Policy", value: CSP_SIMBAY }, hsts] : [])],
       },
     ];
-  },
-};
+  },};
 
 export default nextConfig;
 

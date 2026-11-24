@@ -135,6 +135,17 @@ export default async function MissionPage({ params, searchParams }: Props) {
               <Badge tone="accent">
                 Step {stepIndex(step) + 1} of {MISSION_STEPS.length}
               </Badge>
+              {excelMission ? (
+                // Wide screens only (Sim Bay needs a keyboard and at least 1024 px). A plain link: /simbay is served by the
+                // Sim Bay gateway, and it brings the learner back here with "Back to mission".
+                <a
+                  href={`/simbay?from=${encodeURIComponent(`/missions/${mission.slug}?step=${step}`)}`}
+                  data-testid="open-sim-bay"
+                  className={`${buttonVariants({ variant: "secondary" })} ml-auto max-[1023px]:hidden`}
+                >
+                  Open in Sim Bay
+                </a>
+              ) : null}
             </div>
             <h2 id="step-title" className="mt-3 text-2xl font-semibold">
               {STEP_LABELS[step]}
