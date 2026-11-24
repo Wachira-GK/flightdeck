@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authConfig } from "@/server/auth/session";
 import { cleanName } from "@/server/auth/validate";
-import { EDITABLE_ROLES, sendResetLink, setName, setRoles, setStatus, type AdminResult } from "@/server/admin/admin";
+import { EDITABLE_ROLES, resetMfa, sendResetLink, setName, setRoles, setStatus, type AdminResult } from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
 
 // Each action: (1) re-checks that the caller is an active admin, (2) takes the actor id from the verified session
@@ -60,6 +60,11 @@ export async function setNameAction(fd: FormData): Promise<void> {
 export async function sendResetAction(fd: FormData): Promise<void> {
   const { target, actor, cfg } = await begin(fd);
   back(target, await sendResetLink(cfg, authConfig(), actor, target, await origin()), "reset");
+}
+
+export async function resetMfaAction(fd: FormData): Promise<void> {
+  const { target, actor, cfg } = await begin(fd);
+  back(target, await resetMfa(cfg, actor, target), "mfareset");
 }
 
 function cleanReason(raw: string): string | null {

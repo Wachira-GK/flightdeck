@@ -88,7 +88,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3">{u.status === "suspended" ? <Badge tone="muted">suspended</Badge> : "active"}</td>
+                  <td className="px-4 py-3">
+                    {u.status === "suspended" ? <Badge tone="muted">suspended</Badge> : "active"}
+                    <span className="ml-2 text-fg-muted">{u.mfa ? "2-step on" : "2-step off"}</span>
+                  </td>
                   <td className="px-4 py-3 text-fg-muted">{u.lastSignInAt ? new Date(u.lastSignInAt).toISOString().slice(0, 16).replace("T", " ") + " UTC" : "never"}</td>
                 </tr>
               ))}

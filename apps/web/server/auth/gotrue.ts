@@ -22,12 +22,22 @@ export interface Tokens {
   expiresIn: number;
 }
 
+export interface Factor {
+  id: string;
+  type: string;
+  status: "verified" | "unverified";
+}
+
 export interface AuthUser {
   id: string;
   email: string;
+  /** Two-step sign-in factors, when Supabase reports them (absent in older responses). */
+  factors?: Factor[];
 }
 
 export type AuthFailure =
+  | "invalid_code"
+  | "mfa_unavailable"
   | "invalid_credentials"
   | "email_not_confirmed"
   | "rate_limited"
@@ -66,6 +76,8 @@ async function call(cfg: AuthConfig, path: string, init: { method: string; body?
 
 function reasonFor(status: number, json: Record<string, unknown> | null): AuthFailure {
   const code = String(json?.error_code ?? json?.code ?? "");
+  if (code === "mfa_verification_failed" || code === "mfa_verification_rejected" || code === "mfa_challenge_expired") return "invalid_code";
+  if (code === "mfa_totp_enroll_not_enabled" || code === "mfa_totp_verify_not_enabled") return "mfa_unavailable";
   if (status === 429 || code.includes("rate_limit")) return "rate_limited";
   if (code === "email_not_confirmed") return "email_not_confirmed";
   if (code === "weak_password") return "weak_password";
@@ -175,7 +187,75 @@ export function getUser(cfg: AuthConfig, accessToken: string): Promise<AuthResul
     const id = r.json?.id;
     const email = r.json?.email;
     if (typeof id !== "string" || typeof email !== "string") return fail("unavailable");
-    return { ok: true, value: { id, email } };
+    const raw = r.json?.factors;
+    const factors: Factor[] | undefined = Array.isArray(raw)
+      ? raw.flatMap((f: Record<string, unknown>) =>
+          typeof f?.id === "string" ? [{ id: f.id, type: String(f.factor_type ?? ""), status: f.status === "verified" ? ("verified" as const) : ("unverified" as const) }] : [],
+        )
+      : undefined;
+    return { ok: true, value: factors ? { id, email, factors } : { id, email } };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Two-step sign-in (authenticator app, TOTP) through Supabase MFA. Every call uses the user's own token.
+// ---------------------------------------------------------------------------
+export interface TotpEnrolment {
+  factorId: string;
+  /** SVG picture of the QR code as a data: URL, safe to use as an <img> source. */
+  qrSrc: string;
+  /** The same secret as text, for people who type it into the app. */
+  secret: string;
+}
+
+function qrDataUrl(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const m = /^data:image\/svg\+xml(?:;[a-z0-9=-]+)*,([\s\S]+)$/i.exec(raw);
+  const svg = m ? decodeSafe(m[1]!) : raw;
+  return svg.trimStart().startsWith("<svg") ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}` : null;
+}
+function decodeSafe(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
+/** Starts enrolment: Supabase returns a secret and a QR code; the factor stays "unverified" until a code is confirmed. */
+export function enrollTotp(cfg: AuthConfig, accessToken: string): Promise<AuthResult<TotpEnrolment>> {
+  return safely(async () => {
+    const r = await call(cfg, "/auth/v1/factors", {
+      method: "POST",
+      body: { factor_type: "totp", friendly_name: "Authenticator app", issuer: "FlightDeck" },
+      bearer: accessToken,
+    });
+    if (r.status !== 200 && r.status !== 201) return fail(reasonFor(r.status, r.json));
+    const totp = r.json?.totp as Record<string, unknown> | undefined;
+    const qrSrc = qrDataUrl(totp?.qr_code);
+    if (typeof r.json?.id !== "string" || typeof totp?.secret !== "string" || !qrSrc) return fail("unavailable");
+    return { ok: true, value: { factorId: r.json.id, qrSrc, secret: totp.secret } };
+  });
+}
+
+/** Asks Supabase to check a 6-digit code. On success the SESSION IS UPGRADED: the returned tokens carry aal2. */
+export function verifyTotp(cfg: AuthConfig, accessToken: string, factorId: string, code: string): Promise<AuthResult<Tokens>> {
+  return safely(async () => {
+    const id = encodeURIComponent(factorId);
+    const ch = await call(cfg, `/auth/v1/factors/${id}/challenge`, { method: "POST", body: {}, bearer: accessToken });
+    if (ch.status !== 200 || typeof ch.json?.id !== "string") return fail(reasonFor(ch.status, ch.json));
+    const r = await call(cfg, `/auth/v1/factors/${id}/verify`, { method: "POST", body: { challenge_id: ch.json.id, code }, bearer: accessToken });
+    if (r.status !== 200) return fail(reasonFor(r.status, r.json));
+    const t = toTokens(r.json);
+    return t ? { ok: true, value: t } : fail("unavailable");
+  });
+}
+
+/** Removes a factor (used to clear an abandoned, unverified set-up before starting a new one). */
+export function removeFactor(cfg: AuthConfig, accessToken: string, factorId: string): Promise<AuthResult<true>> {
+  return safely(async () => {
+    const r = await call(cfg, `/auth/v1/factors/${encodeURIComponent(factorId)}`, { method: "DELETE", bearer: accessToken });
+    return r.status === 200 || r.status === 204 ? { ok: true, value: true } : fail(reasonFor(r.status, r.json));
   });
 }
 

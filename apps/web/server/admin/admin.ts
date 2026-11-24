@@ -108,12 +108,19 @@ export interface AuthAdminUser {
   createdAt: string;
   lastSignInAt: string | null;
   banned: boolean;
+  /** Has a confirmed authenticator app (two-step sign-in is on). */
+  mfa: boolean;
+  /** Every factor id, confirmed or not (used by "reset two-step sign-in"). */
+  factorIds: string[];
 }
 
 function toAuthAdminUser(u: Record<string, unknown>): AuthAdminUser | null {
   if (typeof u.id !== "string" || typeof u.email !== "string") return null;
   const bannedUntil = typeof u.banned_until === "string" ? Date.parse(u.banned_until) : NaN;
+  const factors = (Array.isArray(u.factors) ? u.factors : []) as Record<string, unknown>[];
   return {
+    mfa: factors.some((f) => f?.factor_type === "totp" && f?.status === "verified"),
+    factorIds: factors.flatMap((f) => (typeof f?.id === "string" ? [f.id] : [])),
     id: u.id,
     email: u.email,
     createdAt: typeof u.created_at === "string" ? u.created_at : "",
@@ -188,6 +195,8 @@ export interface UserFacts {
 export interface AdminUserRow extends UserFacts {
   email: string;
   lastSignInAt: string | null;
+  /** Two-step sign-in is on. */
+  mfa: boolean;
 }
 export interface ProgressSummary {
   enrolments: number;
@@ -241,7 +250,7 @@ export async function listUsers(cfg: AdminConfig | null, actorId: string, query:
   const byId = new Map(facts.value.map((f) => [f.id, f]));
   const rows: AdminUserRow[] = slice.flatMap((u) => {
     const f = byId.get(u.id);
-    return f ? [{ ...f, email: u.email, lastSignInAt: u.lastSignInAt }] : [];
+    return f ? [{ ...f, email: u.email, lastSignInAt: u.lastSignInAt, mfa: u.mfa }] : [];
   });
   return { ok: true, value: { rows, total: wanted.length, page: p, pages } };
 }
@@ -262,7 +271,7 @@ export async function userDetail(
   return {
     ok: true,
     value: {
-      user: { ...facts, email: au.email, lastSignInAt: au.lastSignInAt },
+      user: { ...facts, email: au.email, lastSignInAt: au.lastSignInAt, mfa: au.mfa },
       summary: { enrolments: n("enrolments"), stepsCompleted: n("stepsCompleted"), assessmentAttempts: n("assessmentAttempts"), exerciseAttempts: n("exerciseAttempts") },
     },
   };
@@ -302,6 +311,32 @@ export async function sendResetLink(cfg: AdminConfig | null, authCfg: AuthConfig
   const sent = await requestPasswordReset(authCfg, au.email, `${origin}/auth/callback?rid=${encodeURIComponent(begun.value)}`, await challengeFor(verifier));
   if (!sent.ok) return fail(sent.reason === "rate_limited" ? "rate_limited" : "unavailable");
   return { ok: true, value: true };
+}
+
+/**
+ * Lost phone: removes the person's authenticator factors so they can set up again (ADR-010). The database says yes
+ * first (active admin, not self, not master) and writes the audit entry; a failed removal is reported, not hidden.
+ */
+export async function resetMfa(cfg: AdminConfig | null, actorId: string, targetId: string): Promise<AdminResult<true>> {
+  const ok = await call(cfg, "fd_admin_mfa_reset", { p_actor: actorId, p_target: targetId }, () => true as const);
+  if (!ok.ok || !cfg) return ok;
+  const au = await getAuthUser(cfg, targetId);
+  if (!au) return fail("unknown_user");
+  let failed = 0;
+  for (const fid of au.factorIds) {
+    try {
+      const res = await (cfg.fetch ?? fetch)(`${base(cfg)}/auth/v1/admin/users/${encodeURIComponent(targetId)}/factors/${encodeURIComponent(fid)}`, {
+        method: "DELETE",
+        headers: headers(cfg),
+        signal: AbortSignal.timeout(cfg.timeoutMs ?? 8000),
+        cache: "no-store",
+      });
+      if (!res.ok) failed++;
+    } catch {
+      failed++;
+    }
+  }
+  return failed ? { ok: true, value: true, warning: "Some factors could not be removed. Try again." } : ok;
 }
 
 /** Used by /auth/callback when the link carries ?rid= : the verifier is returned once, then deleted. */

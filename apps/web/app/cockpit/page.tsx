@@ -47,6 +47,9 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
               {r}
             </Badge>
           ))}
+          <Link href="/account/security" className="underline">
+            Account security
+          </Link>
           {roles.includes("admin") ? (
             <Link href="/admin" className="underline">
               Admin: users

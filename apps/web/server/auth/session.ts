@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { aalOf, verifiedTotpId, type Aal } from "./aal";
 import { getUser, refreshSession, type AuthConfig, type AuthUser, type Tokens } from "./gotrue";
 
 // Session = two HttpOnly cookies set by the server. JavaScript in the browser can never read them
@@ -51,7 +52,7 @@ export function clearSessionCookies(jar: CookieJar): void {
 }
 
 export type SessionState =
-  | { status: "signed-in"; user: AuthUser; accessToken: string }
+  | { status: "signed-in"; user: AuthUser; accessToken: string; aal: Aal; factorId: string | null }
   | { status: "needs-refresh" }
   | { status: "anonymous" }
   | { status: "unavailable" };
@@ -67,7 +68,7 @@ export async function readSession(): Promise<SessionState> {
   const rt = jar.get(REFRESH_COOKIE)?.value;
   if (at) {
     const r = await getUser(authConfig(), at);
-    if (r.ok) return { status: "signed-in", user: r.value, accessToken: at };
+    if (r.ok) return { status: "signed-in", user: r.value, accessToken: at, aal: aalOf(at), factorId: verifiedTotpId(r.value.factors) };
     if (r.reason === "unavailable") return { status: "unavailable" };
   }
   return rt ? { status: "needs-refresh" } : { status: "anonymous" };
@@ -78,9 +79,18 @@ export async function readSession(): Promise<SessionState> {
  * `refreshed` is true when we just came back from /auth/refresh: if the session is still not valid then,
  * stop (sign in again) instead of looping.
  */
-export async function requireUser(next: string, refreshed: boolean): Promise<{ user: AuthUser; accessToken: string }> {
+export async function requireUser(
+  next: string,
+  refreshed: boolean,
+  opts?: { allowAal1?: boolean },
+): Promise<{ user: AuthUser; accessToken: string; aal: Aal; factorId: string | null }> {
   const s = await readSession();
-  if (s.status === "signed-in") return { user: s.user, accessToken: s.accessToken };
+  if (s.status === "signed-in") {
+    // Someone who set up two-step sign-in must confirm a code for this session before any protected page (ADR-010).
+    // Only the 2-step pages themselves pass allowAal1.
+    if (s.factorId && s.aal !== "aal2" && !opts?.allowAal1) redirect(`/mfa?next=${encodeURIComponent(next)}`);
+    return { user: s.user, accessToken: s.accessToken, aal: s.aal, factorId: s.factorId };
+  }
   if (s.status === "unavailable") throw new Error("Sign-in service is unavailable. Try again shortly.");
   const q = encodeURIComponent(next);
   if (s.status === "needs-refresh" && !refreshed) redirect(`/auth/refresh?next=${q}`);

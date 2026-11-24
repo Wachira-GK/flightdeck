@@ -28,6 +28,8 @@ Roles live in `public.user_roles` (written only by the server). Enforcement: DB 
 | Create entitlement / record payment | ✖ | ✖ | ✖ | ✖ | ✖ | S | webhook handler only (RLS-T21, DB-I01) |
 | Manage users (list, edit name, set roles, suspend/reactivate) | ✖ | ✖ | ✖ | ✖ | ✖ | S (not self, not master; audited) | `fd_admin_*` (ADM-T01..T12, ADR-009) |
 | Start a password reset for another user (emailed one-time link) | ✖ | ✖ | ✖ | ✖ | ✖ | S (not self, not master) | `fd_admin_reset_begin` (ADM-T10) |
+| Reach `/admin` and run admin actions | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ only with two-step sign-in confirmed this session (ADR-010) | `requireAdmin` (aal2) |
+| Reset another user's two-step sign-in | ✖ | ✖ | ✖ | ✖ | ✖ | S (not self, not master; audited) | `fd_admin_mfa_reset` (ADM-T13..T14) |
 | Change the master admin | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ (master: name only) | SQL only (ADM-T06) |
 | Read audit log / outbox / webhooks | ✖ | ✖ | ✖ | ✖ | ✖ | S | `app_private`, no grants (RLS-T20) |
 

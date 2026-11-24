@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge, Button, Card } from "@flightdeck/ui";
 import { EDITABLE_ROLES, FAILURE_TEXT, userDetail, type AdminFailure } from "@/server/admin/admin";
 import { isUuid, requireAdmin } from "@/server/admin/guard";
-import { sendResetAction, setNameAction, setRolesAction, setStatusAction } from "../../actions";
+import { resetMfaAction, sendResetAction, setNameAction, setRolesAction, setStatusAction } from "../../actions";
 
 export const metadata: Metadata = { title: "Admin: user" };
 export const dynamic = "force-dynamic";
@@ -17,6 +17,7 @@ const DONE: Record<string, string> = {
   suspended: "Account suspended. They can no longer sign in.",
   reactivated: "Account reactivated.",
   reset: "Reset link sent. They must open it within an hour.",
+  mfareset: "Two-step sign-in reset. They set it up again the next time they sign in.",
 };
 const inputClass = "mt-1 block min-h-11 w-full rounded-md border border-border-strong bg-surface px-3 py-2 text-base";
 
@@ -69,6 +70,7 @@ export default async function AdminUserPage({
             </Badge>
           ))}
           <Badge tone="muted">{user.status}</Badge>
+          <Badge tone={user.mfa ? "accent" : "muted"}>{user.mfa ? "2-step on" : "2-step off"}</Badge>
           {isSelf ? <span className="text-sm text-fg-muted">This is you.</span> : null}
         </div>
       </header>
@@ -175,6 +177,23 @@ export default async function AdminUserPage({
                 Email a reset link
               </Button>
             </form>
+          </Card>
+
+          <Card className="mt-6">
+            <h2 className="text-lg font-semibold">Two-step sign-in</h2>
+            <p className="mt-1 text-sm text-fg-muted">
+              {user.mfa
+                ? "Their authenticator app is on. If they lost their phone, reset it: they will set up a new app at their next sign-in (admins must, before reaching the admin area)."
+                : "Not set up. Nothing to reset."}
+            </p>
+            {user.mfa ? (
+              <form action={resetMfaAction} className="mt-3">
+                <input type="hidden" name="target" value={user.id} />
+                <Button type="submit" variant="secondary">
+                  Reset two-step sign-in
+                </Button>
+              </form>
+            ) : null}
           </Card>
         </>
       )}
