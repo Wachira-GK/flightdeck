@@ -64,6 +64,12 @@ describe("MFA two-step sign-in (server)", () => {
     expect(JSON.parse(String(calls[0]!.init!.body))).toMatchObject({ factor_type: "totp", issuer: "FlightDeck" });
   });
 
+  it("MFA-W05b Supabase labels its QR image data:img/svg+xml (not image/): it is accepted", async () => {
+    const { cfg } = fake(() => ({ json: { id: "fac1", totp: { qr_code: `data:img/svg+xml;utf-8,${SVG}`, secret: "JBSWY3DPEHPK3PXP", uri: "otpauth://x" } } }));
+    const r = await enrollTotp(cfg, "tok");
+    expect(r.ok && r.value.qrSrc.startsWith("data:image/svg+xml;charset=utf-8,%3Csvg")).toBe(true);
+  });
+
   it("MFA-W06 a QR code that is not an SVG is rejected; a disabled project is reported plainly", async () => {
     const bad = fake(() => ({ json: { id: "f", totp: { qr_code: "data:text/html,<script>alert(1)</script>", secret: "S" } } }));
     expect(await enrollTotp(bad.cfg, "t")).toEqual({ ok: false, reason: "unavailable" });

@@ -210,9 +210,9 @@ export interface TotpEnrolment {
 
 function qrDataUrl(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
-  const m = /^data:image\/svg\+xml(?:;[a-z0-9=-]+)*,([\s\S]+)$/i.exec(raw);
+  const m = /^data:(?:image|img)\/svg\+xml(?:;[a-z0-9=-]+)*,([\s\S]+)$/i.exec(raw);
   const svg = m ? decodeSafe(m[1]!) : raw;
-  return svg.trimStart().startsWith("<svg") ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}` : null;
+  return /^\s*(?:<\?xml[^>]*\?>\s*)?<svg[\s>]/i.test(svg) ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}` : null;
 }
 function decodeSafe(s: string): string {
   try {
