@@ -110,4 +110,17 @@ describe('CWS-T10..T13 content read path', () => {
     expect(r.ex.exerciseKey).toBeTruthy();
     expect(r.noEx).toMatchObject({ ok: false, reason: 'not_found' });
   });
+
+  it('CWS-T14 the list says what the caller may do, including for someone with two roles; learners are refused', async () => {
+    const r = await db.scenario(async (step) => {
+      await step(service, `insert into public.user_roles (user_id, role) values ($1::uuid, 'author'), ($1::uuid, 'reviewer')`, [L2]);
+      const get = async (who: string) => out(await step<{ r: Row }>(service, `select public.fd_content_list($1::uuid) as r`, [who]));
+      return { author: await get(AUTHOR), reviewer: await get(REVIEWER), both: await get(L2), learner: await get(L1) };
+    });
+    expect(r.author).toMatchObject({ ok: true, canWrite: true, canReview: false });
+    expect(r.reviewer).toMatchObject({ ok: true, canWrite: false, canReview: true });
+    expect(r.both).toMatchObject({ ok: true, role: 'reviewer', canWrite: true, canReview: true });
+    expect(r.learner).toMatchObject({ ok: false, reason: 'forbidden' });
+  });
 });
+

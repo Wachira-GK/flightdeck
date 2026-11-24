@@ -35,6 +35,9 @@ for (const [dir, track] of [["excel", "excel"], ["math", "math"]]) {
       exercise = readJson(path.join(exDir, `${mission.exerciseId}.json`));
       const kf = path.join(exDir, `${mission.exerciseId}.key.json`);
       exerciseKey = exists(kf) ? readJson(kf) : null;
+      // The reference solution rides along (server-only, like the key) so the author editor can reopen this mission.
+      const sf = path.join(root, "content", "excel", "solutions", `${mission.exerciseId}.solution.json`);
+      if (exerciseKey && exists(sf)) exerciseKey = { ...exerciseKey, authoring: { solution: readJson(sf).cells } };
     }
     items.push({ slug: mission.slug, track, code: mission.code, title: mission.title, level: mission.level ?? "beginner", mission, exercise, keys, exerciseKey });
   }

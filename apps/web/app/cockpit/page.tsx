@@ -65,6 +65,16 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
               </Link>
             </>
           ) : null}
+          {roles.includes("author") || roles.includes("admin") ? (
+            <Link href="/author" className="underline">
+              Author missions
+            </Link>
+          ) : null}
+          {roles.includes("reviewer") || roles.includes("admin") ? (
+            <Link href="/review" className="underline">
+              Review queue
+            </Link>
+          ) : null}
         </div>
         {sp.password === "changed" ? (
           <p role="status" className="mt-3 rounded-md bg-accent-subtle px-3 py-2 text-sm">
