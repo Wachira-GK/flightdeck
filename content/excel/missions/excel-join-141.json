@@ -6,6 +6,7 @@
   "title": "Build labels by joining text with &",
   "summary": "Join store codes, article numbers, products and sizes into labels and descriptions with the & operator.",
   "estimatedMinutes": 14,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "label-join-ampersand",
   "steps": [

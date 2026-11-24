@@ -6,6 +6,7 @@
   "title": "Mark-up and margin",
   "summary": "Work out mark-up and margin from cost and price, and learn why they are different numbers.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "markup-vs-margin",
   "steps": [

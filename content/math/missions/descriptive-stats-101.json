@@ -6,6 +6,7 @@
   "title": "Typical week: mean, median and spread",
   "summary": "Describe a store's weekly sales with mean, median, range and standard deviation, and see why one big week can mislead.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "datasets": [
     {

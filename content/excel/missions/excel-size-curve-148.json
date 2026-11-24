@@ -6,6 +6,7 @@
   "title": "Size-curve share: which size carries the sales?",
   "summary": "Turn pairs sold per size into a share of the total, then find the size that sells most and how big its share is.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "size-curve-share",
   "steps": [

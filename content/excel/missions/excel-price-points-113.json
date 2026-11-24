@@ -6,6 +6,7 @@
   "title": "Discounts, price points and charm prices",
   "summary": "Turn a discounted price into a clean shelf price with ROUND(x,-1) and a charm price that ends in 9.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "discount-price-points",
   "steps": [

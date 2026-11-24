@@ -6,6 +6,7 @@
   "title": "Stock cover in weeks",
   "summary": "Turn stock on hand and weekly sales into weeks of cover, then label each style Low, OK or Overstock.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "stock-cover-weeks-status",
   "steps": [

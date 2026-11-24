@@ -6,6 +6,7 @@
   "title": "Spot wrong-length codes with LEN",
   "summary": "Count the characters in SKU codes with LEN and flag any code that is the wrong length with IF.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "sku-length-check-len",
   "steps": [

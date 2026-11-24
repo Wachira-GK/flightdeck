@@ -6,6 +6,7 @@
   "title": "VAT and discounts",
   "summary": "Add VAT to a price, take it out again, and apply a percentage discount, using rates held in input cells.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "vat-and-discount-prices",
   "steps": [

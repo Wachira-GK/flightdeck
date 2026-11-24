@@ -6,6 +6,7 @@
   "title": "Rounding prices with ROUND",
   "summary": "Round converted prices to 2 decimals, whole shillings, tens and hundreds, and see that ROUND changes the stored value.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "round-price-list",
   "steps": [

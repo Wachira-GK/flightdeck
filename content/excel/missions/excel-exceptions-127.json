@@ -6,6 +6,7 @@
   "title": "Exceptions report: lines below reorder point",
   "summary": "Flag lines below their reorder point, then count them, work out their share and value with COUNTIF, COUNTIFS and SUMIFS.",
   "estimatedMinutes": 20,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "exceptions-reorder-report",
   "steps": [

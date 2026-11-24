@@ -6,6 +6,7 @@
   "title": "Look up by size",
   "summary": "Use a shoe size as the lookup key to pull the size-run quantity and the price for each order line.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "size-run-lookup",
   "steps": [

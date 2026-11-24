@@ -6,6 +6,7 @@
   "title": "Lookups across a row",
   "summary": "Look up months across a row of headings and return the matching sales and target from rows below.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "horizontal-month-lookup",
   "steps": [

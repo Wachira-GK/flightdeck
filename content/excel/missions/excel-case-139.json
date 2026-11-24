@@ -6,6 +6,7 @@
   "title": "Standard case with UPPER and LOWER",
   "summary": "Make store codes consistent with UPPER and LOWER and learn when letter case does and does not matter.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "store-code-case",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "Grade tiers with exact-match lookup",
   "summary": "Turn a customer grade label into a discount rate with XLOOKUP, and see why exact match needs labels rather than number bands.",
   "estimatedMinutes": 18,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "grade-discount-lookup",
   "steps": [

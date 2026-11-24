@@ -6,6 +6,7 @@
   "title": "Commission tiers with nested IF",
   "summary": "Look up a sales rate from a tier table by placing one IF inside another.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "commission-tier-if-chain",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "Choose the return column",
   "summary": "Use one product code to return price, cost or supplier by changing only the return range.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "return-column-picker",
   "steps": [

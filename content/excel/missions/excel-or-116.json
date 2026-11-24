@@ -6,6 +6,7 @@
   "title": "OR: either condition is enough",
   "summary": "Use OR inside IF to include Nairobi stores or big sellers in a report, and to flag stores that need support for low sales or low sell-through.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "region-or-bonus",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "AND: several conditions at once",
   "summary": "Use AND inside IF to reorder only active lines that are low, and to spot lines that beat both margin and sell-through targets.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "reorder-and-margin",
   "steps": [

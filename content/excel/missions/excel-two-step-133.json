@@ -6,6 +6,7 @@
   "title": "Two-step lookup: store, region, target",
   "summary": "Look up a store's region, then use that region to look up a target, with a helper column linking the two lookups.",
   "estimatedMinutes": 18,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "two-step-region-target",
   "steps": [

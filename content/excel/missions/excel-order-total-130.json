@@ -6,6 +6,7 @@
   "title": "Order totals from a price list",
   "summary": "Multiply a looked-up unit price by the quantity on each line, then add the lines to get the order total.",
   "estimatedMinutes": 18,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "order-total-lookup",
   "steps": [

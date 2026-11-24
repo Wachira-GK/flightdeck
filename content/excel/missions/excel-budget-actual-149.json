@@ -6,6 +6,7 @@
   "title": "Budget vs actual scorecard",
   "summary": "Measure how far each store is from its budget, flag the ones outside tolerance and count the misses.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "budget-actual-scorecard",
   "steps": [

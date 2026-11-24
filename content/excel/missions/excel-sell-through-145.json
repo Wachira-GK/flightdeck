@@ -6,6 +6,7 @@
   "title": "Sell-through % and slow sellers",
   "summary": "Work out what share of the available pairs has sold and flag the styles that are moving too slowly.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "sell-through-slow-sellers",
   "steps": [

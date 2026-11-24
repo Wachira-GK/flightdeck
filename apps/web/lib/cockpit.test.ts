@@ -4,7 +4,7 @@ import type { CatalogueTrack } from "./catalogue";
 import { buildCockpit, completedStepsFor, EMPTY_PROGRESS, type SavedProgress } from "./cockpit";
 
 const m = (slug: string, code: string, position: number) => ({
-  slug, code, title: `Title ${code}`, summary: null, estimatedMinutes: 10, position, courseSlug: "c", href: `/missions/${slug}` as const,
+  slug, level: "beginner" as const, code, title: `Title ${code}`, summary: null, estimatedMinutes: 10, position, courseSlug: "c", href: `/missions/${slug}` as const,
 });
 const CATALOGUE: CatalogueTrack[] = [
   { slug: "excel", title: "Excel", subject: "Excel", description: "d", status: "available", courses: [], missions: [m("a", "EX-101", 1), m("b", "EX-102", 2)] },

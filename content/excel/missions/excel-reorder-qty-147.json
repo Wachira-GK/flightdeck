@@ -6,6 +6,7 @@
   "title": "How many pairs to reorder?",
   "summary": "Work out the order quantity that tops each style up to its target cover, without ever ordering a negative number.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "reorder-quantity-floor",
   "steps": [

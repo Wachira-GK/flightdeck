@@ -6,6 +6,7 @@
   "title": "Margin from looked-up cost and price",
   "summary": "Look up cost and price by product code, then work out the margin in KES and as a percentage of the price.",
   "estimatedMinutes": 18,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "lookup-margin-calc",
   "steps": [

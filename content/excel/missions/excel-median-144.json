@@ -6,6 +6,7 @@
   "title": "Median or average? Reporting weekly sales",
   "summary": "Spot when one unusual week distorts the average, and choose the figure that tells the truth about a typical week.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "median-vs-average-weekly-sales",
   "steps": [

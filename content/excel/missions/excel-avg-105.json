@@ -6,6 +6,7 @@
   "title": "Averages and extremes of weekly sales",
   "summary": "Use AVERAGE, MAX and MIN to describe four weeks of sales for each store.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "store-weekly-sales-stats",
   "steps": [

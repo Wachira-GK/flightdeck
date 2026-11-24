@@ -6,6 +6,7 @@
   "title": "Counting with two conditions: COUNTIFS",
   "summary": "Count rows that meet two conditions, including a stock band such as 10 to 19 pairs built from two criteria on the same column.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "countifs-stock-bands",
   "steps": [

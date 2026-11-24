@@ -6,6 +6,7 @@
   "title": "Percentage change versus last year",
   "summary": "Work out growth against last year and protect the formula from a last year of zero.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "store-growth-vs-last-year",
   "steps": [

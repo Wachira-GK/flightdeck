@@ -6,6 +6,7 @@
   "title": "SUMIF with greater-than and less-than criteria",
   "summary": "Total only the lines at or above a target (or below a limit) using comparison criteria and a target stored in a cell.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "sumif-target-thresholds",
   "steps": [

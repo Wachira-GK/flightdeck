@@ -6,6 +6,7 @@
   "title": "Build a summary table with SUMIF",
   "summary": "Build a category summary table from one SUMIF formula with absolute references, then prove it with a grand-total cross-check.",
   "estimatedMinutes": 20,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "summary-table-sumif-check",
   "steps": [

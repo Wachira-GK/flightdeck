@@ -6,6 +6,7 @@
   "title": "Share of total with an absolute reference",
   "summary": "Turn each region's sales into a share of the total, and see why 0.25 means 25%.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "region-share-of-total",
   "steps": [

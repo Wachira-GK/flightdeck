@@ -6,6 +6,7 @@
   "title": "Counting by status with COUNTIF",
   "summary": "Count how many stores are open, closed or being renovated with COUNTIF, using text and cell-reference criteria.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "countif-store-status",
   "steps": [

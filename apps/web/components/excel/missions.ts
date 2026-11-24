@@ -36,6 +36,8 @@ export type ExcelMission = {
   title: string;
   summary: string;
   estimatedMinutes: number;
+  /** Learning level: missions are grouped Beginner, Intermediate, Advanced. */
+  level: "beginner" | "intermediate" | "advanced";
   /** Fraction of assessment points needed to pass, e.g. 0.8. */
   passMark: number;
   /** Learner-safe exercise mounted in the simulation step (content/excel/exercises/<id>.json). */
@@ -63,6 +65,7 @@ export function validateExcelMission(
   if (mission.trackId !== "excel") issues.push("trackId must be excel");
   if (!/^EX-\d{3}$/.test(mission.code)) issues.push("code must look like EX-101");
   if (!(mission.passMark > 0 && mission.passMark <= 1)) issues.push("passMark must be in (0, 1]");
+  if (!["beginner", "intermediate", "advanced"].includes(mission.level)) issues.push("level must be beginner, intermediate or advanced");
   if (!exercise || exercise.id !== mission.exerciseId) issues.push(`unknown exercise ${mission.exerciseId}`);
   const stepIds = mission.steps.map((s) => s.id);
   if (stepIds.join() !== EXCEL_MISSION_STEP_IDS.join()) issues.push(`steps must be ${EXCEL_MISSION_STEP_IDS.join(", ")}`);

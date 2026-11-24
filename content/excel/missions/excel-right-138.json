@@ -6,6 +6,7 @@
   "title": "Pull sizes with RIGHT",
   "summary": "Extract the size from the end of an article code with RIGHT and learn why text sizes do not match number sizes.",
   "estimatedMinutes": 14,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "size-suffix-right",
   "steps": [

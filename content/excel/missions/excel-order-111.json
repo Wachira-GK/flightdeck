@@ -6,6 +6,7 @@
   "title": "Order of operations",
   "summary": "Predict what Excel calculates first, and use brackets to make a loaded-cost formula do what you mean.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "loaded-cost-per-pair",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "Build a standard SKU key",
   "summary": "Compose a clean SKU key from messy parts with TRIM, UPPER, LEFT, RIGHT and &, then check for duplicates with COUNTIF.",
   "estimatedMinutes": 18,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "sku-key-build",
   "steps": [

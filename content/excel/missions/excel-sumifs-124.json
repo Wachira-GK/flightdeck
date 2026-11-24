@@ -6,6 +6,7 @@
   "title": "Two conditions with SUMIFS",
   "summary": "Total sales that match two conditions at once, such as one region and one category, with SUMIFS.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "sumifs-region-category",
   "steps": [

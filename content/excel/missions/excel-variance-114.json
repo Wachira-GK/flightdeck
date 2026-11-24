@@ -6,6 +6,7 @@
   "title": "Variance with ABS and tolerance flags",
   "summary": "Compare actual sales with plan, measure the size of the gap with ABS and flag only the gaps above a tolerance.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.8,
   "exerciseId": "plan-variance-flags",
   "steps": [

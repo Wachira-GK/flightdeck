@@ -6,6 +6,7 @@
   "title": "Pull prefixes with LEFT",
   "summary": "Extract the category prefix and style code from article codes with LEFT, then use the prefix to look up the category.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "article-prefix-left",
   "steps": [

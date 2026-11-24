@@ -6,6 +6,7 @@
   "title": "Reorder flags with IF",
   "summary": "Flag shoe lines that have fallen to their reorder point, so the replenishment list builds itself.",
   "estimatedMinutes": 15,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "if-business-thresholds",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "Average per store with AVERAGEIF",
   "summary": "Find the average sales per store for one region with AVERAGEIF and compare it with the company average.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "averageif-region-average",
   "steps": [

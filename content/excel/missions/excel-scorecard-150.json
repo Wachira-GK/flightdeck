@@ -6,6 +6,7 @@
   "title": "Capstone: the store scorecard",
   "summary": "Build a one-row-per-store scorecard from a weekly sales log, combining SUMIFS, COUNTIFS, XLOOKUP, ROUND and IF into a final rating.",
   "estimatedMinutes": 20,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "store-scorecard-capstone",
   "steps": [

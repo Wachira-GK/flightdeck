@@ -6,6 +6,7 @@
   "title": "Totals by region with SUMIF",
   "summary": "Add up sales for one region from a long sales list with SUMIF, then reuse the formula for every region.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "sumif-region-totals",
   "steps": [

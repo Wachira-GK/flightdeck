@@ -6,6 +6,7 @@
   "title": "Totals with SUM",
   "summary": "Add up a column of monthly sales and check your answer like a pro.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.8,
   "exerciseId": "sum-relative-refs",
   "steps": [

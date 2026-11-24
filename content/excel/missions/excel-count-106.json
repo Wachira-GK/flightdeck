@@ -6,6 +6,7 @@
   "title": "Counting entries with COUNT",
   "summary": "Count how many stock lines have a number, and see what COUNT ignores.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "stock-count-progress",
   "steps": [

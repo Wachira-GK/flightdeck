@@ -6,6 +6,7 @@
   "title": "Stock status labels with nested IF",
   "summary": "Label every line Out of stock, Low, OK or Overstock with nested IF and AND, then turn the label into an action.",
   "estimatedMinutes": 20,
+  "level": "intermediate",
   "passMark": 0.8,
   "exerciseId": "stock-status-labels",
   "steps": [

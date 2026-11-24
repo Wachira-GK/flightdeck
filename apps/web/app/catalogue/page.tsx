@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, buttonVariants, Card, CardEyebrow } from "@flightdeck/ui";
-import { getCatalogue, type CatalogueTrack } from "@/lib/catalogue";
+import { LevelSection } from "@/components/level-section";
+import { getCatalogue, MISSION_LEVELS, type CatalogueTrack } from "@/lib/catalogue";
 
 export const metadata: Metadata = {
   title: "Catalogue",
@@ -59,8 +60,19 @@ export default async function CataloguePage() {
             {t.missions.length === 0 ? (
               <p className="mt-4 text-fg-muted">New missions for this track are being prepared.</p>
             ) : (
-              <ul className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {t.missions.map((m) => (
+              MISSION_LEVELS.map((lv) => {
+                const inLevel = t.missions.filter((m) => m.level === lv.id);
+                if (inLevel.length === 0) return null;
+                return (
+                  <LevelSection
+                    key={lv.id}
+                    storageKey={`fd-level-${t.slug}-${lv.id}`}
+                    title={lv.label}
+                    blurb={lv.blurb}
+                    count={inLevel.length}
+                  >
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {inLevel.map((m) => (
                   <li key={m.slug}>
                     <Card className="flex h-full flex-col gap-4">
                       <div>
@@ -68,7 +80,7 @@ export default async function CataloguePage() {
                           {m.code}
                           {m.estimatedMinutes ? ` · About ${m.estimatedMinutes} min` : ""}
                         </CardEyebrow>
-                        <h3 className="mt-2 text-lg font-semibold">{m.title}</h3>
+                        <h4 className="mt-2 text-lg font-semibold">{m.title}</h4>
                         {m.summary ? <p className="mt-2 text-sm text-fg-muted">{m.summary}</p> : null}
                       </div>
                       <div className="mt-auto">
@@ -80,6 +92,9 @@ export default async function CataloguePage() {
                   </li>
                 ))}
               </ul>
+                  </LevelSection>
+                );
+              })
             )}
           </section>
         ))}

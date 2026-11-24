@@ -6,6 +6,7 @@
   "title": "NOT and the clearance decision",
   "summary": "Use NOT to flip a test, then combine AND, OR and NOT in one IF to decide which lines go on clearance.",
   "estimatedMinutes": 20,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "clearance-rule",
   "steps": [

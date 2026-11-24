@@ -6,6 +6,7 @@
   "title": "IFERROR: readable fallbacks for #DIV/0!",
   "summary": "Wrap sell-through and stock cover divisions in IFERROR so new stores and zero sales show a clear message.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "safe-sell-through",
   "steps": [

@@ -6,6 +6,7 @@
   "title": "XLOOKUP not-found vs IFERROR",
   "summary": "Learn what the XLOOKUP fourth argument catches, what IFERROR catches, and when to use each.",
   "estimatedMinutes": 18,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "lookup-error-handling",
   "steps": [

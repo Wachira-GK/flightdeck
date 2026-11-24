@@ -22,8 +22,23 @@ const MISSION_FILES: Record<string, unknown[]> = {
   math: [descriptiveStats101],
 };
 
+export type MissionLevel = "beginner" | "intermediate" | "advanced";
+
+/** Display order and labels for the three levels. */
+export const MISSION_LEVELS: { id: MissionLevel; label: string; blurb: string }[] = [
+  { id: "beginner", label: "Beginner", blurb: "First steps: core formulas and everyday calculations." },
+  { id: "intermediate", label: "Intermediate", blurb: "Combine functions, conditions and lookups." },
+  { id: "advanced", label: "Advanced", blurb: "Multi-step reports, clean-up and scorecards." },
+];
+
+/** Any unknown or missing level counts as Beginner, so a mission is never hidden by a typo. */
+export function parseLevel(value: unknown): MissionLevel {
+  return value === "intermediate" || value === "advanced" ? value : "beginner";
+}
+
 export type CatalogueMission = {
   slug: string;
+  level: MissionLevel;
   /** Display code, e.g. "EX-101". */
   code: string;
   title: string;
@@ -79,6 +94,7 @@ function readMissions(track: ConfigTrack, course: ConfigCourse | undefined): Cat
       if (typeof m.trackId === "string" && !track.contentTrackIds.includes(m.trackId)) continue;
       missions.push({
         slug,
+        level: parseLevel(m.level),
         code: m.code,
         title: m.title,
         summary: typeof m.summary === "string" ? m.summary : null,
@@ -90,7 +106,11 @@ function readMissions(track: ConfigTrack, course: ConfigCourse | undefined): Cat
       // A half-written or invalid content file is left out; the seed generator is the strict gate.
     }
   }
-  missions.sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }) || a.slug.localeCompare(b.slug));
+  // Beginner first, then Intermediate, then Advanced; by code inside a level. "Next mission" follows this order.
+  const rank = (l: MissionLevel) => MISSION_LEVELS.findIndex((x) => x.id === l);
+  missions.sort(
+    (a, b) => rank(a.level) - rank(b.level) || a.code.localeCompare(b.code, "en", { numeric: true }) || a.slug.localeCompare(b.slug),
+  );
   return missions.map((m, i) => ({ ...m, position: i + 1 }));
 }
 

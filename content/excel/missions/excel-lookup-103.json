@@ -6,6 +6,7 @@
   "title": "Prices with XLOOKUP",
   "summary": "Pull unit prices from a product list by code, fix the list with $ signs and handle codes that are not listed.",
   "estimatedMinutes": 15,
+  "level": "intermediate",
   "passMark": 0.75,
   "exerciseId": "xlookup-price-list",
   "steps": [

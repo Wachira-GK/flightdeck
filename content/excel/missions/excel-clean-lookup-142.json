@@ -6,6 +6,7 @@
   "title": "Clean first, then look up",
   "summary": "Put TRIM and UPPER inside XLOOKUP so messy typed codes still find their price in the clean list.",
   "estimatedMinutes": 15,
+  "level": "advanced",
   "passMark": 0.75,
   "exerciseId": "clean-lookup-messy-codes",
   "steps": [

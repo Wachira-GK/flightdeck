@@ -6,6 +6,7 @@
   "title": "Remove stray spaces with TRIM",
   "summary": "Clean extra spaces from region names with TRIM so that comparisons and lookups find their match.",
   "estimatedMinutes": 12,
+  "level": "beginner",
   "passMark": 0.75,
   "exerciseId": "trim-before-match",
   "steps": [
