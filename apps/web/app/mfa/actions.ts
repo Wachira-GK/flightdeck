@@ -18,6 +18,7 @@ const TEXT: Partial<Record<AuthFailure, string>> = {
   invalid_code: "That code is not right or has expired. Wait for the next code in your app and try again.",
   rate_limited: "Too many attempts. Wait a minute and try again.",
   mfa_unavailable: "Two-step sign-in is not switched on for this project yet. Ask the master admin.",
+  bad_response: "Two-step set-up returned a reply we could not read. Reload the page and try once more; if it repeats, tell the master admin.",
   unavailable: "The sign-in service is temporarily unavailable. Try again shortly.",
 };
 const textFor = (r: AuthFailure) => TEXT[r] ?? "We could not complete that. Try again.";

@@ -21,6 +21,7 @@ export interface AuthFormState {
 const FAILURE_TEXT: Record<AuthFailure, string> = {
   invalid_code: "That code is not right or has expired. Try the next code from your app.",
   mfa_unavailable: "Two-step sign-in is not switched on for this project yet.",
+  bad_response: "We could not read the sign-in service's reply. Try again shortly.",
   invalid_credentials: "That email and password do not match. Check them and try again.",
   email_not_confirmed: "Confirm your email first: open the link we sent you, then sign in.",
   rate_limited: "Too many attempts. Wait a minute and try again.",
