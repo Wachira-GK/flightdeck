@@ -227,7 +227,7 @@ export function enrollTotp(cfg: AuthConfig, accessToken: string): Promise<AuthRe
   return safely(async () => {
     const r = await call(cfg, "/auth/v1/factors", {
       method: "POST",
-      body: { factor_type: "totp", friendly_name: "Authenticator app", issuer: "FlightDeck" },
+      body: { factor_type: "totp", friendly_name: `Authenticator app ${Date.now().toString(36)}`, issuer: "FlightDeck" },
       bearer: accessToken,
     });
     if (r.status !== 200 && r.status !== 201) return fail(reasonFor(r.status, r.json));
