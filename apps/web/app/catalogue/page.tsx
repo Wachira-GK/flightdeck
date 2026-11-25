@@ -4,6 +4,10 @@ import { Badge, buttonVariants, Card, CardEyebrow } from "@flightdeck/ui";
 import { LevelSection } from "@/components/level-section";
 import { MISSION_LEVELS, type CatalogueTrack } from "@/lib/catalogue";
 import { getLiveCatalogue } from "@/server/catalogue-live";
+import { readSession, authConfig } from "@/server/auth/session";
+import { getOwnProgress } from "@/server/cockpit-data";
+import { accessConfig, accessSummary, isOpenFor } from "@/server/access";
+import { buildCockpit, EMPTY_PROGRESS } from "@/lib/cockpit";
 
 export const metadata: Metadata = {
   title: "Catalogue",
@@ -16,6 +20,18 @@ export const dynamic = "force-dynamic";
 
 export default async function CataloguePage() {
   const tracks = await getLiveCatalogue();
+  // "Recommended next" for a signed-in learner: the same mission the Cockpit proposes (open to them, in level order). Best effort.
+  let recommended: string | null = null;
+  try {
+    const s = await readSession();
+    if (s.status === "signed-in") {
+      const [saved, access] = await Promise.all([getOwnProgress(authConfig(), s.accessToken), accessSummary(accessConfig(), s.user.id)]);
+      const visible = access ? tracks.map((t) => ({ ...t, missions: t.missions.filter((m) => isOpenFor(access, m.slug)) })) : tracks;
+      recommended = buildCockpit(visible, saved ?? EMPTY_PROGRESS).active?.mission.slug ?? null;
+    }
+  } catch {
+    recommended = null;
+  }
   const missionCount = tracks.reduce((n, t) => n + t.missions.length, 0);
 
   return (
@@ -82,6 +98,7 @@ export default async function CataloguePage() {
                           {m.estimatedMinutes ? ` · About ${m.estimatedMinutes} min` : ""}
                         </CardEyebrow>
                         <h4 className="mt-2 text-lg font-semibold">{m.title}</h4>
+                        {m.slug === recommended ? <Badge tone="accent">Recommended next</Badge> : null}
                         {m.summary ? <p className="mt-2 text-sm text-fg-muted">{m.summary}</p> : null}
                       </div>
                       <div className="mt-auto">

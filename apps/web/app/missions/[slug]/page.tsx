@@ -34,11 +34,14 @@ function toMission(ex: ExcelMissionContent["mission"]): Mission {
  */
 async function loadMission(slug: string, userId: string | null, pin: boolean): Promise<Loaded | undefined> {
   const proto = getMission(slug);
-  if (proto) return { mission: proto };
+  // Non-Excel prototypes (maths) are served as before. An Excel slug uses the REAL mission (simulator, Sim Bay button);
+  // the old placeholder text is only a last fallback. (EX-101..103 used to show "no simulation yet" because the placeholder won.)
+  if (proto && proto.trackId !== "excel") return { mission: proto };
   const db = await contentForLearner(userId, slug, pin);
   if (db && db.track === "excel") return { mission: toMission(db.mission), excel: { mission: db.mission, exercise: db.exercise } };
   const ex = getExcelMission(slug);
-  return ex ? { mission: toMission(ex.mission), excel: ex } : undefined;
+  if (ex) return { mission: toMission(ex.mission), excel: ex };
+  return proto ? { mission: proto } : undefined;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
