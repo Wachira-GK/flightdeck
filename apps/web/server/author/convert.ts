@@ -27,6 +27,7 @@ import {
   type ExcelMissionBlock,
   type ExcelMissionKeys,
 } from "../../components/excel/missions";
+import { checkVariant, parseVariantParams, type NumericVariant } from "../../lib/variants";
 import { expandCells, parseOverrides, PLACEHOLDER, STEP_ORDER, STEP_TITLES, type AuthorLevel, type EditorDoc, type EditorQuestion } from "../../lib/author/doc";
 
 /** Stored beside the sheet answer key; server-only. `doc` is the author's whole form so editing round-trips exactly. */
@@ -225,7 +226,18 @@ export function buildContent(doc: EditorDoc, previousPublished?: ExerciseDefinit
       const tol = String(q.tolerance ?? "").trim() === "" ? 0.01 : Number(q.tolerance);
       if (String(q.expected).trim() === "" || !Number.isFinite(exp)) issues.push(`Question ${id}: the correct answer must be a number.`);
       if (!Number.isFinite(tol) || tol < 0) issues.push(`Question ${id}: the allowed difference must be zero or a positive number.`);
-      keyItems.push({ id, type: "numeric", expected: Number.isFinite(exp) ? exp : 0, tolerance: { kind: "absolute", value: Number.isFinite(tol) && tol >= 0 ? tol : 0.01 }, rationale });
+      // Optional exam variants: different numbers every exam try, answer worked out by the engine. The author check draws 20 of them.
+      let variant: NumericVariant | undefined;
+      const vt = String(q.variantTemplate ?? "").trim();
+      const vp = String(q.variantParams ?? "").trim();
+      const vf = String(q.variantFormula ?? "").trim();
+      if (vt || vp || vf) {
+        const parsed = parseVariantParams(vp);
+        for (const e of parsed.errors) issues.push(`Question ${id}: ${e}`);
+        variant = { template: vt, params: parsed.params, formula: vf };
+        if (parsed.errors.length === 0) for (const m of checkVariant(variant, id)) issues.push(m);
+      }
+      keyItems.push({ id, type: "numeric", expected: Number.isFinite(exp) ? exp : 0, tolerance: { kind: "absolute", value: Number.isFinite(tol) && tol >= 0 ? tol : 0.01 }, rationale, ...(variant ? { variant } : {}) });
     } else {
       const options = (q.options ?? []).map((o) => ({ id: String(o.id).trim(), label: String(o.label).trim() }));
       if (options.some((o) => !o.id || !o.label)) issues.push(`Question ${id}: every choice needs text.`);
@@ -326,7 +338,7 @@ export function contentToDoc(item: {
   const questions: EditorQuestion[] = m.assessment.items.map((it) => {
     const k = keyById.get(it.id);
     if (it.type === "numeric") {
-      return { id: it.id, type: "numeric", prompt: it.prompt, answerHint: it.answerHint ?? "", options: [], expected: k?.type === "numeric" ? String(k.expected) : "", tolerance: k?.type === "numeric" ? String(k.tolerance.value) : "0.01", correctOptionId: "", rationale: k?.rationale ?? "" };
+      return { id: it.id, type: "numeric", prompt: it.prompt, answerHint: it.answerHint ?? "", options: [], expected: k?.type === "numeric" ? String(k.expected) : "", tolerance: k?.type === "numeric" ? String(k.tolerance.value) : "0.01", correctOptionId: "", rationale: k?.rationale ?? "", ...(k?.type === "numeric" && k.variant ? { variantTemplate: k.variant.template, variantParams: Object.entries(k.variant.params).map(([n, p]) => `${n}: ${p.min}-${p.max} step ${p.step}`).join("\n"), variantFormula: k.variant.formula } : {}) };
     }
     return { id: it.id, type: "single-choice", prompt: it.prompt, answerHint: "", options: it.options.map((o) => ({ ...o })), expected: "", tolerance: "", correctOptionId: k?.type === "single-choice" ? k.correctOptionId : "", rationale: k?.rationale ?? "" };
   });

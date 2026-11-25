@@ -5,8 +5,11 @@
 // 20261125000100). Failed attempts reveal only the topics to revisit, never the right answers.
 import { gradeNumericAnswer } from "@flightdeck/math";
 import type { ExcelAnswerKeyItem, ExcelAssessmentItem, ExcelMission, ExcelMissionKeys } from "../components/excel/missions";
+import { buildSubmission, validateSubmission, type ExerciseDefinition, type ExerciseKey } from "@flightdeck/excel-engine";
+import { renderVariant } from "../lib/variants";
 import { adminConfig, type AdminConfig } from "./admin/admin";
-import { contentGrading, publishedSummaries } from "./content-db";
+import { contentExercise, contentGrading, publishedSummaries } from "./content-db";
+import { getGradableExercise } from "./excel-keys";
 import { getBuiltInExcel, EXCEL_ASSESSMENT_SLUGS } from "./excel-assessment";
 import { progressConfig } from "./progress";
 
@@ -27,13 +30,22 @@ export interface PlanTask {
   code: string;
   title: string;
   itemId: string;
-  type: "numeric" | "single-choice";
+  type: "numeric" | "single-choice" | "sheet";
   prompt: string;
   options?: { id: string; label: string }[];
   /** numeric: the author's hint text; single-choice: two wrong options a hint removes. */
   hintText?: string;
   dropOptions?: string[];
-  key: { correctOptionId: string } | { expected: number; tolerance: { kind: "absolute"; value: number } };
+  /** sheet: the learner-safe exercise shown in the grid (the key below never leaves the server). */
+  exercise?: ExerciseDefinition;
+  key: { correctOptionId: string } | { expected: number; tolerance: { kind: "absolute"; value: number } } | { sheet: ExerciseKey };
+}
+export interface SheetPoolItem {
+  slug: string;
+  code: string;
+  title: string;
+  exercise: ExerciseDefinition;
+  key: ExerciseKey;
 }
 /** The name printed on the certificate, as the learner typed it (letters, spaces and . ' - only, 2-80 characters). */
 export const cleanHolder = (s: string): string => s.replace(/[^\p{L}\p{M}\s.'-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 80);
@@ -76,7 +88,7 @@ export function shuffled<T>(xs: readonly T[], seed: string): T[] {
 }
 
 /** Picks `count` questions from the pool: spread over as many different missions as possible, then shuffled. */
-export function buildPlan(pool: PoolItem[], count: number, seed: string): Plan {
+export function buildPlan(pool: PoolItem[], count: number, seed: string, sheets: SheetPoolItem[] = [], sheetCount = 0): Plan {
   const bySlug = new Map<string, PoolItem[]>();
   for (const p of shuffled(pool, `${seed}:pool`)) bySlug.set(p.slug, [...(bySlug.get(p.slug) ?? []), p]);
   const rounds: PoolItem[] = [];
@@ -96,19 +108,51 @@ export function buildPlan(pool: PoolItem[], count: number, seed: string): Plan {
       return { ...base, type: "single-choice", options, dropOptions: wrong.slice(0, Math.max(0, Math.min(2, wrong.length - 1))), key: { correctOptionId: p.key.correctOptionId } };
     }
     if (p.item.type === "numeric" && p.key.type === "numeric") {
-      return { ...base, type: "numeric", ...(p.item.answerHint ? { hintText: p.item.answerHint } : {}), key: { expected: p.key.expected, tolerance: p.key.tolerance } };
+      let prompt = base.prompt;
+      let expected = p.key.expected;
+      if (p.key.variant) {
+        // Per-attempt numbers: a different draw each try (seeded, so the same attempt always shows the same question).
+        try {
+          const r = renderVariant(p.key.variant, `${seed}:var:${i}`);
+          prompt = r.prompt;
+          expected = r.expected;
+        } catch {
+          /* an unusable variant falls back to the fixed question; the author check prevents this at publish time */
+        }
+      }
+      return { ...base, prompt, type: "numeric", ...(p.item.answerHint ? { hintText: p.item.answerHint } : {}), key: { expected, tolerance: p.key.tolerance } };
     }
     throw new Error(`item ${p.item.id} does not match its key`);
   });
-  return { v: 1, seed, tasks };
+  // Sheet tasks come last: one per mission (never the same exercise twice), different picks per seed.
+  const seen = new Set<string>();
+  const sheetTasks: PlanTask[] = [];
+  for (const s of shuffled(sheets, `${seed}:sheets`)) {
+    if (sheetTasks.length >= Math.max(0, sheetCount)) break;
+    if (seen.has(s.exercise.id)) continue;
+    seen.add(s.exercise.id);
+    sheetTasks.push({
+      slug: s.slug,
+      code: s.code,
+      title: s.title,
+      itemId: `sheet:${s.exercise.id}`,
+      type: "sheet",
+      prompt: `${s.exercise.objective}\n\n${s.exercise.instructions}`.trim(),
+      exercise: { ...s.exercise, hints: [] }, // the exam has its own hint budget; sheet hints are never shown
+      key: { sheet: s.key },
+    });
+  }
+  return { v: 1, seed, tasks: [...tasks, ...sheetTasks] };
 }
 
 export interface HintLogEntry { task: number; hint: number }
 export interface PublicTask {
   index: number;
-  type: "numeric" | "single-choice";
+  type: "numeric" | "single-choice" | "sheet";
   prompt: string;
   options?: { id: string; label: string }[];
+  /** sheet: the learner-safe exercise (no key). */
+  exercise?: ExerciseDefinition;
   hintAvailable: boolean;
   /** Present only for hints the learner has already paid for. */
   hint?: { text?: string; dropOptions?: string[] };
@@ -124,6 +168,7 @@ export function publicView(plan: Plan, hintLog: HintLogEntry[]): PublicTask[] {
     type: t.type,
     prompt: t.prompt,
     ...(t.options ? { options: t.options } : {}),
+    ...(t.type === "sheet" && t.exercise ? { exercise: t.exercise } : {}),
     hintAvailable: hintAvailableFor(t),
     ...(paid.has(index) && hintAvailableFor(t) ? { hint: hintPayload(t) } : {}),
   }));
@@ -140,6 +185,27 @@ export interface ExamResult {
 }
 
 const MAX_ANSWER = 64;
+export const MAX_SHEET_ANSWER = 4000;
+
+/** Grades a sheet answer: a JSON object of the editable cells' inputs. Anything else counts as blank. Pure. */
+export function gradeSheetAnswer(exercise: ExerciseDefinition, key: ExerciseKey, raw: unknown): boolean {
+  if (typeof raw !== "string" || raw === "" || raw.length > MAX_SHEET_ANSWER) return false;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return false;
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return false;
+  const editable = new Set(exercise.editableCells);
+  const inputs: Record<string, string> = {};
+  for (const k of editable) inputs[k] = exercise.starter[k] ?? ""; // unchanged cells keep their starting value
+  for (const [cell, v] of Object.entries(parsed as Record<string, unknown>)) {
+    if (editable.has(cell) && typeof v === "string") inputs[cell] = v.slice(0, 400);
+  }
+  const result = validateSubmission(exercise, buildSubmission(exercise, inputs), key);
+  return !result.rejected && result.passed === true;
+}
 /** Grades answers keyed by task index ("0", "1", ...). Pure; the database refuses late results separately. */
 export function gradePlan(plan: Plan, answers: Record<string, unknown>, passPct: number): ExamResult {
   let correct = 0;
@@ -148,7 +214,9 @@ export function gradePlan(plan: Plan, answers: Record<string, unknown>, passPct:
     const raw = Object.hasOwn(answers, String(i)) ? answers[String(i)] : undefined;
     const answer = typeof raw === "string" ? raw.trim().slice(0, MAX_ANSWER) : "";
     let ok = false;
-    if (answer !== "") {
+    if ("sheet" in t.key) {
+      if (t.exercise) ok = gradeSheetAnswer(t.exercise, t.key.sheet, raw);
+    } else if (answer !== "") {
       if ("correctOptionId" in t.key) ok = answer === t.key.correctOptionId;
       else ok = gradeNumericAnswer({ expected: t.key.expected, tolerance: t.key.tolerance, answer }).correct === true;
     }
@@ -178,6 +246,26 @@ const toPool = (mission: ExcelMission, keys: ExcelMissionKeys): PoolItem[] => {
     return key && key.type === item.type ? [{ slug: mission.slug, code: mission.code, title: mission.title, item, key }] : [];
   });
 };
+
+/** The practice sheets of a level's published Excel missions, with their server-only keys (database first, built-in files as fallback). */
+export async function loadSheetPool(level: ExamLevel): Promise<SheetPoolItem[]> {
+  const cfg = progressConfig();
+  const summaries = await publishedSummaries(cfg);
+  let slugs: string[];
+  if (summaries) slugs = summaries.filter((s) => s.track === "excel" && s.level === level).map((s) => s.slug);
+  else slugs = EXCEL_ASSESSMENT_SLUGS.filter((s) => getBuiltInExcel(s)?.mission.level === level);
+  const parts = await Promise.all(
+    slugs.map(async (slug): Promise<SheetPoolItem[]> => {
+      const db = await contentGrading(null, slug, cfg);
+      const src = db ?? getBuiltInExcel(slug);
+      if (!src) return [];
+      const id = src.mission.exerciseId;
+      const ex = (await contentExercise(id, cfg)) ?? getGradableExercise(id);
+      return ex ? [{ slug: src.mission.slug, code: src.mission.code, title: src.mission.title, exercise: ex.exercise, key: ex.key }] : [];
+    }),
+  );
+  return parts.flat();
+}
 
 /** All assessment questions of a level's published Excel missions (database first, built-in files as fallback). */
 export async function loadPool(level: ExamLevel): Promise<PoolItem[]> {
@@ -264,8 +352,10 @@ export async function startExam(cfg: AdminConfig | null, userId: string, level: 
   const pool = await loadPool(level);
   const count = Math.min(state.config.questions, pool.length);
   if (count < Math.max(1, Math.min(state.config.questions, 3))) return { ok: false, reason: "not_enough_questions" };
+  const sheets = state.config.sheetTasks > 0 ? await loadSheetPool(level) : [];
+  const sheetCount = Math.min(state.config.sheetTasks, sheets.length);
   const seed = `${userId}:${level}:${state.used + 1}:${crypto.randomUUID()}`;
-  return examCall(cfg, "fd_exam_start", { p_user: userId, p_level: level, p_plan: { ...buildPlan(pool, count, seed), holder: cleanHolder(holder) } });
+  return examCall(cfg, "fd_exam_start", { p_user: userId, p_level: level, p_plan: { ...buildPlan(pool, count, seed, sheets, sheetCount), holder: cleanHolder(holder) } });
 }
 
 export interface AttemptRow {

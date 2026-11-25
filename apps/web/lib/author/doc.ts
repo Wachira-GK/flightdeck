@@ -21,6 +21,12 @@ export interface EditorQuestion {
   correctOptionId: string;
   /** Why the answer is right. Shown to the learner only after they pass. */
   rationale: string;
+  /** Numeric only, optional: exam wording with {name} placeholders; different numbers are drawn for every exam try. */
+  variantTemplate?: string;
+  /** Numeric only, optional: one line per changing number, like "a: 100-500 step 10". */
+  variantParams?: string;
+  /** Numeric only, optional: formula for the answer using the same {name} placeholders, like "=ROUND({a}*{b}/100,2)". */
+  variantFormula?: string;
 }
 
 /** A "what if" used to prove the learner built formulas, not typed numbers: change some inputs, the answers must follow. */

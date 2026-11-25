@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUserId } from "@/server/current-user";
-import { EXAM_FAILURE_TEXT, examCall, examConfig, getAttempt, gradePlan, hintAvailableFor, hintPayload, integrityFlags, UUID } from "@/server/exams";
+import { EXAM_FAILURE_TEXT, examCall, examConfig, getAttempt, gradePlan, hintAvailableFor, hintPayload, integrityFlags, MAX_SHEET_ANSWER, UUID } from "@/server/exams";
 
 // POST /api/exams/[attempt]  body: { action: "save" | "hint" | "finish", ... }
 // The user comes from the verified session. The database owns the clock: saves after the deadline are refused and a late
@@ -15,7 +15,7 @@ const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object
 function cleanAnswers(v: unknown): Record<string, string> {
   const out: Record<string, string> = {};
   if (!isObj(v)) return out;
-  for (const [k, val] of Object.entries(v)) if (/^\d{1,2}$/.test(k) && typeof val === "string") out[k] = val.slice(0, 64);
+  for (const [k, val] of Object.entries(v)) if (/^\d{1,2}$/.test(k) && typeof val === "string") out[k] = val.slice(0, MAX_SHEET_ANSWER);
   return out;
 }
 

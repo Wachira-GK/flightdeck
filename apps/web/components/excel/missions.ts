@@ -48,7 +48,7 @@ export type ExcelMission = {
 
 /** SERVER-ONLY assessment key (content/excel/missions/<slug>.keys.json). */
 export type ExcelAnswerKeyItem =
-  | { id: string; type: "numeric"; expected: number; tolerance: { kind: "absolute"; value: number }; rationale: string }
+  | { id: string; type: "numeric"; expected: number; tolerance: { kind: "absolute"; value: number }; rationale: string; variant?: { template: string; params: Record<string, { min: number; max: number; step: number }>; formula: string } }
   | { id: string; type: "single-choice"; correctOptionId: string; rationale: string };
 
 export type ExcelMissionKeys = { schemaVersion: 1; missionSlug: string; items: ExcelAnswerKeyItem[] };

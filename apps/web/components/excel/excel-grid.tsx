@@ -59,6 +59,12 @@ export interface ExcelGridProps {
   checkEndpoint?: string | null;
   /** Called after each check with the result, the submission that was checked and where it was checked. */
   onCheck?: (result: CheckView, submission: Submission, source: CheckSource) => void;
+  /** Exam mode: no "Check my work" and no feedback (an exam never reveals answers). */
+  examMode?: boolean;
+  /** Called whenever the learner's cell inputs change (used by the exam to save the sheet). */
+  onInputsChange?: (inputs: Record<string, string>) => void;
+  /** Starting inputs to restore (exam autosave); defaults to the exercise starter. */
+  initialInputs?: Record<string, string>;
   className?: string;
 }
 
@@ -103,17 +109,29 @@ const inBlock = (a: GridPos, b: GridPos, p: GridPos): boolean =>
  * "Check my work" posts to the server check API (authoritative, not saved yet) and falls back to a
  * local practice check when the server cannot be reached.
  */
-export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, className }: ExcelGridProps) {
+export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, examMode, onInputsChange, initialInputs, className }: ExcelGridProps) {
   const uid = useId();
   const size = exercise.grid;
   const editable = useMemo(() => new Set(exercise.editableCells), [exercise.editableCells]);
   const limits = useMemo(() => exerciseLimits(exercise), [exercise]);
   const timeoutMs = Math.min(exercise.timeoutMs ?? HARD_TIMEOUT_MS, HARD_TIMEOUT_MS);
 
-  const [inputs, setInputs] = useState<Record<string, string>>(() => ({ ...exercise.starter }));
+  const [inputs, setInputs] = useState<Record<string, string>>(() => ({ ...exercise.starter, ...(initialInputs ?? {}) }));
   // Starter values are computed straight away on the main thread (small, limit-bounded sheet), so the
   // grid never appears empty while the Worker downloads; edits are then calculated in the Worker.
-  const [values, setValues] = useState<Record<string, CellValue>>(() => evaluateSheet({ ...exercise.starter }, limits));
+  const [values, setValues] = useState<Record<string, CellValue>>(() => evaluateSheet({ ...exercise.starter, ...(initialInputs ?? {}) }, limits));
+  const inputsCb = useRef(onInputsChange);
+  useEffect(() => {
+    inputsCb.current = onInputsChange;
+  }, [onInputsChange]);
+  const firstInputs = useRef(true);
+  useEffect(() => {
+    if (firstInputs.current) {
+      firstInputs.current = false;
+      return;
+    }
+    inputsCb.current?.(inputs);
+  }, [inputs]);
   const [calc, setCalc] = useState<CalcState>("idle");
   const [sel, setSel] = useState<GridPos>(() => firstEditable(exercise.editableCells, size));
   const [edit, setEdit] = useState<EditState | null>(null);
@@ -725,13 +743,15 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, class
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button onClick={() => void runCheck()} disabled={checking || calc === "busy"}>
-          {checking ? "Checking..." : "Check my work"}
-        </Button>
+        {examMode ? null : (
+          <Button onClick={() => void runCheck()} disabled={checking || calc === "busy"}>
+            {checking ? "Checking..." : "Check my work"}
+          </Button>
+        )}
         <Button variant="secondary" onClick={reset}>
           Reset
         </Button>
-        <Badge tone="muted">{check?.source === "local" ? "Practice check" : "Server check"}</Badge>
+        {examMode ? null : <Badge tone="muted">{check?.source === "local" ? "Practice check" : "Server check"}</Badge>}
         {calc === "busy" ? <span className="text-xs text-fg-muted">Calculating...</span> : null}
       </div>
 

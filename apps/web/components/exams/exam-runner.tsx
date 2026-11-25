@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { ExerciseDefinition } from "@flightdeck/excel-engine";
+import { ExcelGrid } from "../excel/excel-grid";
 
 // The exam screen. The clock shown here is only a display: the database holds the real deadline, refuses saves after it,
 // and cannot pass a late finish. This component never receives answer keys (only prompts, options and paid-for hints).
 export interface RunnerTask {
   index: number;
-  type: "numeric" | "single-choice";
+  type: "numeric" | "single-choice" | "sheet";
+  exercise?: ExerciseDefinition;
   prompt: string;
   options?: { id: string; label: string }[];
   hintAvailable: boolean;
@@ -25,6 +28,33 @@ interface Outcome {
 }
 
 const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+/** One sheet task: the practice grid without any checking. The answer is the editable cells as JSON text (saved with the rest). */
+function SheetAnswer({ exercise, value, onChange }: { exercise: ExerciseDefinition; value: string; onChange: (v: string) => void }) {
+  let initial: Record<string, string> | undefined;
+  try {
+    const p: unknown = value ? JSON.parse(value) : undefined;
+    if (p && typeof p === "object" && !Array.isArray(p)) initial = p as Record<string, string>;
+  } catch {
+    initial = undefined;
+  }
+  const editable = new Set(exercise.editableCells);
+  return (
+    <div className="mt-3">
+      <ExcelGrid
+        exercise={exercise}
+        examMode
+        checkEndpoint={null}
+        initialInputs={initial}
+        onInputsChange={(inputs) => {
+          const edits: Record<string, string> = {};
+          for (const k of editable) if ((inputs[k] ?? "") !== (exercise.starter[k] ?? "")) edits[k] = inputs[k] ?? "";
+          onChange(JSON.stringify(edits));
+        }}
+      />
+    </div>
+  );
+}
 
 export function ExamRunner(props: { attemptId: string; tasks: RunnerTask[]; secondsLeft: number; hintsLeft: number; initialAnswers: Record<string, string>; level: string }) {
   const { attemptId } = props;
@@ -155,6 +185,8 @@ export function ExamRunner(props: { attemptId: string; tasks: RunnerTask[]; seco
                     </label>
                   ))}
                 </fieldset>
+              ) : t.type === "sheet" && t.exercise ? (
+                <SheetAnswer exercise={t.exercise} value={value} onChange={(v) => setAnswer(t.index, v)} />
               ) : (
                 <label className="mt-3 block">
                   <span className="text-sm text-fg-muted">Your answer (a number)</span>

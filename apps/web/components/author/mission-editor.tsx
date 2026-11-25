@@ -483,6 +483,7 @@ function QuestionEditor({ q, onChange, onRemove }: { q: EditorQuestion; onChange
         </Field>
       </div>
       {q.type === "numeric" ? (
+        <>
         <div className="grid gap-3 sm:grid-cols-3">
           <Field label="Correct answer">
             <input className={input} inputMode="decimal" value={q.expected} onChange={(e) => onChange({ ...q, expected: e.target.value })} />
@@ -494,6 +495,26 @@ function QuestionEditor({ q, onChange, onRemove }: { q: EditorQuestion; onChange
             <input className={input} value={q.answerHint} onChange={(e) => onChange({ ...q, answerHint: e.target.value })} />
           </Field>
         </div>
+        <details className="rounded-md border border-border p-3">
+          <summary className="cursor-pointer text-sm font-medium">Different numbers in every exam try (optional)</summary>
+          <p className="mt-2 text-sm text-fg-muted">
+            Practice uses the question above. In certificate exams each try can draw new numbers, so a learner who saw an answer cannot reuse it. Write the exam
+            wording with {"{a}"}, {"{b}"} where numbers go, list the allowed range for each, and give the formula for the answer. The system works the answer out
+            itself and, when you send for review, tries 20 different draws to make sure all of them work.
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <Field label="Exam wording">
+              <textarea className={`${area} min-h-16`} value={q.variantTemplate ?? ""} onChange={(e) => onChange({ ...q, variantTemplate: e.target.value })} />
+            </Field>
+            <Field label="Numbers that change (one per line)" hint="Example:  a: 100-500 step 10">
+              <textarea className={`${area} min-h-16`} value={q.variantParams ?? ""} onChange={(e) => onChange({ ...q, variantParams: e.target.value })} />
+            </Field>
+            <Field label="Answer formula" hint="Example:  =ROUND({a}*{b}/100,2)">
+              <input className={input} value={q.variantFormula ?? ""} onChange={(e) => onChange({ ...q, variantFormula: e.target.value })} />
+            </Field>
+          </div>
+        </details>
+        </>
       ) : (
         <div className="space-y-2">
           <p className={lab}>Choices (tick the correct one)</p>
