@@ -9,6 +9,7 @@ import { StepRail } from "@/components/step-rail";
 import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
 import { accessConfig, accessMessage, missionAccess } from "@/server/access";
+import { SIM_LESSON_FOR_MISSION, simBayHref } from "@/lib/simbay-lessons";
 import { touchVisit } from "@/server/activity";
 import { contentForLearner } from "@/server/content-db";
 import { currentUserId } from "@/server/current-user";
@@ -142,11 +143,11 @@ export default async function MissionPage({ params, searchParams }: Props) {
                 // Wide screens only (Sim Bay needs a keyboard and at least 1024 px). A plain link: /simbay is served by the
                 // Sim Bay gateway, and it brings the learner back here with "Back to mission".
                 <a
-                  href={`/simbay?from=${encodeURIComponent(`/missions/${mission.slug}?step=${step}`)}`}
+                  href={simBayHref(mission.slug, `/missions/${mission.slug}?step=${step}`)}
                   data-testid="open-sim-bay"
                   className={`${buttonVariants({ variant: "secondary" })} ml-auto max-[1023px]:hidden`}
                 >
-                  Open in Sim Bay
+                  {Object.hasOwn(SIM_LESSON_FOR_MISSION, mission.slug) ? "Practise this in Sim Bay" : "Open in Sim Bay"}
                 </a>
               ) : null}
             </div>
