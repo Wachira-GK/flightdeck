@@ -481,3 +481,57 @@ export const FAILURE_TEXT: Record<AdminFailure, string> = {
   not_configured: "Administration is not switched on for this server.",
   unavailable: "The service is temporarily unavailable. Try again shortly.",
 };
+
+// ---- Certificate exams (stage 3): rules, soft integrity flags, revoke. The database re-checks the admin role on every call.
+export type ExamRule = {
+  level: string;
+  enabled: boolean;
+  minutes: number;
+  maxHints: number;
+  maxAttempts: number;
+  cooldownHours: number;
+  passPct: number;
+  sheetTasks: number;
+  questions: number;
+};
+export type ExamAttemptRow = {
+  id: string;
+  userId: string;
+  level: string;
+  attemptNo: number;
+  status: string;
+  startedAt: string;
+  submittedAt: string | null;
+  score: unknown;
+  hintsUsed: number;
+  flags: unknown;
+  seconds: number | null;
+};
+
+export const examRules = (cfg: AdminConfig | null, actorId: string): Promise<AdminResult<ExamRule[]>> =>
+  call(cfg, "fd_admin_exam_config", { p_actor: actorId }, (j) => (Array.isArray(j.levels) ? (j.levels as ExamRule[]) : []));
+
+export const examAttempts = (cfg: AdminConfig | null, actorId: string): Promise<AdminResult<ExamAttemptRow[]>> =>
+  call(cfg, "fd_admin_exam_attempts", { p_actor: actorId }, (j) => (Array.isArray(j.attempts) ? (j.attempts as ExamAttemptRow[]) : []));
+
+export const setExamRule = (cfg: AdminConfig | null, actorId: string, r: ExamRule): Promise<AdminResult<true>> =>
+  call(
+    cfg,
+    "fd_admin_exam_set",
+    {
+      p_actor: actorId,
+      p_level: r.level,
+      p_enabled: r.enabled,
+      p_minutes: r.minutes,
+      p_max_hints: r.maxHints,
+      p_max_attempts: r.maxAttempts,
+      p_cooldown_hours: r.cooldownHours,
+      p_pass_pct: r.passPct,
+      p_sheet_tasks: r.sheetTasks,
+      p_questions: r.questions,
+    },
+    () => true as const,
+  );
+
+export const revokeCertificate = (cfg: AdminConfig | null, actorId: string, number: string, reason: string): Promise<AdminResult<true>> =>
+  call(cfg, "fd_admin_certificate_revoke", { p_actor: actorId, p_number: number, p_reason: reason }, () => true as const);

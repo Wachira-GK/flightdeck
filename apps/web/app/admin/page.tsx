@@ -36,6 +36,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           ·{" "}
           <Link href="/admin/review" className="underline">
             Review flags
+          </Link>{" "}
+          ·{" "}
+          <Link href="/admin/exams" className="underline">
+            Exams
           </Link>
         </p>
         <h1 className="mt-1 text-3xl font-semibold sm:text-4xl">Users</h1>
