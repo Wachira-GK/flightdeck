@@ -84,15 +84,15 @@ describe('CWS-T01..T07 content workspace', () => {
     expect(r.sub).toMatchObject({ ok: true });
     expect(r.locked).toMatchObject({ ok: false, reason: 'in_review_locked' });
     expect(r.own).toMatchObject({ ok: false, reason: 'forbidden' });
-    expect(r.adminOwn).toMatchObject({ ok: false, reason: 'invalid_request' });
+    expect(r.adminOwn).toMatchObject({ ok: false, reason: 'forbidden' }); // an admin without the reviewer role cannot review
     expect(r.ret).toMatchObject({ ok: true });
     expect((r.g.item as Row).status).toBe('draft');
     expect((r.g.item as Row).reviewNote).toBe('Fix the briefing');
   });
 
-  it('CWS-T05 an author who is also admin cannot publish their own submission', async () => {
+  it('CWS-T05 an author who is also reviewer cannot publish their own submission', async () => {
     const r = await db.scenario(async (step) => {
-      await step(service, `insert into public.user_roles (user_id, role) values ('${AUTHOR}', 'admin')`);
+      await step(service, `insert into public.user_roles (user_id, role) values ('${AUTHOR}', 'reviewer')`);
       await step(service, save, [AUTHOR, SLUG, 'beginner', mission(), keys, null]);
       await step(service, submit, [AUTHOR, SLUG, 1]);
       return out(await step<{ r: Row }>(service, review, [AUTHOR, SLUG, 1, 'publish', null]));
@@ -135,6 +135,37 @@ describe('CWS-T01..T07 content workspace', () => {
     expect(r.notAdmin).toMatchObject({ ok: false, reason: 'forbidden' });
     expect(r.retire).toMatchObject({ ok: true });
     expect(r.audit.map((a) => a.action)).toEqual(['content_save', 'content_submit', 'content_publish', 'content_retire']);
+  });
+});
+
+describe('CWS-T10 roles are separate: admin does not imply author or reviewer', () => {
+  it('CWS-T10 an admin with no author/reviewer role gets no workspace and cannot save, submit, withdraw or review', async () => {
+    const r = await db.scenario(async (step) => {
+      await step(service, save, [AUTHOR, SLUG, 'beginner', mission(), keys, null]);
+      await step(service, submit, [AUTHOR, SLUG, 1]);
+      return {
+        l: out(await step<{ r: Row }>(service, list, [ADMIN])),
+        s: out(await step<{ r: Row }>(service, save, [ADMIN, 'excel-admin-new', 'beginner', mission({ slug: 'excel-admin-new' }), keys, null])),
+        sub: out(await step<{ r: Row }>(service, submit, [ADMIN, SLUG, 1])),
+        wd: out(await step<{ r: Row }>(service, `select public.fd_content_withdraw($1::uuid, $2, $3) as r`, [ADMIN, SLUG, 1])),
+        rv: out(await step<{ r: Row }>(service, review, [ADMIN, SLUG, 1, 'publish', null])),
+      };
+    });
+    for (const v of Object.values(r)) expect(v).toMatchObject({ ok: false, reason: 'forbidden' });
+  });
+
+  it('CWS-T10b an author sees canWrite only, a reviewer canReview only, and a user with both roles gets both', async () => {
+    const r = await db.scenario(async (step) => {
+      await step(service, `insert into public.user_roles (user_id, role) values ('${ADMIN}', 'author'), ('${ADMIN}', 'reviewer')`);
+      return {
+        a: out(await step<{ r: Row }>(service, list, [AUTHOR])),
+        v: out(await step<{ r: Row }>(service, list, [REVIEWER])),
+        both: out(await step<{ r: Row }>(service, list, [ADMIN])),
+      };
+    });
+    expect(r.a).toMatchObject({ ok: true, canWrite: true, canReview: false });
+    expect(r.v).toMatchObject({ ok: true, canWrite: false, canReview: true });
+    expect(r.both).toMatchObject({ ok: true, canWrite: true, canReview: true });
   });
 });
 

@@ -18,7 +18,7 @@ export default async function ReviewMissionPage({ params, searchParams }: { para
   const { slug } = await params;
   const sp = await searchParams;
   const here = `/review/${slug}`;
-  const { userId, cfg, role, items } = await requireContentRole(here, "review");
+  const { userId, cfg, access, items } = await requireContentRole(here, "review");
   const wanted = Number(one(sp.rev));
   const target = Number.isInteger(wanted) && wanted > 0 ? items.find((i) => i.slug === slug && i.revision === wanted) : editableRevision(items, slug);
   if (!target) notFound();
@@ -86,7 +86,7 @@ export default async function ReviewMissionPage({ params, searchParams }: { para
         </Card>
       ) : null}
 
-      {item.status === "published" && role === "admin" ? (
+      {item.status === "published" && access.canRetire ? (
         <Card className="mt-6 space-y-3 p-4 sm:p-6">
           <h2 className="text-xl font-semibold">Retire</h2>
           <p className="text-sm text-fg-muted">Retiring hides this mission from learners. Their saved progress is kept. Only admins can do this.</p>

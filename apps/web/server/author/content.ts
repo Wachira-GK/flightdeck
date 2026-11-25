@@ -66,6 +66,8 @@ export type ContentRole = "admin" | "reviewer" | "author";
 export interface ContentAccess {
   canWrite: boolean;
   canReview: boolean;
+  /** Admin who may retire a live mission (only offered on the review desk, so it needs the reviewer role too). */
+  canRetire: boolean;
 }
 
 export const contentConfig = adminConfig;
@@ -94,6 +96,7 @@ export const listContent = (cfg: AdminConfig | null, actor: string) =>
     role: j.role as ContentRole,
     canWrite: j.canWrite === true,
     canReview: j.canReview === true,
+    canRetire: j.canRetire === true,
     items: (j.items ?? []) as ContentSummary[],
   }));
 

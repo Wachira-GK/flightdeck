@@ -24,7 +24,7 @@ export default async function AuthorMissionPage({ params, searchParams }: { para
   const { slug } = await params;
   const sp = await searchParams;
   const here = `/author/${slug}`;
-  const { userId, cfg, role, access, items } = await requireContentRole(here, "any");
+  const { userId, cfg, access, items } = await requireContentRole(here, "any");
   const rev = editableRevision(items, slug);
   if (!rev) notFound();
   const got = await getContent(cfg, userId, slug, rev.revision);
@@ -41,7 +41,7 @@ export default async function AuthorMissionPage({ params, searchParams }: { para
   const done = DONE[one(sp.done)];
   const err = one(sp.error);
   const errText = err === "checks" ? "Your draft was saved, but it cannot be sent for review yet. Fix the items listed below." : CONTENT_FAILURE_TEXT[err as ContentFailure];
-  const editable = item.status === "draft" && access.canWrite && (item.mine || role === "admin");
+  const editable = item.status === "draft" && access.canWrite && item.mine;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">

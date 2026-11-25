@@ -5,7 +5,7 @@ import { retireContent, reviewContent } from "@/server/author/content";
 import { requireContentRole } from "@/server/author/guard";
 
 // Each action re-checks the caller's role from the database, takes the actor from the verified session, and lets the
-// database apply the rules again (nobody reviews their own work, even an admin; only admins retire a live mission).
+// database apply the rules again (nobody reviews their own work; the reviewer role is needed to review; retiring a live mission also needs admin).
 const SLUG = /^[a-z0-9-]{2,64}$/;
 
 const field = (fd: FormData, name: string) => {
