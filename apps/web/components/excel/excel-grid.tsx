@@ -392,13 +392,49 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, examM
     pointAt(point.anchor, pos, point.end, point);
   };
 
-  // The button is released anywhere: the drag is over.
+  /** Finger or pen on a cell while typing a formula: refer to that cell, and let a drag widen it to a block (touch has no hover). */
+  const onCellPointerDown = (e: ReactPointerEvent, pos: GridPos) => {
+    if (e.pointerType === "mouse") return; // the mouse path above handles the mouse
+    const ctx = pointContext();
+    if (!ctx) return;
+    e.preventDefault(); // no scrolling, no emulated mouse events, and the keyboard stays open on the formula
+    suppressClickRef.current = true;
+    pointDragRef.current = true;
+    pointAt(pos, pos, ctx.caret, ctx.prev);
+  };
+
+  // While a finger drags, find the cell under it and widen the reference to reach it.
+  const touchMoveRef = useRef<(x: number, y: number) => void>(() => undefined);
+  useEffect(() => {
+    touchMoveRef.current = (x, y) => {
+      if (!pointDragRef.current || !point) return;
+      const key = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest<HTMLElement>("[data-cell]")?.dataset.cell;
+      const addr = key ? parseKey(key) : null;
+      if (!addr) return;
+      const focus = { row: addr.row, col: addr.col };
+      if (focus.row === point.focus.row && focus.col === point.focus.col) return;
+      pointAt(point.anchor, focus, point.end, point);
+    };
+  });
+
+  // The button is released (or the finger lifted) anywhere: the drag is over.
   useEffect(() => {
     const up = () => {
       pointDragRef.current = false;
     };
+    const move = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") touchMoveRef.current(e.clientX, e.clientY);
+    };
     window.addEventListener("mouseup", up);
-    return () => window.removeEventListener("mouseup", up);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    window.addEventListener("pointermove", move);
+    return () => {
+      window.removeEventListener("mouseup", up);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      window.removeEventListener("pointermove", move);
+    };
   }, []);
 
   /** Arrow keys while typing a formula move a reference around the sheet (Shift extends it to a block). */
@@ -668,6 +704,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, examM
                       tabIndex={isSel && !isEditingHere ? 0 : -1}
                       onKeyDown={onCellKeyDown}
                       onMouseDown={(e) => onCellMouseDown(e, { row: r, col: c })}
+                      onPointerDown={(e) => onCellPointerDown(e, { row: r, col: c })}
                       onMouseEnter={() => onCellMouseEnter({ row: r, col: c })}
                       onClick={() => {
                         if (suppressClickRef.current) {
@@ -682,6 +719,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, examM
                       className={cn(
                         "h-10 border-r border-border-strong px-1.5 py-1 whitespace-nowrap last:border-r-0 sm:h-9 sm:px-3",
                         "relative cursor-cell outline-offset-[-3px]",
+                        edit && "touch-none", // while a formula is typed a finger drag picks cells instead of scrolling the page
                         point && edit && inBlock(point.anchor, point.focus, { row: r, col: c }) && "bg-surface-2 outline-2 outline-dashed outline-accent",
                         fillTo && inBlock(sel, fillTo, { row: r, col: c }) && !isSel && "bg-surface-2 outline-2 outline-dashed outline-accent",
                         isEditable
