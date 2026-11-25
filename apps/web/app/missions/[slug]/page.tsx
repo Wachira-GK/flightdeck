@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge, buttonVariants, Card, Progress } from "@flightdeck/ui";
+import { Badge, buttonVariants, Card } from "@flightdeck/ui";
+import { MissionProgress } from "@/components/mission-progress";
 import { ActiveTimeBeat } from "@/components/activity-beat";
 import { ExcelMissionStep, getExcelMission, type ExcelMissionContent } from "@/components/excel";
 import { getMathMission, MathMissionStep } from "@/components/math";
 import { StepRail } from "@/components/step-rail";
-import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, type MissionStep } from "@/lib/mission";
+import { adjacentSteps, MISSION_STEPS, missionProgress, parseStep, STEP_LABELS, stepIndex, stepsDoneAt, type MissionStep } from "@/lib/mission";
 import { getMission, getTrack, type Mission } from "@/lib/mock-data";
 import { accessConfig, accessMessage, missionAccess } from "@/server/access";
 import { SIM_LESSON_FOR_MISSION, simBayHref } from "@/lib/simbay-lessons";
 import { touchVisit } from "@/server/activity";
 import { contentForLearner } from "@/server/content-db";
 import { currentUserId } from "@/server/current-user";
+import { authConfig, readSession } from "@/server/auth/session";
+import { getMissionScores, getOwnProgress, type MissionScores } from "@/server/cockpit-data";
+import { completedStepsFor, EMPTY_PROGRESS } from "@/lib/cockpit";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -96,7 +100,26 @@ export default async function MissionPage({ params, searchParams }: Props) {
   const step = parseStep((await searchParams).step);
   const track = getTrack(mission.trackId);
   const { prev, next } = adjacentSteps(step);
-  const progress = missionProgress(mission.completedSteps);
+  // Saved scores and saved step completions (signed-in only; best effort, never blocks the page).
+  let scores: MissionScores = { simulation: null, assessment: null };
+  let savedSteps: MissionStep[] = [];
+  if (userId) {
+    try {
+      const s = await readSession();
+      if (s.status === "signed-in") {
+        const [sc, prog] = await Promise.all([
+          getMissionScores(authConfig(), s.accessToken, mission.slug, excelMission?.mission.exerciseId ?? null),
+          getOwnProgress(authConfig(), s.accessToken),
+        ]);
+        scores = sc;
+        savedSteps = completedStepsFor(mission.slug, prog ?? EMPTY_PROGRESS);
+      }
+    } catch {
+      /* progress display is best effort */
+    }
+  }
+  const doneSteps = stepsDoneAt(step, savedSteps);
+  const progress = missionProgress(doneSteps);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -123,14 +146,13 @@ export default async function MissionPage({ params, searchParams }: Props) {
           <p className="mt-1 text-fg-muted">{mission.summary}</p>
         </div>
         <div className="w-full sm:w-56">
-          <p className="mb-2 text-sm text-fg-muted">{progress}% complete</p>
-          <Progress value={progress} label={`${mission.title} progress`} />
+          <MissionProgress title={mission.title} step={step} progress={progress} scores={scores} />
         </div>
       </header>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[14rem_minmax(0,1fr)]">
         <aside aria-label="Mission navigation" className="min-w-0">
-          <StepRail slug={mission.slug} current={step} completed={mission.completedSteps} />
+          <StepRail slug={mission.slug} current={step} completed={doneSteps} />
         </aside>
 
         <section aria-labelledby="step-title" className="min-w-0">

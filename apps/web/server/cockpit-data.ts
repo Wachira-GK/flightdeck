@@ -53,3 +53,36 @@ export async function getOwnProgress(cfg: ReadConfig, accessToken: string): Prom
     return null;
   }
 }
+
+export type MissionScores = { simulation: number | null; assessment: number | null };
+
+const SAFE_SLUG = /^[a-z0-9-]{2,64}$/;
+const best = (rows: Row[] | null): number | null => {
+  const n = rows?.length ? Number(rows[0]?.score) : NaN;
+  return Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : null;
+};
+
+/** The learner's best saved simulation (exercise) and assessment scores for one mission, 0..100, or null when none. */
+export async function getMissionScores(cfg: ReadConfig, accessToken: string, missionSlug: string, exerciseSlug: string | null): Promise<MissionScores> {
+  const none: MissionScores = { simulation: null, assessment: null };
+  if (!SAFE_SLUG.test(missionSlug) || (exerciseSlug !== null && !SAFE_SLUG.test(exerciseSlug))) return none;
+  try {
+    const get = async (path: string) => {
+      const res = await (cfg.fetch ?? fetch)(`${cfg.url.replace(/\/+$/, "")}/rest/v1/${path}`, {
+        headers: { apikey: cfg.anonKey, authorization: `Bearer ${accessToken}`, accept: "application/json" },
+        signal: AbortSignal.timeout(cfg.timeoutMs ?? 4000),
+        cache: "no-store",
+      });
+      return res.ok ? ((await res.json()) as Row[]) : null;
+    };
+    const [sim, ass] = await Promise.all([
+      exerciseSlug
+        ? get(`exercise_attempts?select=score,exercises!inner(slug)&exercises.slug=eq.${exerciseSlug}&score=not.is.null&order=score.desc&limit=1`)
+        : Promise.resolve(null),
+      get(`assessment_attempts?select=score,assessments!inner(slug)&assessments.slug=eq.${missionSlug}-assessment&status=eq.graded&order=score.desc&limit=1`),
+    ]);
+    return { simulation: best(sim), assessment: best(ass) };
+  } catch {
+    return none;
+  }
+}

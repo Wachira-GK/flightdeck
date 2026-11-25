@@ -57,3 +57,12 @@ export function missionProgress(completed: readonly MissionStep[]): number {
   const unique = new Set(completed.filter(isMissionStep));
   return Math.round((unique.size / MISSION_STEPS.length) * 100);
 }
+
+/**
+ * Steps counted as finished while viewing `current`: the steps already walked past (before it) plus any the server has
+ * saved as completed. Clicking forward moves the bar; the current step itself only counts once it is saved as done.
+ */
+export function stepsDoneAt(current: MissionStep, saved: readonly MissionStep[]): MissionStep[] {
+  const before = MISSION_STEPS.slice(0, stepIndex(current));
+  return MISSION_STEPS.filter((s) => before.includes(s) || saved.includes(s));
+}

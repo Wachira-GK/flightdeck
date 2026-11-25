@@ -538,6 +538,7 @@ export function ExcelGrid({ exercise, practiceKey, checkEndpoint, onCheck, examM
     const label = state.source === "server" ? SERVER_LABEL : LOCAL_LABEL;
     setAnnouncement(`${label}: ${checkSummary(passedCount, result.checks.length, result.score, result.passed)}`);
     onCheck?.(result, submission, state.source);
+    if (!examMode && typeof window !== "undefined") window.dispatchEvent(new CustomEvent("fd:score", { detail: { kind: "simulation", score: result.score } }));
   };
 
   const runLocalCheck = async (submission: Submission, note?: string) => {

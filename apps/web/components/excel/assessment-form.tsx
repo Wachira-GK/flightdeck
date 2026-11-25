@@ -38,6 +38,7 @@ export function ExcelAssessmentForm({ missionSlug, items, passMark }: Props) {
       const body = await res.json();
       if (!res.ok) throw new Error(body?.error ?? `Server error ${res.status}`);
       setResult(body as AssessmentResult);
+      if (typeof (body as AssessmentResult).score === "number") window.dispatchEvent(new CustomEvent("fd:score", { detail: { kind: "assessment", score: (body as AssessmentResult).score } }));
     } catch (err) {
       setResult(null);
       setError(err instanceof Error ? err.message : "Could not reach the grader. Check your connection and try again.");
