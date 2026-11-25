@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badge, buttonVariants, Card, CardEyebrow } from "@flightdeck/ui";
+import { Badge, Button, buttonVariants, Card, CardEyebrow } from "@flightdeck/ui";
+import { enrolAction } from "./actions";
+import { getOwnEnrolments } from "@/server/enrol";
 import { LevelSection } from "@/components/level-section";
 import { MISSION_LEVELS, type CatalogueTrack } from "@/lib/catalogue";
 import { getLiveCatalogue } from "@/server/catalogue-live";
@@ -18,13 +20,18 @@ export const metadata: Metadata = {
 // list is cached for 30 s inside the Worker and falls back to the built-in list if the database is unreachable.
 export const dynamic = "force-dynamic";
 
-export default async function CataloguePage() {
+export default async function CataloguePage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const sp = await searchParams;
   const tracks = await getLiveCatalogue();
   // "Recommended next" for a signed-in learner: the same mission the Cockpit proposes (open to them, in level order). Best effort.
   let recommended: string | null = null;
+  let signedIn = false;
+  let enrolled: string[] | null = null;
   try {
     const s = await readSession();
     if (s.status === "signed-in") {
+      signedIn = true;
+      enrolled = (await getOwnEnrolments(authConfig(), s.accessToken))?.slugs ?? null;
       const [saved, access] = await Promise.all([getOwnProgress(authConfig(), s.accessToken), accessSummary(accessConfig(), s.user.id)]);
       const visible = access ? tracks.map((t) => ({ ...t, missions: t.missions.filter((m) => isOpenFor(access, m.slug)) })) : tracks;
       recommended = buildCockpit(visible, saved ?? EMPTY_PROGRESS).active?.mission.slug ?? null;
@@ -45,6 +52,12 @@ export default async function CataloguePage() {
           Simulation, Assessment and Debrief.
         </p>
       </header>
+
+      {sp.enrol === "error" ? (
+        <p role="alert" className="mt-4 rounded-md border border-danger px-3 py-2 text-sm text-danger">
+          We could not enrol you just now. Please try again in a moment.
+        </p>
+      ) : null}
 
       <section aria-labelledby="tracks-title" className="mt-10">
         <h2 id="tracks-title" className="text-xl font-semibold">
@@ -68,10 +81,26 @@ export default async function CataloguePage() {
                 {t.title} missions
               </h2>
               {t.courses.map((c) => (
-                <p key={c.slug} className="text-sm text-fg-muted">
-                  {c.title}
-                  {c.isFree ? " · Free" : ""}
-                </p>
+                <div key={c.slug} className="flex flex-wrap items-center gap-3">
+                  <p className="text-sm text-fg-muted">
+                    {c.title}
+                    {c.isFree ? " - Free" : ""}
+                  </p>
+                  {!signedIn ? (
+                    <Link href={`/sign-in?next=${encodeURIComponent("/catalogue")}`} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                      Sign in to enrol
+                    </Link>
+                  ) : enrolled?.includes(c.slug) ? (
+                    <Badge tone="success">Enrolled</Badge>
+                  ) : (
+                    <form action={enrolAction}>
+                      <input type="hidden" name="course" value={c.slug} />
+                      <Button type="submit" size="sm" data-testid={`enrol-${c.slug}`}>
+                        Enrol in this course
+                      </Button>
+                    </form>
+                  )}
+                </div>
               ))}
             </div>
             {t.missions.length === 0 ? (

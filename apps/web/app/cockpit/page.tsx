@@ -10,6 +10,9 @@ import { authConfig, requireUser } from "@/server/auth/session";
 import { getOwnProgress } from "@/server/cockpit-data";
 import { accessConfig, accessSummary, isOpenFor } from "@/server/access";
 import { touchVisit } from "@/server/activity";
+import { getOwnEnrolments } from "@/server/enrol";
+import { cockpitBadges } from "@/lib/badges";
+import { CockpitActions, RoleBadge } from "@/components/cockpit-actions";
 
 export const metadata: Metadata = { title: "Cockpit" };
 
@@ -21,9 +24,11 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
   const { user, accessToken } = await requireUser("/cockpit", sp.refreshed === "1");
   const cfg = authConfig();
   // Own profile, roles and saved progress, read with the learner's own token: Row Level Security decides what is returned.
-  const [profile, saved, catalogue] = await Promise.all([getOwnProfile(cfg, accessToken), getOwnProgress(cfg, accessToken), getLiveCatalogue()]);
+  const [profile, saved, catalogue, enrolState] = await Promise.all([getOwnProfile(cfg, accessToken), getOwnProgress(cfg, accessToken), getLiveCatalogue(), getOwnEnrolments(cfg, accessToken)]);
   const displayName = profile?.displayName || user.email.split("@")[0]!;
   const roles = profile?.roles ?? [];
+  // Guest until the first enrolment, then Learner for good; staff badges follow (admin, author, reviewer).
+  const badges = cockpitBadges(roles, enrolState === null ? null : enrolState.count > 0);
   const now = new Date();
   const greeting = greetingFor(hourIn(now, profile?.timeZone ?? "Africa/Nairobi"));
   // Only missions this person can open count as "next" (ADR-011). If access cannot be read, nothing is hidden and the server still enforces.
@@ -47,38 +52,16 @@ export default async function CockpitPage({ searchParams }: { searchParams: Prom
           <span className="text-fg-muted" data-testid="signed-in-as">
             Signed in as {user.email}
           </span>
-          {roles.map((r) => (
-            <Badge key={r} tone={r === "learner" ? "muted" : "accent"}>
-              {r}
-            </Badge>
+          {badges.map((b) => (
+            <RoleBadge key={b} id={b} />
           ))}
-          <Link href="/account/security" className="underline">
-            Account security
-          </Link>
-          {roles.includes("admin") ? (
-            <>
-              <Link href="/admin" className="underline">
-                Admin: users
-              </Link>
-              <Link href="/admin/missions" className="underline">
-                Admin: mission access
-              </Link>
-            </>
-          ) : null}
-          <Link href="/exams" className="underline">
-            Certificate exams
-          </Link>
-          {roles.includes("author") || roles.includes("admin") ? (
-            <Link href="/author" className="underline">
-              Author missions
-            </Link>
-          ) : null}
-          {roles.includes("reviewer") || roles.includes("admin") ? (
-            <Link href="/review" className="underline">
-              Review queue
+          {badges[0] === "guest" ? (
+            <Link href="/catalogue" className="underline">
+              Enrol in a course to become a learner
             </Link>
           ) : null}
         </div>
+        <CockpitActions badges={badges} />
         {sp.password === "changed" ? (
           <p role="status" className="mt-3 rounded-md bg-accent-subtle px-3 py-2 text-sm">
             Password changed. Use it next time you sign in.
