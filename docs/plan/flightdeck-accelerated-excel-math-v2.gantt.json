@@ -3,7 +3,7 @@
   "name": "FlightDeck Accelerated Excel and Mathematics MVP - v2 (re-baselined 11 Nov 2026)",
   "desc": "v2 re-baseline 11 Nov 2026: G1 moved 10 Nov -> 24 Nov 2026 (G1 not approval-ready on target date; no build work had started before 10 Nov). G2 +14 days (7 Dec 2026); G3 onwards +28 days to absorb the slip plus the Dec/Jan holiday window (G3 8 Jan 2027, G4 8 Feb 2027, G5 9 Mar 2027) - PROPOSED, pending Project Owner approval. Milestones highlighted red. Supersedes v1 (26 Oct 2026, kept unchanged). AI accelerates scaffolding, tests, fixtures and documentation; security, architecture and accessibility require accountable human review.",
   "created": 1794344591318,
-  "updated": 1794600000000,
+  "updated": 1795674731708,
   "mode": "month",
   "view": {
     "arrows": true,
@@ -231,9 +231,9 @@
       "resIds": [
         "2wd0l6t"
       ],
-      "status": "active",
-      "progress": 90,
-      "notes": "Cloudflare compatibility spike PASSED 11 Nov on Godfrey Cloudflare Free account (flightdeck-web.godmarklee.workers.dev): OpenNext build, deploy (startup 17 ms, gzip 1,053 KiB), SSR + route handler + assets live, wrangler tail logs, rollback drill OK. CPU time 6-11 ms per SSR request = at the Free 10 ms cap -> production on Workers Paid (G0-approved). Remaining: ADR-003 decision (human); CSP/HSTS headers in G2.",
+      "status": "done",
+      "progress": 100,
+      "notes": "Cloudflare compatibility spike PASSED 11 Nov on Godfrey Cloudflare Free account (flightdeck-web.godmarklee.workers.dev): OpenNext build, deploy (startup 17 ms, gzip 1,053 KiB), SSR + route handler + assets live, wrangler tail logs, rollback drill OK. CPU time 6-11 ms per SSR request = at the Free 10 ms cap -> production on Workers Paid (G0-approved). Remaining: ADR-003 decision (human); CSP/HSTS headers in G2. 26 Nov (from build log, percent is an estimate): Cloudflare Workers Paid active; production addresses flightdeck.stegmon.com and codeverse.stegmon.com live; Sim Bay served under /simbay; weekly backup and keep-alive in place.",
       "after": [
         "stfohg9"
       ],
@@ -242,6 +242,153 @@
       "nolimit": false,
       "color": null,
       "resId": "2wd0l6t"
+    },
+    {
+      "id": "97d09f1",
+      "type": "task",
+      "name": "FD-DOM01 Domain stegmon.com registered; subdomain plan decided",
+      "start": 1795651200000,
+      "end": 1795651200000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "Registered on Cloudflare Registrar (1 year, USD 11.17 at checkout). Brand decision closed: go live with stegmon.com; if the brand changes later, buy a new domain and transition. Subdomains per product: flightdeck.stegmon.com, codeverse.stegmon.com; Sim Bay stays under /simbay.",
+      "after": [],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "08ef15d",
+      "type": "task",
+      "name": "FD-DOM02 Subdomains live; code, configs and docs switched off workers.dev",
+      "start": 1795651200000,
+      "end": 1795651200000,
+      "resIds": [
+        "2wd0l6t"
+      ],
+      "status": "done",
+      "progress": 100,
+      "notes": "flightdeck.stegmon.com and codeverse.stegmon.com attached as custom domains (health check db ok). Sim Bay redirect, embed origins and CSP point at flightdeck.stegmon.com; keep-alive check, README and deploy notes updated; repos committed (FlightDeck and Sim Bay pushed). The old workers.dev addresses stay on as a fallback until FD-DOM07. Dated historical records (Gate status files, spike record) keep their original addresses on purpose.",
+      "after": [
+        "97d09f1"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "2wd0l6t"
+    },
+    {
+      "id": "fd0180e",
+      "type": "task",
+      "name": "FD-DOM03 Supabase Site URL and Redirect URLs for flightdeck.stegmon.com",
+      "start": 1795651200000,
+      "end": 1795737600000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Godfrey, Supabase dashboard (Authentication, URL Configuration): set Site URL to https://flightdeck.stegmon.com and add https://flightdeck.stegmon.com/** to Redirect URLs (keep the old entry during the fallback period). Then test sign-in, password reset (?rid= link) and 2-step on the new address.",
+      "after": [
+        "08ef15d"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "25503fa",
+      "type": "task",
+      "name": "FD-DOM04 Google sign-in on stegmon.com",
+      "start": 1795737600000,
+      "end": 1795737600000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Godfrey, Google Cloud (Branding): homepage https://flightdeck.stegmon.com, privacy /privacy, terms /terms, authorised domain stegmon.com; the Supabase callback URI does not change. Test Continue with Google on the new address.",
+      "after": [
+        "fd0180e"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "8f706ec",
+      "type": "task",
+      "name": "FD-DOM05 Email on stegmon.com (Resend and Brevo, Supabase custom SMTP)",
+      "start": 1795737600000,
+      "end": 1795996800000,
+      "resIds": [
+        "flkz323",
+        "2wd0l6t"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Verify stegmon.com (sending subdomain such as mail.stegmon.com) on Resend and Brevo, with the DNS records added in Cloudflare; one active in Supabase custom SMTP, the other on standby; branded confirm and reset emails; lifts the default email rate limit. Pricing and limits of both services still to be checked on their official pages. Any paid step needs GREEN.",
+      "after": [
+        "fd0180e"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
+    },
+    {
+      "id": "3a3aa9e",
+      "type": "task",
+      "name": "FD-DOM06 stegmon.com landing page and www redirect",
+      "start": 1795996800000,
+      "end": 1796342400000,
+      "resIds": [
+        "c7dz1l8"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Simple landing page at stegmon.com linking to FlightDeck and CodeVerse; www redirects to the root. Content and wording to be agreed with Godfrey.",
+      "after": [
+        "08ef15d"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "c7dz1l8"
+    },
+    {
+      "id": "71fd2d3",
+      "type": "task",
+      "name": "FD-DOM07 Retire the workers.dev fallback addresses",
+      "start": 1796947200000,
+      "end": 1796947200000,
+      "resIds": [
+        "flkz323"
+      ],
+      "status": "todo",
+      "progress": 0,
+      "notes": "Decision after about two stable weeks on stegmon.com: switch off workers.dev for flightdeck-web, excel-sim and codeverse, remove old Redirect URLs in Supabase and old entries in Google. Also decide HSTS preload only after the domain has been stable for a while.",
+      "after": [
+        "fd0180e",
+        "25503fa"
+      ],
+      "tie": null,
+      "due": null,
+      "nolimit": false,
+      "color": null,
+      "resId": "flkz323"
     },
     {
       "id": "fdg1rev",
@@ -305,8 +452,8 @@
         "c7dz1l8"
       ],
       "status": "active",
-      "progress": 45,
-      "notes": "13 Nov: sign-in/sign-up/sign-out built on Supabase Auth (ADR-007): HttpOnly cookie session, silent refresh, protected Cockpit with own name/roles via RLS, live test passed. Remaining: email-confirmation template + Site URL (Godfrey, Supabase dashboard), password reset, role-gated author/reviewer screens, MFA for staff roles, enrolment + progress persistence.",
+      "progress": 95,
+      "notes": "13 Nov: sign-in/sign-up/sign-out built on Supabase Auth (ADR-007): HttpOnly cookie session, silent refresh, protected Cockpit with own name/roles via RLS, live test passed. Remaining: email-confirmation template + Site URL (Godfrey, Supabase dashboard), password reset, role-gated author/reviewer screens, MFA for staff roles, enrolment + progress persistence. 26 Nov (from build log, percent is an estimate): Email/password + Google sign-in, password reset, authenticator-app 2-step (admins required), user admin, roles with author/reviewer separation, mission access and enrolment are live. Remaining: custom-domain redirect URLs in Supabase/Google and branded email (see FD-DOM03..05).",
       "after": [
         "stfohg9",
         "0wu49hq",
@@ -328,8 +475,8 @@
         "c7dz1l8"
       ],
       "status": "active",
-      "progress": 85,
-      "notes": "12 Nov: seed generator content->catalogue.sql (3 tracks, 2 courses, 4 missions, 20 steps, keys only in app_private), 15 seed tests with drift check, static /catalogue page live. APPLIED to Supabase 12 Nov: author/reviewer roles granted to the two seed accounts, catalogue.sql loaded (tracks 3, courses 2, versions 2, missions 4, steps 20, exercises 5, assessments 4, items 16, keys 5+16), live checks all pass (anon sees published catalogue only, keys unreadable by anon/learner, seed idempotent). Remaining: missions.code/estimated_minutes migration; web catalogue reading from Supabase.",
+      "progress": 90,
+      "notes": "12 Nov: seed generator content->catalogue.sql (3 tracks, 2 courses, 4 missions, 20 steps, keys only in app_private), 15 seed tests with drift check, static /catalogue page live. APPLIED to Supabase 12 Nov: author/reviewer roles granted to the two seed accounts, catalogue.sql loaded (tracks 3, courses 2, versions 2, missions 4, steps 20, exercises 5, assessments 4, items 16, keys 5+16), live checks all pass (anon sees published catalogue only, keys unreadable by anon/learner, seed idempotent). Remaining: missions.code/estimated_minutes migration; web catalogue reading from Supabase. 26 Nov (from build log, percent is an estimate): Excel missions live as database revisions (draft, review, publish, pinned per learner), levels Beginner/Intermediate/Advanced, author and reviewer screens. Remaining: Math missions are not authorable yet.",
       "after": [
         "0wu49hq",
         "ldzekm7"
@@ -417,9 +564,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "AI generates state-machine tests and edge cases; deterministic server rules remain authoritative.",
+      "status": "active",
+      "progress": 70,
+      "notes": "AI generates state-machine tests and edge cases; deterministic server rules remain authoritative. 26 Nov (from build log, percent is an estimate): Enrolment button per course, Guest/Learner badges, saved progress and Cockpit are live. Remaining: resume and prerequisites.",
       "after": [
         "x6v1g97"
       ],
@@ -438,9 +585,9 @@
       "resIds": [
         "me810s7"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "Create at least three Excel exercises with formula/output validation, reset, hints and progress events.",
+      "status": "active",
+      "progress": 80,
+      "notes": "Create at least three Excel exercises with formula/output validation, reset, hints and progress events. 26 Nov (from build log, percent is an estimate): No-code author screens, automatic submit checks, per-attempt numeric variants, Sim Bay merged under /simbay with engine parity (50 missions, 0 differing cells). Remaining: Sim Bay scores in exams/Cockpit.",
       "after": [
         "x6v1g97"
       ],
@@ -502,8 +649,8 @@
         "c7dz1l8"
       ],
       "status": "active",
-      "progress": 40,
-      "notes": "11 Nov: server grading slice built (commit dbc3e2c, preview c341b831): pure graders for MA-101 and EX-101/102/103, pass mark from mission JSON, explanations only on a pass, keys server-only in apps/web/server, POST /api/missions/[slug]/assessment, client form, unit + e2e (375px) tests, key-leak scan OK. Remaining: attempt history, assessment versioning and persistence (needs Supabase, paused).",
+      "progress": 75,
+      "notes": "11 Nov: server grading slice built (commit dbc3e2c, preview c341b831): pure graders for MA-101 and EX-101/102/103, pass mark from mission JSON, explanations only on a pass, keys server-only in apps/web/server, POST /api/missions/[slug]/assessment, client form, unit + e2e (375px) tests, key-leak scan OK. Remaining: attempt history, assessment versioning and persistence (needs Supabase, paused). 26 Nov (from build log, percent is an estimate): Saved assessment attempts, certificate exams (30 min server clock, 2 hints, 3 tries with 24 h gap, pass/fail plus topics) and spreadsheet tasks in exams are live. Remaining: Math exam content and review of flags.",
       "after": [
         "mrjqnn7"
       ],
@@ -546,9 +693,9 @@
       "resIds": [
         "c7dz1l8"
       ],
-      "status": "todo",
-      "progress": 0,
-      "notes": "Exactly-once issue, immutable snapshot and privacy-safe verification.",
+      "status": "active",
+      "progress": 70,
+      "notes": "Exactly-once issue, immutable snapshot and privacy-safe verification. 26 Nov (from build log, percent is an estimate): Certificate numbers, public /verify/<number> page and print layout are live. Remaining: logo/QR styling and revocation workflow review.",
       "after": [
         "i4zeerp"
       ],

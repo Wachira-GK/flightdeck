@@ -23,3 +23,5 @@ Deleted so far in this phase: only my own build logs (`C:\Temp\fd-build.log`, `C
 - 2026-11-24 (held, not deleted): C:\Temp\patch-page.mjs, patch-cat.mjs, patch-cockpit.mjs, patch-lint.mjs, smoke.ps1 - one-off scripts from stage 2b; safe to delete on Godfrey's go.
 
 - 2026-11-25 (held, not deleted): C:\Temp\patch-conv.mjs, patch-import.mjs, patch-content.mjs, patch-author.mjs, patch-cockpit2.mjs, debug-convert.txt, built.json; C:\Temp\fdpg\e2e-rollback.mjs (live rolled-back publish check; keep, reusable) - stage 2c/2d scratch.
+
+- 2026-11-26: C:\Temp\gantt-update (update-gantt.mjs + resources-copy-before-26Nov.json) - one-off Gantt script and the old FlightDeck Resources Gantt copy; held, delete on GREEN.
