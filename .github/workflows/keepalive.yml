@@ -15,4 +15,4 @@ jobs:
       - name: Check the site and the database
         run: |
           curl --fail --silent --show-error --max-time 30 --retry 2 --retry-delay 10 \
-            "https://flightdeck-web.godmarklee.workers.dev/api/health?deep=1" | tee /dev/stderr | grep -q '"db":"ok"'
+            "https://flightdeck.stegmon.com/api/health?deep=1" | tee /dev/stderr | grep -q '"db":"ok"'

@@ -15,4 +15,4 @@ Status: implemented 2026-11-11 in `apps/web/next.config.ts` (production builds o
 1. `script-src 'unsafe-inline'` — required by Next.js App Router inline bootstrap scripts. Upgrade options: nonce CSP via `proxy.ts` (makes every page dynamic → more Worker CPU, relevant to the 10 ms Free cap) or hash-based SRI. Decide with ADR-003.
 2. `connect-src` must add the Supabase project URL (`https://<ref>.supabase.co`, `wss://<ref>.supabase.co`) once Supabase is set up (paused).
 3. Add PostHog / Sentry / Bunny origins only when those integrations land.
-4. HSTS `preload` only after a custom domain is chosen (not on workers.dev).
+4. HSTS `preload` only after the production domain (stegmon.com, chosen 26 Nov 2026) has been stable for a while; preload is hard to undo.

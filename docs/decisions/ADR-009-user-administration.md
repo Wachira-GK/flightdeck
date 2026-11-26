@@ -27,7 +27,7 @@ This makes "author cannot publish own work" usable between the two real accounts
 ## Consequences and limits
 - The user list reads up to 1,000 accounts from Supabase Auth and filters in the server; replace with a search endpoint at scale.
 - Reset emails come from the default Supabase sender (rate-limited, branded "Supabase Auth") until a domain and custom SMTP exist (domain decision due 20 Dec 2026). The admin sees a clear message when the sender is rate-limited.
-- Supabase's Redirect URLs allow-list must include `https://flightdeck-web.godmarklee.workers.dev/**` (already added); the `?rid=` query must be accepted by that pattern (verify with the first live admin reset).
+- Supabase's Redirect URLs allow-list must include `https://flightdeck.stegmon.com/**` (production address since 26 Nov 2026); the `?rid=` query must be accepted by that pattern (verify with the first live admin reset).
 - Not built yet: MFA for staff (FD-B02), role-gated author/reviewer screens, audit-log viewer screen.
 
 ## Tests

@@ -1,7 +1,7 @@
 # Cloudflare Workers compatibility spike (G1)
 
 Status: **local spike complete. Real-account items pending.** Date: 11 Nov 2026. Decision record: `docs/decisions/ADR-003-hosting-spike.md`.
-Environment: Windows 11, no admin rights, Node 26.3.0 (CI uses Node 22), pnpm 10.34.9.
+Update 26 Nov 2026: the production address is now https://flightdeck.stegmon.com (stegmon.com is registered on the same Cloudflare account). This spike record keeps the original test address below., Node 26.3.0 (CI uses Node 22), pnpm 10.34.9.
 
 ## Versions
 

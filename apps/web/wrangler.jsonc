@@ -25,5 +25,7 @@
     "enabled": true
   },
   "workers_dev": true,
-  "preview_urls": true
+  "preview_urls": true,
+  // Production address (stegmon.com, registered 26 Nov 2026 on the same Cloudflare account). workers_dev stays on as a fallback.
+  "routes": [{ "pattern": "flightdeck.stegmon.com", "custom_domain": true }]
 }
